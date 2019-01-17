@@ -13,18 +13,19 @@
 
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.core.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.field.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.validation.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.js"></script>
+        
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -60,41 +61,34 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ManageServer</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="ManageServer" asp-action="Index">ManageServer</a></li>
+                    
                 </ul>
             </div>
         </div>
     </div>
     <div class="container body-content">
+
+
+
+
+
+
         @RenderBody()
+
+
+
+
+
         <hr />
         <footer>
             <p>&copy; 2019 - ManageServer Information</p>
         </footer>
     </div>
-
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
 
     @RenderSection("scripts", required: false)
 </body>
