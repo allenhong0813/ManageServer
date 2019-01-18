@@ -20,4 +20,9 @@ namespace ManageServer.Models
         public string Description { get; set; }
         List<UserMachine> UserMachines { get; set; }
     }
+
+    public class MachineList
+    {
+        public List<Machine> Machines;
+    }
 }

@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ManageServer.Models;
+
+
 namespace ManageServer
 {
     public class PostgresSQLContext : DbContext
     {
+        public PostgresSQLContext(DbContextOptions<PostgresSQLContext> options): base(options){ }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Machine> Machines { get; set; }
         public DbSet<UserMachine> UserMachines { get; set; }

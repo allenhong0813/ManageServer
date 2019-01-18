@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using ManageServer.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ManageServer
 {
@@ -17,6 +20,24 @@ namespace ManageServer
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
+
+            //初始化SeedData
+            //using (var scope = host.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+
+            //    try
+            //    {
+            //        // Requires using ManageServer.Models;
+            //        SeedData.Initialize(services);
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //        var logger = services.GetRequiredService<ILogger<Program>>();
+            //        logger.LogError(default(EventId), ex, "createSeedError");
+            //    }
+            //}
 
             host.Run();
         }
