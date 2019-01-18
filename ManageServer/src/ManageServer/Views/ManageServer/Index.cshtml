@@ -9,10 +9,28 @@
 }
 
 <h2>伺服器管理</h2>
+<div class="container">
+    <!-- Content here -->
+    <div class="row">
+        <div class="col-2">
+            <label class="">IP</label>
+        </div>
+        <div class="col-2">
+            <input type="text" class="form-control" placeholder="First name">
+        </div>
+        <div class="col-2">
+            <label class="">伺服器名稱</label>
+        </div>
+        <div class="col-2">
+            <input type="text" class="form-control" placeholder="First name">
+        </div>
+        <div class="col-2">
+            <button type="submit" class="btn btn-primary">查詢</button>
+        </div>
+    </div>
+</div>
 
 <div id="jsGrid"></div>
-
-
 <script>
     //Json Format Sample
     //var clients = [
@@ -66,35 +84,35 @@
                 });
                 return d.promise();
             },
-        
 
-        insertItem: function (item) {
-            return $.ajax({
-                type: "POST",
-                url: "/ManageServer/InsertMachineData",
-                data: item
-            });
-        },
 
-        updateItem: function (item) {
-            return $.ajax({
-                type: "PUT",
-                url: "/ManageServer/UpdateMachineData",
-                data: item
-            });
-        },
+            insertItem: function (item) {
+                return $.ajax({
+                    type: "POST",
+                    url: "/ManageServer/InsertMachineData",
+                    data: item
+                });
+            },
 
-        deleteItem: function (item) {
-            return $.ajax({
-                type: "DELETE",
-                url: "/ManageServer/DeleteMachineData",
-                data: item
-            });
+            updateItem: function (item) {
+                return $.ajax({
+                    type: "PUT",
+                    url: "/ManageServer/UpdateMachineData",
+                    data: item
+                });
+            },
+
+            deleteItem: function (item) {
+                return $.ajax({
+                    type: "DELETE",
+                    url: "/ManageServer/DeleteMachineData",
+                    data: item
+                });
+            },
         },
-    },
 
         fields: [
-            { name: "name", type: "text" , title: "伺服器名稱", width: 80, },
+            { name: "name", type: "text", title: "伺服器名稱", width: 80, },
             { name: "ip", type: "text", title: "IP", width: 100 },
             { name: "loginID", type: "text", title: "登入者帳號", width: 80 },
             { name: "password", type: "text", title: "密碼", width: 80 },
