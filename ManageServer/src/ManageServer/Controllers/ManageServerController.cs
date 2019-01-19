@@ -27,28 +27,32 @@ namespace ManageServer.Controllers
         {
             _context = context;
         }
-        
-        [HttpGet]
-        public List<Machine> LoadMachineData()
-        {
-            // Use LINQ to loaddata.
-            var machines = from m in _context.Machines
-                           select m;
 
-            return machines.ToList();
-        }
+        //[HttpGet]
+        //public List<Machine> LoadMachineData()
+        //{
+        //    // Use LINQ SQL syntax to control loaddata.
+        //    var _machines = from m in _context.Machines
+        //                    orderby m.IP, m.Name
+        //                    select m;
+
+        //    return _machines.ToList();            
+        //}
 
         [HttpPost]
         public void InsertMachineData(Machine machine)
         {
             try
             {
+                byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machine.Password);
+                machine.Password = Convert.ToBase64String(encodedBytes);
+
                 _context.Add(machine);
                 _context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception("Insert Error");
             }
         }
 
@@ -60,22 +64,64 @@ namespace ManageServer.Controllers
                 _context.Update(machine);
                 _context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception("Update Error");
             }
         }
 
         [HttpDelete]
         public void DeleteMachineData(Machine machine)
         {
-            var _machine = _context.Machines.SingleOrDefault(m => m.Key == machine.Key);
-            if(_machine == null)
+            try
             {
-                //written delete error message of movie data.
+                var _machine = _context.Machines.SingleOrDefault(m => m.Key == machine.Key);
+                if (_machine == null)
+                {
+                    //written delete error message of movie data.
+                }
+                _context.Remove(_machine);
+                _context.SaveChanges();
             }
-            _context.Remove(_machine);
-            _context.SaveChanges();
+            catch (Exception ex)
+            {
+                throw new Exception("Delete Error");
+            }
         }
+
+        [HttpGet]
+        public List<Machine> GetServerInf(string ipName, string serverName)
+        {
+            try
+            {
+
+                IQueryable<Machine> _machine = _context.Machines;
+
+                //byte[] decodedBytes = Convert.FromBase64String(_machine.p)
+                //machine.Password = Convert.ToBase64String(encodedBytes);
+
+                // 如果有輸入IP名稱作為搜尋條件時
+                if (!string.IsNullOrWhiteSpace(ipName))
+                {
+                    _machine = _machine.Where(m => m.IP.Contains(ipName));
+                }
+
+                // 如果有輸入伺服器名稱作為搜尋條件時
+                if (!string.IsNullOrWhiteSpace(serverName))
+                {
+                    _machine = _machine.Where(m => m.Name.Contains(serverName));
+                }
+
+                _machine = _machine.OrderBy(m => m.IP).ThenBy(m => m.Name);
+                return _machine.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("GetServerInf Error");
+            }
+
+        }
+
+
     }
 }

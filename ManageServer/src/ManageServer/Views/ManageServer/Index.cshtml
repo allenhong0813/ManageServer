@@ -8,31 +8,30 @@
     ViewData["Title"] = "Server Page";
 }
 
-<h2>伺服器管理</h2>
+<h2><b>伺服器管理</b></h2>
 <div class="container">
     <!-- Content here -->
-    <div class="row">
-        <div class="col-2">
-            <label class="">IP</label>
-        </div>
-        <div class="col-2">
-            <input type="text" class="form-control" placeholder="First name">
-        </div>
-        <div class="col-2">
-            <label class="">伺服器名稱</label>
-        </div>
-        <div class="col-2">
-            <input type="text" class="form-control" placeholder="First name">
-        </div>
-        <div class="col-2">
-            <button type="submit" class="btn btn-primary">查詢</button>
-        </div>
+
+    <div class="row" style="margin-bottom:5px; ">
+        <form class="form-inline">
+            <div class="form-group form-pairs">
+                <label class="text-right">IP</label>
+                <input id="inpIPName" type="text" class="form-control" placeholder="IP Name" style="margin-bottom: 5px;">
+            </div>
+            <div class="form-group  form-pairs">
+                <label class="text-right">伺服器名稱</label>
+                <input id="inpServerName" type="text" class="form-control" placeholder="Server Name" style="margin-bottom: 5px;">
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+
+        </form>
     </div>
+
 </div>
 
 <div id="jsGrid"></div>
 <script>
-    //Json Format Sample
+    //JSON Format Sample
     //var clients = [
     //    { "Name": "Otto Clay123", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
     //    { "Name": "Connor Johnston234", "Age": 45, "Country": 2, "Address": "Ap #370-4647 Dis Av.", "Married": true },
@@ -50,10 +49,11 @@
 
     //Json Serialize to data
     //var datas = @*@Json.Serialize(Model.Machines);*@
-    var datas = "";
 
+    var IPName = "";
+    var ServerName = "";
 
-
+    initGrid();
 
     $("#jsGrid").jsGrid({
         width: "100%",
@@ -66,25 +66,14 @@
         inserting: true,
         sorting: true,
         paging: false,
-        autoload: true,
+        autoload: false,
 
         deleteConfirm: "確定刪除這筆資料嗎？",
 
         controller: {
             loadData: function (filter) {
-                var d = $.Deferred();
-                $.ajax({
-                    type: "GET",
-                    url: '/ManageServer/LoadMachineData',
-                    dataType: "json",
-                    contentType: "application/json; charset-utf-8",
-                }).done(function (response) {
-                    console.log(response);
-                    d.resolve(response);
-                });
-                return d.promise();
+                return filter;
             },
-
 
             insertItem: function (item) {
                 return $.ajax({
@@ -112,8 +101,8 @@
         },
 
         fields: [
-            { name: "name", type: "text", title: "伺服器名稱", width: 80, },
             { name: "ip", type: "text", title: "IP", width: 100 },
+            { name: "name", type: "text", title: "伺服器名稱", width: 80, },
             { name: "loginID", type: "text", title: "登入者帳號", width: 80 },
             { name: "password", type: "text", title: "密碼", width: 80 },
             { name: "os", type: "text", title: "系統", width: 100 },
@@ -123,5 +112,38 @@
         ]
     });
 
+    function initGrid() {
+        var d = $.Deferred();
+        $.ajax({
+            type: "GET",
+            url: '/ManageServer/GetServerInf'
+        }).done(function (response) {
+            d.resolve(response);
+            console.log(response);
+            $("#jsGrid").jsGrid("loadData", response);
+        });
+        return d.promise();
+    }
 
+    //btn_query
+    function query() {
+        ipName = "";
+        serverName = "";
+        if ($("#inpIPName").val() != null && $("#inpIPName").val() != "")
+            ipName = $("#inpIPName").val();
+
+        if ($("#inpServerName").val() != null && $("#inpServerName").val() != "")
+            serverName = $("#inpServerName").val();
+
+        $.ajax({
+            type: "GET",
+            url: "/ManageServer/GetServerInf",
+            data: {
+                ipName: ipName,
+                serverName: serverName
+            }
+        }).done(function (data) {
+            $("#jsGrid").jsGrid("loadData", data);
+        });
+    }
 </script>
