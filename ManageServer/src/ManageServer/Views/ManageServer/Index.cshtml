@@ -79,7 +79,11 @@
                 return $.ajax({
                     type: "POST",
                     url: "/ManageServer/InsertMachineData",
-                    data: item
+                    data: item,
+                    error: function (item) {
+                        
+                        alert(item.toString());
+                    }
                 });
             },
 
@@ -88,6 +92,7 @@
                     type: "PUT",
                     url: "/ManageServer/UpdateMachineData",
                     data: item
+
                 });
             },
 
@@ -103,13 +108,13 @@
         fields: [
             {
                 name: "ip", type: "text", title: "IP", width: 100, validate: [
-            { validator: "required", message: "[IP]欄位為必填" },
-            {
-                validator: function (value, item) {
-                    return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
-                },
-                message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
-            }
+            //{ validator: "required", message: "[IP]欄位為必填" },
+            //{
+            //    validator: function (value, item) {
+            //        return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+            //    },
+            //    message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+            //}
                 ]
             },
             { name: "name", type: "text", title: "伺服器名稱", width: 80, validate: [{ validator: "required", message: "[伺服器名稱]欄位為必填" }] },

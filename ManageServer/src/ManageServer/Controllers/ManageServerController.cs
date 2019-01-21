@@ -49,10 +49,25 @@ namespace ManageServer.Controllers
 
                 _context.Add(machine);
                 _context.SaveChanges();
+
             }
             catch (Exception ex)
             {
-                throw new Exception("Insert Error");
+                
+                if (ex.GetType().FullName.Equals("Microsoft.EntityFrameworkCore.DbUpdateException"))
+                {
+                    Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
+                    if (pgex.Code.Equals("23502"))
+                    {
+                        throw new Exception(pgex.ColumnName + " is null.");
+                    }
+
+                }else
+                {
+                    throw new Exception("Insert Error", ex);
+                }
+                
+
             }
         }
 
