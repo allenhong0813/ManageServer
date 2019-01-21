@@ -95,15 +95,29 @@ namespace ManageServer.Controllers
             try
             {
 
-                IQueryable<Machine> _machine = _context.Machines;
+                var _machine = from m in _context.Machines
+                                         select m;
+                List<Machine> machines = _machine.ToList();
+                
+
+
+                var decodePasswod = _machine.Select(m => m.Password).ToList();
+              
+                foreach(Machine item in machines)
+                {
+                    byte[] decodedBytes = Convert.FromBase64String(item.Password);
+                    item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
+
+                }
+                //byte[] newBytes = Convert.FromBase64String(s);
 
                 //byte[] decodedBytes = Convert.FromBase64String(_machine.p)
-                //machine.Password = Convert.ToBase64String(encodedBytes);
+                
 
                 // 如果有輸入IP名稱作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(ipName))
                 {
-                    _machine = _machine.Where(m => m.IP.Contains(ipName));
+                   // machines = machines.Where();
                 }
 
                 // 如果有輸入伺服器名稱作為搜尋條件時
