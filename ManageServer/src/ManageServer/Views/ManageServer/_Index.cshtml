@@ -78,11 +78,26 @@
             insertItem: function (item) {
                 return $.ajax({
                     type: "POST",
-                    url: "/ManageServer/InsertMachineData",
+                    url: "/Home/InsertMachineData",
                     data: item,
-                    error: function (item) {
-                        
-                        alert(item.toString());
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.responseText == "IPIsNull") {
+                        alert("Insert Error:IP can't null.");
+                    }
+                    if (jqXHR.responseText == "NameIsNull") {
+                        alert("Insert Error:Name can't null.");
+                    }
+                    if (jqXHR.responseText == "LoginIDIsNull") {
+                        alert("Insert Error:LoginID can't null.");
+                    }
+                    if (jqXHR.responseText == "PasswordIsNull") {
+                        alert("Insert Error:Password can't null.");
+                    }
+                    if (jqXHR.responseText == "OSIsNull") {
+                        alert("Insert Error:OS can't null.");
+                    }
+                    if (jqXHR.responseText == "HostIPIsNull") {
+                        alert("Insert Error:HostIP can't null.");
                     }
                 });
             },
@@ -90,7 +105,7 @@
             updateItem: function (item) {
                 return $.ajax({
                     type: "PUT",
-                    url: "/ManageServer/UpdateMachineData",
+                    url: "/Home/UpdateMachineData",
                     data: item
 
                 });
@@ -99,7 +114,7 @@
             deleteItem: function (item) {
                 return $.ajax({
                     type: "DELETE",
-                    url: "/ManageServer/DeleteMachineData",
+                    url: "/Home/DeleteMachineData",
                     data: item
                 });
             },
@@ -108,19 +123,39 @@
         fields: [
             {
                 name: "ip", type: "text", title: "IP", width: 100, validate: [
-            //{ validator: "required", message: "[IP]欄位為必填" },
-            //{
-            //    validator: function (value, item) {
-            //        return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
-            //    },
-            //    message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
-            //}
+            { validator: "required", message: "[IP]欄位為必填" },
+            {
+                validator: function (value, item) {
+                    return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+                },
+                message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+            }
                 ]
             },
-            { name: "name", type: "text", title: "伺服器名稱", width: 80, validate: [{ validator: "required", message: "[伺服器名稱]欄位為必填" }] },
-            { name: "loginID", type: "text", title: "登入者帳號", width: 80, validate: [{ validator: "required", message: "[登入者帳號]欄位為必填" }] },
-            { name: "password", type: "text", title: "密碼", width: 80, validate: [{ validator: "required", message: "[密碼]欄位為必填" }] },
-            { name: "os", type: "text", title: "系統", width: 100, validate: [{ validator: "required", message: "[系統]欄位為必填" }] },
+            {
+                name: "name", type: "text", title: "伺服器名稱", width: 80,
+                validate: [
+                    { validator: "required", message: "[伺服器名稱]欄位為必填" }
+                ]
+            },
+            {
+                name: "loginID", type: "text", title: "登入者帳號", width: 80,
+                validate: [
+                    { validator: "required", message: "[登入者帳號]欄位為必填" }
+                ]
+            },
+            {
+                name: "password", type: "text", title: "密碼", width: 80,
+                validate: [
+                    { validator: "required", message: "[密碼]欄位為必填" }
+                ]
+            },
+            {
+                name: "os", type: "text", title: "系統", width: 100,
+                validate: [
+                    { validator: "required", message: "[系統]欄位為必填" }
+                ]
+            },
             { name: "hostIP", type: "text", title: "本機IP", width: 100 ,validate: [
             { validator: "required", message: "[本機IP]欄位為必填" },
             {
@@ -139,7 +174,7 @@
         var d = $.Deferred();
         $.ajax({
             type: "GET",
-            url: '/ManageServer/GetServerInf'
+            url: '/Home/GetServerInf'
         }).done(function (response) {
             d.resolve(response);
             console.log(response);
@@ -160,7 +195,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/ManageServer/GetServerInf",
+            url: "/Home/GetServerInf",
             data: {
                 ipName: ipName,
                 serverName: serverName
