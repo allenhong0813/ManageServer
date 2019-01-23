@@ -49,125 +49,143 @@
 
     //Json Serialize to data
     //var datas = @*@Json.Serialize(Model.Machines);*@
+    $(document).ready(function () {
 
-    var IPName = "";
-    var ServerName = "";
+        initGrid();
 
-    initGrid();
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "400px",
 
-    $("#jsGrid").jsGrid({
-        width: "100%",
-        height: "400px",
+            filtering: false,
+            editing: true,
+            selecting: true,
+            inserting: true,
+            sorting: true,
+            paging: false,
+            autoload: false,
+            invalidMessage: "欄位輸入有誤：",
+            deleteConfirm: "確定刪除這筆資料嗎？",
 
-
-        filtering: false,
-        editing: true,
-        selecting: true,
-        inserting: true,
-        sorting: true,
-        paging: false,
-        autoload: false,
-        invalidMessage: "欄位輸入有誤：",
-        deleteConfirm: "確定刪除這筆資料嗎？",
-
-        controller: {
-            loadData: function (filter) {
-                return filter;
-            },
-
-            insertItem: function (item) {
-                return $.ajax({
-                    type: "POST",
-                    url: "/Home/InsertMachineData",
-                    data: item,
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.responseText == "IPIsNull") {
-                        alert("Insert Error:IP can't null.");
-                    }
-                    if (jqXHR.responseText == "NameIsNull") {
-                        alert("Insert Error:Name can't null.");
-                    }
-                    if (jqXHR.responseText == "LoginIDIsNull") {
-                        alert("Insert Error:LoginID can't null.");
-                    }
-                    if (jqXHR.responseText == "PasswordIsNull") {
-                        alert("Insert Error:Password can't null.");
-                    }
-                    if (jqXHR.responseText == "OSIsNull") {
-                        alert("Insert Error:OS can't null.");
-                    }
-                    if (jqXHR.responseText == "HostIPIsNull") {
-                        alert("Insert Error:HostIP can't null.");
-                    }
-                });
-            },
-
-            updateItem: function (item) {
-                return $.ajax({
-                    type: "PUT",
-                    url: "/Home/UpdateMachineData",
-                    data: item
-
-                });
-            },
-
-            deleteItem: function (item) {
-                return $.ajax({
-                    type: "DELETE",
-                    url: "/Home/DeleteMachineData",
-                    data: item
-                });
-            },
-        },
-
-        fields: [
-            {
-                name: "ip", type: "text", title: "IP", width: 100, validate: [
-            { validator: "required", message: "[IP]欄位為必填" },
-            {
-                validator: function (value, item) {
-                    return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+            controller: {
+                loadData: function (filter) {
+                    return filter;
                 },
-                message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
-            }
-                ]
-            },
-            {
-                name: "name", type: "text", title: "伺服器名稱", width: 80,
-                validate: [
-                    { validator: "required", message: "[伺服器名稱]欄位為必填" }
-                ]
-            },
-            {
-                name: "loginID", type: "text", title: "登入者帳號", width: 80,
-                validate: [
-                    { validator: "required", message: "[登入者帳號]欄位為必填" }
-                ]
-            },
-            {
-                name: "password", type: "text", title: "密碼", width: 80,
-                validate: [
-                    { validator: "required", message: "[密碼]欄位為必填" }
-                ]
-            },
-            {
-                name: "os", type: "text", title: "系統", width: 100,
-                validate: [
-                    { validator: "required", message: "[系統]欄位為必填" }
-                ]
-            },
-            { name: "hostIP", type: "text", title: "本機IP", width: 100 ,validate: [
-            { validator: "required", message: "[本機IP]欄位為必填" },
-            {
-                validator: function (value, item) {
-                    return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+
+                insertItem: function (item) {
+
+                    return $.ajax({
+                        type: "POST",
+                        url: "/Home/InsertMachineData",
+                        data: item,
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.responseText == "IPIsNull") {
+                            alert("Insert Error:IP can't null.");
+                        }
+                        if (jqXHR.responseText == "NameIsNull") {
+                            alert("Insert Error:Name can't null.");
+                        }
+                        if (jqXHR.responseText == "LoginIDIsNull") {
+                            alert("Insert Error:LoginID can't null.");
+                        }
+                        if (jqXHR.responseText == "PasswordIsNull") {
+                            alert("Insert Error:Password can't null.");
+                        }
+                        if (jqXHR.responseText == "OSIsNull") {
+                            alert("Insert Error:OS can't null.");
+                        }
+                        if (jqXHR.responseText == "HostIPIsNull") {
+                            alert("Insert Error:HostIP can't null.");
+                        }
+                    });
                 },
-                message: "[本機IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
-            }
-            ]},
-    { name: "description", type: "text", title: "描述", width: 200 },
-    { type: "control" }
-    ]
+
+                updateItem: function (item) {
+                    return $.ajax({
+                        type: "PUT",
+                        url: "/Home/UpdateMachineData",
+                        data: item
+
+                    });
+                },
+
+                deleteItem: function (item) {
+                    return $.ajax({
+                        type: "DELETE",
+                        url: "/Home/DeleteMachineData",
+                        data: item
+                    });
+                },
+            },
+
+            insertTemplate: function () {
+
+            },
+
+            fields: [
+                {
+                    name: "ip", type: "text", title: "IP", width: 100,
+                    validate: [
+                    { validator: "required", message: "[IP]欄位為必填" },
+                    { validator: function (value, item) {
+                        return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+                        },
+                      message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+                    }
+                    ]
+                },
+                {
+                    name: "name", type: "text", title: "伺服器名稱", width: 80,
+                    validate: [
+                        { validator: "required", message: "[伺服器名稱]欄位為必填" }
+                    ]
+                },
+                {
+                    name: "loginID", type: "text", title: "登入者帳號", width: 80,
+                    validate: [
+                        { validator: "required", message: "[登入者帳號]欄位為必填" },
+                        { validator: function (value, item) {
+                            return /.*[^\s].{2,20}/g.test(value);
+                            },
+                          message: "[登入者帳號]欄位\n不含空白字元\n命名長度在3~20個字母之間"
+                        }
+                    ]
+                },
+                {
+                    name: "password", type: "text", title: "密碼", width: 80,
+                    validate: [
+                        { validator: "required", message: "[密碼]欄位為必填" },
+                        {
+                          validator: function (value, item) {
+                              return /^(?=.*\d)(?=.*[A-Z])[^\s]{8,30}/g.test(value);
+                          },
+                          message: "[密碼]欄位\n至少有一個數字\n至少有一個大寫英文字母\n密碼長度在8~30個字母之間"
+                        }
+                    ]
+                },
+                {
+                    name: "os", type: "text", title: "系統", width: 100,
+                    validate: [
+                        { validator: "required", message: "[系統]欄位為必填" }
+                    ]
+                },
+                {
+                    name: "hostIP", type: "text", title: "本機IP", width: 100, validate: [
+                    { validator: "required", message: "[本機IP]欄位為必填" },
+                    {
+                        validator: function (value, item) {
+                            return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+                        },
+                        message: "[本機IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+                    }
+                    ]
+                },
+        { name: "description", type: "text", title: "描述", width: 200 },
+        { type: "control" }
+            ]
+        });
+
+
     });
 
     function initGrid() {
@@ -183,10 +201,24 @@
         return d.promise();
     }
 
+    //function insertValidate() {
+    //    jsGrid.Field.call(this, config);
+
+    //}
+    //insertValidate.prototype = new jsGrid.Field(
+    //    {
+    //        myCustomProperty: "foo",
+    //        insertTemplate: function (value) {
+    //            return this._insertPicker = $("<input>").datepicker({ defaultDate: new Date() });
+    //        },
+    //    }
+    //    );
+    //jsGrid.field.LoginID = insertValidate;
+
     //btn_query
     function query() {
-        ipName = "";
-        serverName = "";
+        var ipName = "";
+        var serverName = "";
         if ($("#inpIPName").val() != null && $("#inpIPName").val() != "")
             ipName = $("#inpIPName").val();
 

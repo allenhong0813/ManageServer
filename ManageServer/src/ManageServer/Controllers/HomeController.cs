@@ -55,6 +55,7 @@ namespace ManageServer.Controllers
                 }
                 _context.Add(machine);
                 _context.SaveChanges();
+
                 return Ok();
 
             }
@@ -75,37 +76,47 @@ namespace ManageServer.Controllers
                     //    }
                     //}
                 }
-                
-                    
-
-                
                 return StatusCode(500, "Insert Error:" + ex);
             }
         }
 
         [HttpPut]
-        public void UpdateMachineData(Machine machine)
+        public IActionResult UpdateMachineData(Machine machine)
         {
             try
             {
+                if (machine.Password == null)
+                {
+                    return StatusCode(400, "PasswordIsNull");
+                }
+                else
+                {
+                    byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machine.Password);
+                    machine.Password = Convert.ToBase64String(encodedBytes);
+                }
                 _context.Update(machine);
                 _context.SaveChanges();
+                return Ok();
             }
             catch (Exception ex)
             {
 
-                if (ex.GetType().FullName.Equals("Microsoft.EntityFrameworkCore.DbUpdateException"))
+                if (ex.InnerException.GetType().Name.Equals("PostgresException"))
                 {
                     Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
                     if (pgex.Code.Equals("23502"))
                     {
-                        throw new Exception(pgex.ColumnName + " is null.");
+                        return StatusCode(400, pgex.ColumnName + "IsNull");
                     }
+                    //if (pgex.ColumnName.Equals("IP"))
+                    //{
+                    //    if (pgex.Code.Equals("23505"))
+                    //    {
+                    //        return StatusCode(400, "Duplicate"+ pgex.ColumnName);
+                    //    }
+                    //}
                 }
-                else
-                {
-                    throw new Exception("Update Error", ex);
-                }
+                return StatusCode(500, "Insert Error:" + ex);
             }
         }
 
