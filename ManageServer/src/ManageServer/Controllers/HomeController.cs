@@ -7,6 +7,7 @@ using ManageServer.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ManageServer;
+using System.Net.Sockets;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,17 +31,6 @@ namespace ManageServer.Controllers
             _context = context;
         }
 
-        //[HttpGet]
-        //public List<Machine> LoadMachineData()
-        //{
-        //    // Use LINQ SQL syntax to control loaddata.
-        //    var _machines = from m in _context.Machines
-        //                    orderby m.IP, m.Name
-        //                    select m;
-
-        //    return _machines.ToList();            
-        //}
-
         [HttpPost]
         public IActionResult InsertMachineData(Machine machine)
         {
@@ -61,22 +51,23 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.InnerException.GetType().Name.Equals("PostgresException"))
+                if (ex.GetType().Name.Equals("SocketException"))
+                {
+                    SocketException pgex = (SocketException)ex;
+                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
+                    {
+                        return StatusCode(500, "DBNoConnect");
+                    }
+                }
+                else if (ex.InnerException.GetType().Name.Equals("PostgresException"))
                 {
                     Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
-                    if (pgex.Code.Equals("23502"))
+                    if (pgex.SqlState.Equals("23502"))
                     {
                         return StatusCode(400, pgex.ColumnName + "IsNull");
                     }
-                    //if (pgex.ColumnName.Equals("IP"))
-                    //{
-                    //    if (pgex.Code.Equals("23505"))
-                    //    {
-                    //        return StatusCode(400, "Duplicate"+ pgex.ColumnName);
-                    //    }
-                    //}
                 }
-                return StatusCode(500, "Insert Error:" + ex);
+                    return StatusCode(500, "Insert Error.");
             }
         }
 
@@ -100,47 +91,52 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-
-                if (ex.InnerException.GetType().Name.Equals("PostgresException"))
+                if (ex.GetType().Name.Equals("SocketException"))
+                {
+                    SocketException pgex = (SocketException)ex;
+                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
+                    {
+                        return StatusCode(500, "DBNoConnect");
+                    }
+                }
+                else if (ex.InnerException.GetType().Name.Equals("PostgresException"))
                 {
                     Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
-                    if (pgex.Code.Equals("23502"))
+                    if (pgex.SqlState.Equals("23502"))
                     {
                         return StatusCode(400, pgex.ColumnName + "IsNull");
                     }
-                    //if (pgex.ColumnName.Equals("IP"))
-                    //{
-                    //    if (pgex.Code.Equals("23505"))
-                    //    {
-                    //        return StatusCode(400, "Duplicate"+ pgex.ColumnName);
-                    //    }
-                    //}
                 }
-                return StatusCode(500, "Insert Error:" + ex);
+                return StatusCode(500, "Update Error.");
             }
         }
 
         [HttpDelete]
-        public void DeleteMachineData(Machine machine)
+        public IActionResult DeleteMachineData(Machine machine)
         {
             try
             {
                 var _machine = _context.Machines.SingleOrDefault(m => m.Key == machine.Key);
-                if (_machine == null)
-                {
-                    //written delete error message of movie data.
-                }
                 _context.Remove(_machine);
                 _context.SaveChanges();
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw new Exception("Delete Error");
+                if (ex.GetType().Name.Equals("SocketException"))
+                {
+                    SocketException pgex = (SocketException)ex;
+                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
+                    {
+                        return StatusCode(500, "DBNoConnect");
+                    }
+                }
+                return StatusCode(500, "Delete Error.");
             }
         }
 
         [HttpGet]
-        public List<Machine> GetServerInf(string ipName, string serverName)
+        public IActionResult GetServerInf(string ipName, string serverName)
         {
             try
             {
@@ -168,11 +164,19 @@ namespace ManageServer.Controllers
                 }
 
                 _machine = _machine.OrderBy(m => m.IP).ThenBy(m => m.Name);
-                return _machine.ToList();
+                return Ok(_machine.ToList());
             }
             catch (Exception ex)
             {
-                throw new Exception("GetServerInf Error");
+                if (ex.GetType().Name.Equals("SocketException"))
+                {
+                    SocketException pgex = (SocketException)ex;
+                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
+                    {
+                        return StatusCode(500, "DBNoConnect");
+                    }
+                }
+                return StatusCode(500, "GetServerInf Error.");
             }
         }
     }

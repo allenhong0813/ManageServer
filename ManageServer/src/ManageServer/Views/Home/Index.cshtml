@@ -11,7 +11,8 @@
 <h2><b>伺服器管理</b></h2>
 <div class="container">
     <!-- Content here -->
-
+    <div id="status"><p id="state"></p></div>
+    <div id="log"></div>
     <div class="row" style="margin-bottom:5px; ">
         <form class="form-inline">
             <div class="form-group form-pairs">
@@ -31,28 +32,8 @@
 
 <div id="jsGrid"></div>
 <script>
-    //JSON Format Sample
-    //var clients = [
-    //    { "Name": "Otto Clay123", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
-    //    { "Name": "Connor Johnston234", "Age": 45, "Country": 2, "Address": "Ap #370-4647 Dis Av.", "Married": true },
-    //    { "Name": "Lacey Hess345", "Age": 29, "Country": 3, "Address": "Ap #365-8835 Integer St.", "Married": false },
-    //    { "Name": "Timothy Henson456", "Age": 56, "Country": 1, "Address": "911-5143 Luctus Ave", "Married": true },
-    //    { "Name": "Ramona Benton567", "Age": 32, "Country": 3, "Address": "Ap #614-689 Vehicula Street", "Married": false }
-    //];
-
-    //var countries = [
-    //    { Name: "", Id: 0 },
-    //    { Name: "United States", Id: 1 },
-    //    { Name: "Canada", Id: 2 },
-    //    { Name: "United Kingdom", Id: 3 }
-    //];
-
-    //Json Serialize to data
-    //var datas = @*@Json.Serialize(Model.Machines);*@
     $(document).ready(function () {
-
         initGrid();
-
 
         $("#jsGrid").jsGrid({
             width: "100%",
@@ -81,22 +62,32 @@
                         data: item,
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.responseText == "IPIsNull") {
-                            alert("Insert Error:IP can't null.");
+                            alert("Insert Error:[IP]不能為空。");
                         }
-                        if (jqXHR.responseText == "NameIsNull") {
-                            alert("Insert Error:Name can't null.");
+                        else if (jqXHR.responseText == "NameIsNull") {
+                            alert("Insert Error:[伺服器名稱]不能為空。");
                         }
-                        if (jqXHR.responseText == "LoginIDIsNull") {
-                            alert("Insert Error:LoginID can't null.");
+                        else if (jqXHR.responseText == "LoginIDIsNull") {
+                            alert("Insert Error:[登入者帳號]不能為空。");
                         }
-                        if (jqXHR.responseText == "PasswordIsNull") {
-                            alert("Insert Error:Password can't null.");
+                        else if (jqXHR.responseText == "PasswordIsNull") {
+                            alert("Insert Error:[密碼]不能為空。");
                         }
-                        if (jqXHR.responseText == "OSIsNull") {
-                            alert("Insert Error:OS can't null.");
+                        else if (jqXHR.responseText == "OSIsNull") {
+                            alert("Insert Error:[系統]不能為空。");
                         }
-                        if (jqXHR.responseText == "HostIPIsNull") {
-                            alert("Insert Error:HostIP can't null.");
+                        else if (jqXHR.responseText == "HostIPIsNull") {
+                            alert("Insert Error:[本機IP]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "DBNoConnect") {
+                            alert("Insert error：未連接上資料庫。")
+                        }
+                        else if (jqXHR.responseText == "Insert Error.") {
+                            alert("Insert error：新增資料發生錯誤")
+                        }
+                        else {
+                            alert("發生錯誤。");
+                            console.error(jqXHR.responseText);
                         }
                     });
                 },
@@ -107,6 +98,35 @@
                         url: "/Home/UpdateMachineData",
                         data: item
 
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.responseText == "IPIsNull") {
+                            alert("Update Error:[IP]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "NameIsNull") {
+                            alert("Update Error:[伺服器名稱]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "LoginIDIsNull") {
+                            alert("Update Error:[登入者帳號]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "PasswordIsNull") {
+                            alert("Update Error:[密碼]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "OSIsNull") {
+                            alert("Update Error:[系統]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "HostIPIsNull") {
+                            alert("Update Error:[本機IP]不能為空。");
+                        }
+                        else if (jqXHR.responseText == "DBNoConnect") {
+                            alert("Update error：未連接上資料庫。")
+                        }
+                        else if (jqXHR.responseText == "Update Error.") {
+                            alert("Update error：更新資料發生錯誤。")
+                        }
+                        else  {
+                            alert("發生錯誤。");
+                            console.error(jqXHR.responseText);
+                        }
                     });
                 },
 
@@ -115,6 +135,17 @@
                         type: "DELETE",
                         url: "/Home/DeleteMachineData",
                         data: item
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.responseText == "Delete Error.") {
+                            alert(alert("Delete error：刪除資料發生錯誤。"));
+                        }
+                        else if (jqXHR.responseText == "DBNoConnect") {
+                            alert("Delete error：未連接上資料庫。")
+                        }
+                        else {
+                            alert("發生錯誤。");
+                            console.error(jqXHR.responseText);
+                        }
                     });
                 },
             },
@@ -213,8 +244,18 @@
                 url: '/Home/GetServerInf'
             }).done(function (response) {
                 d.resolve(response);
-                console.log(response);
                 $("#jsGrid").jsGrid("loadData", response);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.responseText == "GetServerInf Error.") {
+                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+                }
+                else if (jqXHR.responseText == "DBNoConnect") {
+                    alert("Inital error：未連接上資料庫。")
+                }
+                else {
+                    alert("發生錯誤。");
+                    console.error(jqXHR.responseText);
+                }
             });
             return d.promise();
         }
@@ -240,6 +281,17 @@
             }
         }).done(function (data) {
             $("#jsGrid").jsGrid("loadData", data);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText == "GetServerInf Error.") {
+                alert(alert("Query error：取得資料發生錯誤。"));
+            }
+            else if (jqXHR.responseText == "DBNoConnect") {
+                alert("Query error：未連接上資料庫。")
+            }
+            else {
+                alert("發生錯誤。");
+                console.error(jqXHR.responseText);
+            }
         });
     }
 </script>
