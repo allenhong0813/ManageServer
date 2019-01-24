@@ -185,25 +185,23 @@
             ]
         });
 
-        //var passwordField = function (config) {
-        //    jsGrid.fields.call(this, config)
-        //}
+        var passwordField = function (config) {
+            jsGrid.fields.call(this, config)
+        }
         
-        //passwordField.prototype = new jsGrid.Field({
-        //    myCustomProperty: "type",
-        //    itemTemplate: function (value) {
-        //        return new Text(value).Text;
+        passwordField.prototype = new jsGrid.Field({
+            myCustomProperty: "type",
+            itemTemplate: function (value) {
+                return new Text(value).Text;
 
-        //    }
+            }
 
-        //});
+        });
         //jsGrid.fields.password = passwordField;
-
-        
         
     });
 
-    jsGrid.setDefaults("text", {
+    jsGrid.setDefaults("password", {
         width: 150,
         css: "text-field-cls"
     });
@@ -220,6 +218,20 @@
         });
         return d.promise();
     }
+
+    //function insertValidate() {
+    //    jsGrid.Field.call(this, config);
+
+    //}
+    //insertValidate.prototype = new jsGrid.Field(
+    //    {
+    //        myCustomProperty: "foo",
+    //        insertTemplate: function (value) {
+    //            return this._insertPicker = $("<input>").datepicker({ defaultDate: new Date() });
+    //        },
+    //    }
+    //    );
+    //jsGrid.field.LoginID = insertValidate;
 
     //btn_query
     function query() {
