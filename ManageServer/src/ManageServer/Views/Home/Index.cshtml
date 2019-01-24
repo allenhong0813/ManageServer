@@ -53,6 +53,7 @@
 
         initGrid();
 
+
         $("#jsGrid").jsGrid({
             width: "100%",
             height: "400px",
@@ -118,19 +119,19 @@
                 },
             },
 
-            insertTemplate: function () {
 
-            },
+
 
             fields: [
                 {
                     name: "ip", type: "text", title: "IP", width: 100,
                     validate: [
                     { validator: "required", message: "[IP]欄位為必填" },
-                    { validator: function (value, item) {
-                        return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
+                    {
+                        validator: function (value, item) {
+                            return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
                         },
-                      message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+                        message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
                     }
                     ]
                 },
@@ -138,36 +139,49 @@
                     name: "name", type: "text", title: "伺服器名稱", width: 80,
                     validate: [
                         { validator: "required", message: "[伺服器名稱]欄位為必填" }
-                    ]
+                    ],
+                    itemTemplate: function (value, item) {
+                        return value.replace(/</g, "&lt;");
+                    },
                 },
                 {
-                    name: "loginID", type: "text", title: "登入者帳號", width: 80,
+                    name: "loginID", type: "text", title: "登入者帳號", width: 80, myCustomProperty: "bar",
                     validate: [
                         { validator: "required", message: "[登入者帳號]欄位為必填" },
-                        { validator: function (value, item) {
-                            return /^[^\s]*$/g.test(value);
+                        {
+                            validator: function (value, item) {
+                                return /^[^\s]*$/g.test(value);
                             },
-                          message: "[登入者帳號]欄位：不含空白字元"
+                            message: "[登入者帳號]欄位：不含空白字元"
                         }
-                    ]
+                    ],
+                    itemTemplate: function (value, item) {
+                        return value.replace(/</g, "&lt;");
+                    },
                 },
                 {
-                    name: "password", type: "text", title: "密碼", width: 80,
+                    name: "password", type: "text", title: "密碼", width: 80, myCustomProperty: "bar",
                     validate: [
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
-                          validator: function (value, item) {
-                              return /^[^\s]*$/g.test(value);
-                          },
-                          message: "[密碼]欄位：不含空白字元"
+                            validator: function (value, item) {
+                                return /^[^\s]*$/g.test(value);
+                            },
+                            message: "[密碼]欄位：不含空白字元"
                         }
-                    ]
+                    ],
+                    itemTemplate: function (value, item) {
+                        return value.replace(/</g, "&lt;");
+                    },
                 },
                 {
                     name: "os", type: "text", title: "系統", width: 100,
                     validate: [
                         { validator: "required", message: "[系統]欄位為必填" }
-                    ]
+                    ],
+                    itemTemplate: function (value, item) {
+                        return value.replace(/</g, "&lt;");
+                    },
                 },
                 {
                     name: "hostIP", type: "text", title: "本機IP", width: 100, validate: [
@@ -180,46 +194,32 @@
                     }
                     ]
                 },
-        { name: "description", type: "text", title: "描述", width: 200 },
+        {
+            name: "description", type: "text", title: "描述", width: 200,
+            itemTemplate: function (value, item) {
+                return (value == null) ? value : value.replace(/</g, "&lt;");
+            },
+        },
         { type: "control" }
             ]
         });
 
-        //var passwordField = function (config) {
-        //    jsGrid.fields.call(this, config)
-        //}
-        
-        //passwordField.prototype = new jsGrid.Field({
-        //    myCustomProperty: "type",
-        //    itemTemplate: function (value) {
-        //        return new Text(value).Text;
 
-        //    }
 
-        //});
-        //jsGrid.fields.password = passwordField;
+        function initGrid() {
+            var d = $.Deferred();
+            $.ajax({
+                type: "GET",
+                url: '/Home/GetServerInf'
+            }).done(function (response) {
+                d.resolve(response);
+                console.log(response);
+                $("#jsGrid").jsGrid("loadData", response);
+            });
+            return d.promise();
+        }
 
-        
-        
     });
-
-    jsGrid.setDefaults("text", {
-        width: 150,
-        css: "text-field-cls"
-    });
-
-    function initGrid() {
-        var d = $.Deferred();
-        $.ajax({
-            type: "GET",
-            url: '/Home/GetServerInf'
-        }).done(function (response) {
-            d.resolve(response);
-            console.log(response);
-            $("#jsGrid").jsGrid("loadData", response);
-        });
-        return d.promise();
-    }
 
     //btn_query
     function query() {
