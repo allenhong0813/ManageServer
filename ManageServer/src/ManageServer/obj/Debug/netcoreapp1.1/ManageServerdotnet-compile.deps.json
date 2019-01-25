@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1/",
-    "signature": "dc004b38a16dfcda02e0a6d3f81463f01be7173e"
+    "signature": "02b0a739d991397b033c8a0c799df42ee41f0dda"
   },
   "compilationOptions": {
     "defines": [
@@ -35,10 +35,17 @@
           "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
           "Microsoft.AspNetCore.Hosting": "1.1.2",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
-          "System.ComponentModel.Annotations": "4.3.0"
+          "System.ComponentModel.Annotations": "4.3.0",
+          "jQuery.UI.Combined": "1.12.1"
         },
         "compile": {
           "ManageServer.dll": {}
+        }
+      },
+      "jQuery/1.12.4": {},
+      "jQuery.UI.Combined/1.12.1": {
+        "dependencies": {
+          "jQuery": "1.12.4"
         }
       },
       "Libuv/1.9.2": {
@@ -2788,10 +2795,17 @@
           "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
           "Microsoft.AspNetCore.Hosting": "1.1.2",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
-          "System.ComponentModel.Annotations": "4.3.0"
+          "System.ComponentModel.Annotations": "4.3.0",
+          "jQuery.UI.Combined": "1.12.1"
         },
         "runtime": {
           "ManageServer.dll": {}
+        }
+      },
+      "jQuery/1.12.4": {},
+      "jQuery.UI.Combined/1.12.1": {
+        "dependencies": {
+          "jQuery": "1.12.4"
         }
       },
       "Libuv/1.9.2": {
@@ -5429,6 +5443,16 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "jQuery/1.12.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CO1X/gvl2I8TPiXywIzFCWP67aKZ3fi6emVDPoHsEKBQaRiDCIryIbg2VtoVfqvfOxb/dTLdcJHs8cTsH7/uMA=="
+    },
+    "jQuery.UI.Combined/1.12.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lm5zM0cuosG5U795wjKW30S5W3h43OCjwIHzDc39xP96An/Ngm4DAHyFcdNZ3Bp6O5+4rxphoxbts4DMXm4P1Q=="
     },
     "Libuv/1.9.2": {
       "type": "package",

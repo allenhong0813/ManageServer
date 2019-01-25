@@ -1,0 +1,331 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Permission";
+}
+
+<h2><b>授權管理</b></h2>
+<div class="container">
+    <!-- Content here -->
+    <div id="status"><p id="state"></p></div>
+    <div id="log"></div>
+    <div class="row" style="margin-bottom:5px; ">
+        <form class="form-inline">
+            <div class="form-group form-pairs">
+                <label class="text-right">使用者ID</label>
+                <input id="inpUserID" type="text" class="form-control" placeholder="UserID" style="margin-bottom: 5px;">
+            </div>
+            <div class="form-group  form-pairs">
+                <label class="text-right">是否是管理者</label>
+                <input id="inpIsAdmin" type="text" class="form-control" placeholder="IsAdmin" style="margin-bottom: 5px;">
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+
+        </form>
+    </div>
+    <div id="dialog-form" title="Create new user">
+        <p class="validateTips">All form fields are required.</p>
+
+        <form>
+            <fieldset>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all">
+
+                <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>
+    
+    <div id="users-contain" class="ui-widget">
+        <h1>Existing Users:</h1>
+        <table id="users" class="ui-widget ui-widget-content">
+            <thead>
+                <tr class="ui-widget-header ">
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>john.doe@example.com</td>
+                    <td>johndoe1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <button id="create-user">Create new user</button>
+</div>
+
+<div id="jsGrid"></div>
+
+<script>
+    $(document).ready(function () {
+        var dialog, form,
+
+      
+      emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      name = $("#name"),
+      email = $("#email"),
+      password = $("#password"),
+      allFields = $([]).add(name).add(email).add(password),
+      tips = $(".validateTips");
+
+        function updateTips(t) {
+            tips
+              .text(t)
+              .addClass("ui-state-highlight");
+            setTimeout(function () {
+                tips.removeClass("ui-state-highlight", 1500);
+            }, 500);
+        }
+
+        function checkLength(o, n, min, max) {
+            if (o.val().length > max || o.val().length < min) {
+                o.addClass("ui-state-error");
+                updateTips("Length of " + n + " must be between " +
+                  min + " and " + max + ".");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function checkRegexp(o, regexp, n) {
+            if (!(regexp.test(o.val()))) {
+                o.addClass("ui-state-error");
+                updateTips(n);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function addUser() {
+            var valid = true;
+            allFields.removeClass("ui-state-error");
+
+            valid = valid && checkLength(name, "username", 3, 16);
+            valid = valid && checkLength(email, "email", 6, 80);
+            valid = valid && checkLength(password, "password", 5, 16);
+
+            valid = valid && checkRegexp(name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter.");
+            valid = valid && checkRegexp(email, emailRegex, "eg. ui@jquery.com");
+            valid = valid && checkRegexp(password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+
+            if (valid) {
+                $("#users tbody").append("<tr>" +
+                  "<td>" + name.val() + "</td>" +
+                  "<td>" + email.val() + "</td>" +
+                  "<td>" + password.val() + "</td>" +
+                "</tr>");
+                dialog.dialog("close");
+            }
+            return valid;
+        }
+
+        dialog = $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 350,
+            modal: true,
+            buttons: {
+                "Create an account": addUser,
+                Cancel: function () {
+                    dialog.dialog("close");
+                }
+            },
+            close: function () {
+                form[0].reset();
+                allFields.removeClass("ui-state-error");
+            }
+        });
+
+        form = dialog.find("form").on("submit", function (event) {
+            event.preventDefault();
+            addUser();
+        });
+
+        $("#btnPermission").button().on("click", function () {
+            dialog.dialog("open");
+        });
+
+        //--------------
+        initGrid();
+
+        $("#jsGrid").jsGrid({
+            width: "100%",
+            height: "400px",
+
+            filtering: false,
+            editing: false,
+            selecting: true,
+            inserting: false,
+            sorting: true,
+            paging: false,
+            autoload: false,
+            invalidMessage: "欄位輸入有誤：",
+
+
+            controller: {
+                loadData: function (filter) {
+                    return filter;
+                },
+
+                insertItem: function (item) {
+
+                    return $.ajax({
+                        type: "POST",
+                        url: "/Home/InsertMachineData",
+                        data: item,
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        //if (jqXHR.responseText == "IPIsNull") {
+                        //    alert("Insert Error:[IP]不能為空。");
+                        //}
+                        //else if (jqXHR.responseText == "Insert Error.") {
+                        //    alert("Insert error：新增資料發生錯誤")
+                        //}
+                        //else {
+                        //    alert("發生錯誤。");
+                        //    console.error(jqXHR.responseText);
+                        //}
+                    });
+                },
+
+                //updateItem:
+
+                //deleteItem:
+            },
+
+
+
+
+            fields: [
+                {
+                    name: "userID", type: "text", title: "使用者ID", width: 120,
+                    validate: [
+                    //{ validator: "required", message: "[IP]欄位為必填" },
+                    //{
+                    //    validator: function (value, item) {
+                    //        return "";
+                    //    },
+                    //    message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
+                    //}
+                    ]
+                },
+                {
+                    name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
+                    validate: [
+                        { validator: "required", message: "[伺服器名稱]欄位為必填" }
+                    ],
+                    itemTemplate: function (value, item) {
+                        return chkIsAdmin(value, item)
+                    }
+                },
+                {
+                    name: "loginID", type: "text", title: "授權機台", width: 120,
+                    validate: [
+                        { validator: "required", message: "[授權機台]欄位為必填" },
+                        {
+                            validator: function (value, item) {
+                                return /^[^\s]*$/g.test(value);
+                            },
+                            message: "[登入者帳號]欄位：不含空白字元"
+                        }
+                    ],
+                    itemTemplate: function (value, item) {
+                        return btnPermission(value, item);
+                    }
+                    //itemtemplate: function (value, item) {
+                    //    return value.replace(/</g, "&lt;");
+                    //},
+                }
+            ]
+        });
+
+        function initGrid() {
+            var d = $.Deferred();
+            $.ajax({
+                type: "GET",
+                url: '/Permission/GetAdminInf'
+            }).done(function (response) {
+                d.resolve(response);
+                $("#jsGrid").jsGrid("loadData", response);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.responseText == "GetAdminInf Error.") {
+                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+                }
+                else if (jqXHR.responseText == "DBNoConnect") {
+                    alert("Inital error：未連接上資料庫。")
+                }
+                else {
+                    alert("發生錯誤。");
+                    console.error(jqXHR.responseText);
+                }
+            });
+            return d.promise();
+        }
+
+    });
+
+
+    //checkbox function
+    function chkIsAdmin(value, item) {
+        var $chkIsAdmin = $("<input>").attr("type", "checkbox");
+        return $chkIsAdmin.attr("checked", value || item.Checked)
+                            .on("change", function () {
+                                item.Checked = $(this).is(":checked");
+                            });
+    }
+
+    //permission button
+    function btnPermission(value, item) {
+        var $btnPermission = $("<button class='btn btn-default' id='btnPermission'>");
+        return $btnPermission.text("授權設定")
+                            .on("click", function () {
+                                //alert(item.userID);
+                                //add dialog function eventlistener and watch javascript life cycle
+                            });
+    }
+
+    //button uery function
+    function query() {
+        //var ipName = "";
+        //var serverName = "";
+        //if ($("#inpIPName").val() != null && $("#inpIPName").val() != "")
+        //    ipName = $("#inpIPName").val();
+
+        //if ($("#inpServerName").val() != null && $("#inpServerName").val() != "")
+        //    serverName = $("#inpServerName").val();
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/Home/GetServerInf",
+        //    data: {
+        //        ipName: ipName,
+        //        serverName: serverName
+        //    }
+        //}).done(function (data) {
+        //    $("#jsGrid").jsGrid("loadData", data);
+        //}).fail(function (jqXHR, textStatus, errorThrown) {
+        //    if (jqXHR.responseText == "GetServerInf Error.") {
+        //        alert(alert("Query error：取得資料發生錯誤。"));
+        //    }
+        //    else if (jqXHR.responseText == "DBNoConnect") {
+        //        alert("Query error：未連接上資料庫。")
+        //    }
+        //    else {
+        //        alert("發生錯誤。");
+        //        console.error(jqXHR.responseText);
+        //    }
+        //});
+
+    }
+</script>

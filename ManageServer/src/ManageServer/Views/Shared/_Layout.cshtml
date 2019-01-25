@@ -10,9 +10,11 @@
         <link rel="stylesheet" href="~/css/site.css" />
         <link href="~/lib/jsgrid-1.5.3/css/jsgrid.css" rel="stylesheet" />
         <link href="~/lib/jsgrid-1.5.3/css/theme.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
         <link href="~/css/myCss.css" rel="stylesheet" />
 
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
         <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.core.js"></script>
         
@@ -36,9 +38,13 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         <link href="~/lib/jsgrid-1.5.3/css/jsgrid.css" rel="stylesheet" />
         <link href="~/lib/jsgrid-1.5.3/css/theme.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+        <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
         <link href="~/css/myCss.css" rel="stylesheet" />
 
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
         <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.js"></script>
@@ -62,16 +68,15 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>wo
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
             </div>
-            @*<div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="ManageServer" asp-action="Index">ManageServer</a></li>
-                    
+                    <li><a asp-area="" asp-controller="Permission" asp-action="Permission">權限管理</a></li>
                 </ul>
-            </div>*@
+            </div>
         </div>
     </div>
     <div class="container body-content">

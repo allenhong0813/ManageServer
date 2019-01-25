@@ -144,7 +144,7 @@ namespace ManageServer.Controllers
                                select m;
                 List<Machine> machines = _machine.ToList();
 
-                foreach (Machine item in machines)
+                foreach (var item in machines)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
                     item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);

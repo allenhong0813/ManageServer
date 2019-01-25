@@ -26,7 +26,8 @@
     "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
     "Microsoft.AspNetCore.Hosting": "1.1.2",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
-    "System.ComponentModel.Annotations": "4.3.0"
+    "System.ComponentModel.Annotations": "4.3.0",
+    "jQuery.UI.Combined": "1.12.1"
   },
 
   "tools": {

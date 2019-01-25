@@ -211,6 +211,7 @@ C:\workspace\ManageServer\ManageServer\src\ManageServer\PostgresSQLContext.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Program.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Startup.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\HomeController.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\PermissionController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\_HomeController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190116075304_Initial.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190116075304_Initial.Designer.cs

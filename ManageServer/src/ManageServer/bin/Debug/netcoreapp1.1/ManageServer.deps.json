@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "f024ee283682ca567ac78c03f7e6ea631d87fc90"
+    "signature": "6641353d084d24ee63fa6f61a75c914973af1f20"
   },
   "compilationOptions": {
     "defines": [
@@ -35,13 +35,20 @@
           "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
           "Microsoft.AspNetCore.Hosting": "1.1.2",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
-          "System.ComponentModel.Annotations": "4.3.0"
+          "System.ComponentModel.Annotations": "4.3.0",
+          "jQuery.UI.Combined": "1.12.1"
         },
         "runtime": {
           "ManageServer.dll": {}
         },
         "compile": {
           "ManageServer.dll": {}
+        }
+      },
+      "jQuery/1.12.4": {},
+      "jQuery.UI.Combined/1.12.1": {
+        "dependencies": {
+          "jQuery": "1.12.4"
         }
       },
       "Microsoft.AspNetCore.Antiforgery/1.1.2": {
@@ -3536,6 +3543,16 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "jQuery/1.12.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CO1X/gvl2I8TPiXywIzFCWP67aKZ3fi6emVDPoHsEKBQaRiDCIryIbg2VtoVfqvfOxb/dTLdcJHs8cTsH7/uMA=="
+    },
+    "jQuery.UI.Combined/1.12.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lm5zM0cuosG5U795wjKW30S5W3h43OCjwIHzDc39xP96An/Ngm4DAHyFcdNZ3Bp6O5+4rxphoxbts4DMXm4P1Q=="
     },
     "Microsoft.AspNetCore.Antiforgery/1.1.2": {
       "type": "package",
