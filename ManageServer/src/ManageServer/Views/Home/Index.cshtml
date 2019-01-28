@@ -241,12 +241,12 @@
             var d = $.Deferred();
             $.ajax({
                 type: "GET",
-                url: '/Home/GetServerInf'
+                url: '/Home/GetServerInfo'
             }).done(function (response) {
                 d.resolve(response);
                 $("#jsGrid").jsGrid("loadData", response);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.responseText == "GetServerInf Error.") {
+                if (jqXHR.responseText == "GetServerInfo Error.") {
                     alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
                 }
                 else if (jqXHR.responseText == "DBNoConnect") {
@@ -274,7 +274,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/Home/GetServerInf",
+            url: "/Home/GetServerInfo",
             data: {
                 ipName: ipName,
                 serverName: serverName
@@ -282,7 +282,7 @@
         }).done(function (data) {
             $("#jsGrid").jsGrid("loadData", data);
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetServerInf Error.") {
+            if (jqXHR.responseText == "GetServerInfo Error.") {
                 alert(alert("Query error：取得資料發生錯誤。"));
             }
             else if (jqXHR.responseText == "DBNoConnect") {

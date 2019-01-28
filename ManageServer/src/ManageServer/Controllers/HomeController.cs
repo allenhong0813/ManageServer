@@ -136,7 +136,7 @@ namespace ManageServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetServerInf(string ipName, string serverName)
+        public IActionResult GetServerInfo(string ipName, string serverName)
         {
             try
             {
