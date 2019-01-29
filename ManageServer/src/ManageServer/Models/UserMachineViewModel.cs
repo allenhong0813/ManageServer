@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ManageServer.Models
 {
-    public class User
+    public class UserMachineViewModel
     {
-        [Key]
+        
         public string UserID { get; set; }
         public bool IsAdmin { get; set; }
-        public List<UserMachine> UserMachines { get; set; }
+        public List<Machine> AssignMachines { get; set; }
+
     }
+    
+
 }
-
-

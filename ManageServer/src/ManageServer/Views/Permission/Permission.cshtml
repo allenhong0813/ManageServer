@@ -3,8 +3,10 @@
 *@
 @{
     ViewData["Title"] = "Permission";
+   
 }
 
+<h2><b>@ViewData["Message"]</b></h2>
 <h2><b>授權管理</b></h2>
 <div class="container">
     <!-- Content here -->
@@ -17,7 +19,7 @@
                 <input id="inpUserID" type="text" class="form-control" placeholder="UserID" style="margin-bottom: 5px;">
             </div>
             <div class="form-group  form-pairs" style="padding-bottom:5px">
-                    <label class="text-right">是否是管理者</label>
+                <label class="text-right">是否是管理者</label>
                 <select id="selIsAdmin" class="form-control">
                     <option value="">全選</option>
                     <option value="true">是</option>
@@ -36,27 +38,18 @@
 @*dialog page*@
 <div id="dialog-form" title="授權設定" style="display:none">
     @*<p class="validateTips">All form fields are required.</p>*@
-    <form>
-        <fieldset>
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" value="Jane Smith" class="text ">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="jane@smith.com" class="text ">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" value="xxxxxxx" class="text ">
 
-            <!-- Allow form submission with keyboard without duplicating the dialog button -->
-            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-        </fieldset>
-    </form>
+    <div id="pmjsGrid"></div>
+
 </div>
 
 <script>
+    var machineList = @Json.Serialize(ViewData["MachineList"]);
     $(document).ready(function () {
 
         var dialog;
         var form;
-        
+
         initGrid();
 
         $("#jsGrid").jsGrid({
@@ -103,9 +96,6 @@
                 //deleteItem:
             },
 
-
-
-
             fields: [
                 {
                     name: "userID", type: "text", title: "使用者ID", width: 120,
@@ -148,32 +138,30 @@
                 }
             ]
         });
-
-        function initGrid() {
-
-            var d = $.Deferred();
-            $.ajax({
-                type: "GET",
-                url: '/Permission/GetAdminInfo'
-            }).done(function (response) {
-                d.resolve(response);
-                $("#jsGrid").jsGrid("loadData", response);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.responseText == "GetAdminInfo Error.") {
-                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
-                }
-                else if (jqXHR.responseText == "DBNoConnect") {
-                    alert("Inital error：未連接上資料庫。")
-                }
-                else {
-                    alert("發生錯誤。");
-                    console.error(jqXHR.responseText);
-                }
-            });
-            return d.promise();
-        }
-
     });
+
+    function initGrid() {
+        var d = $.Deferred();
+        $.ajax({
+            type: "GET",
+            url: '/Permission/GetAdminInfo'
+        }).done(function (response) {
+            d.resolve(response);
+            $("#jsGrid").jsGrid("loadData", response);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText == "GetAdminInfo Error.") {
+                alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+            }
+            else if (jqXHR.responseText == "DBNoConnect") {
+                alert("Inital error：未連接上資料庫。")
+            }
+            else {
+                alert("發生錯誤。");
+                console.error(jqXHR.responseText);
+            }
+        });
+        return d.promise();
+    }
 
     //checkbox function
     function chkIsAdmin(value, item) {
@@ -189,12 +177,95 @@
         var $btnPermission = $("<button class='btn btn-default btnPermission'>");
         return $btnPermission.text("授權設定")
                             .on("click", function () {
-                                //alert(item.userID);
-                                //add dialog function eventlistener and watch javascript life cycle
                                 dialogForm();
                                 setUserPermission();
+                                PermissionGrid();
+                                showPermissionSet();
                             });
+    }
 
+    function showPermissionSet() {
+        $("#pmjsGrid").jsGrid({
+            width: "100%",
+            height: "400px",
+
+            filtering: false,
+            editing: false,
+            selecting: true,
+            inserting: false,
+            sorting: true,
+            paging: false,
+            autoload: false,
+            invalidMessage: "勾選有誤：",
+
+            controller: {
+                loadData: function (filter) {
+                    return filter;
+                },
+
+                insertItem: function (item) {
+
+                    return $.ajax({
+                        type: "POST",
+                        url: "/home/InsertMachineData",
+                        data: item,
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        //if (jqXHR.responseText == "IPIsNull") {
+                        //    alert("Insert Error:[IP]不能為空。");
+                        //}
+                        //else if (jqXHR.responseText == "Insert Error.") {
+                        //    alert("Insert error：新增資料發生錯誤")
+                        //}
+                        //else {
+                        //    alert("發生錯誤。");
+                        //    console.error(jqXHR.responseText);
+                        //}
+                    });
+                },
+
+                //updateItem:
+
+                //deleteItem:
+            },
+
+            fields: [
+                {
+                    name: "ip", type: "text", title: "使用者ID", width: 120,
+                },
+                {
+                    name: "name", type: "text", title: "伺服器名稱", width: 50,
+                },
+                {
+                    name: "os", type: "text", title: "作業系統", width: 120,
+                },
+                {
+                    name: "Description", type: "text", title: "描述", width: 120,
+                }
+            ]
+        })
+    }
+
+    function PermissionGrid() {
+        var d = $.Deferred();
+        $.ajax({
+            type: "GET",
+            url: '/Permission/GetUserPermission'
+        }).done(function (response) {
+            d.resolve(response);
+            $("#pmjsGrid").jsGrid("loadData", response);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText == "GetAdminInfo Error.") {
+                alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
+            }
+            else if (jqXHR.responseText == "DBNoConnect") {
+                alert("Inital error：未連接上資料庫。")
+            }
+            else {
+                alert("發生錯誤。");
+                console.error(jqXHR.responseText);
+            }
+        });
+        return d.promise();
     }
 
     function setUserPermission() {
@@ -227,12 +298,11 @@
         });
     }
 
-
     //button uery function
     function query() {
         var inpUserID = "";
         var selIsAdmin = "";
-        
+
         if ($("#inpUserID").val() != null && $("#inpUserID").val() != "")
             inpUserID = $("#inpUserID").val();
 
@@ -261,6 +331,5 @@
                 console.error(jqXHR.responseText);
             }
         });
-
     }
 </script>

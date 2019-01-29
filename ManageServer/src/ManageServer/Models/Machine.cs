@@ -18,7 +18,7 @@ namespace ManageServer.Models
         public string OS { get; set; }
         public string HostIP { get; set; }
         public string Description { get; set; }
-        List<UserMachine> UserMachines { get; set; }
+        public List<UserMachine> UserMachines { get; set; }
     }
 
     public class MachineList

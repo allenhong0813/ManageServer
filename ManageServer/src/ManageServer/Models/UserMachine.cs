@@ -16,7 +16,9 @@ namespace ManageServer.Models
         [ForeignKey("UserID")]
         public User User { get; set; }
         //FK MachineKey of Machine Table
-        [ForeignKey("Key")]
+        [ForeignKey("MachineKey")]
         public Machine Machine { get; set; }
+
+
     }
 }

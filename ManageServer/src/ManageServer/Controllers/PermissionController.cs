@@ -32,14 +32,14 @@ namespace ManageServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAdminInfo(string userIDName,string isAdminName)
+        public IActionResult GetAdminInfo(string userIDName, string isAdminName)
         {
 
             try
             {
                 var _user = _context.Users.Select(m => m);
                 //var Users = _context.Users;
-                
+
                 // 如果有輸入使用者ID作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(userIDName))
                 {
@@ -68,8 +68,19 @@ namespace ManageServer.Controllers
 
             try
             {
-                var _user = _context.Users.Select(m => m);
+                //var _user = _context.Users.Select(u => u);
+
+                var _user = _context.Users.Select(
+                    u => new UserMachineViewModel
+                    {
+                        UserID = u.UserID,
+                        IsAdmin = u.IsAdmin,
+                        AssignMachines = u.UserMachines.Select(t =>t.Machine).ToList()
+                    });
                 
+                
+
+
 
                 //List<User> machines = _user.ToList();
 
@@ -79,7 +90,7 @@ namespace ManageServer.Controllers
                 //    _user = _user.Where(m => m.UserID.Contains(userIDName));
                 //}
 
-                
+
 
                 return Ok(_user.ToList());
             }
@@ -87,8 +98,9 @@ namespace ManageServer.Controllers
             {
 
             }
-
             return Ok();
         }
     }
+
+
 }
