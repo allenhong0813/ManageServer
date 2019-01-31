@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 namespace ManageServer.Models
 {
     public class UserMachineViewModel
-    {
-        
+    {        
         public string UserID { get; set; }
         public bool IsAdmin { get; set; }
-        public List<Machine> AssignMachines { get; set; }
-
+        public List<string> AssignMachineKeys { get; set; }
     }
     
 

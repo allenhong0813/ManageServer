@@ -3,15 +3,12 @@
 *@
 @{
     ViewData["Title"] = "Permission";
-   
+
 }
 
-<h2><b>@ViewData["Message"]</b></h2>
 <h2><b>授權管理</b></h2>
 <div class="container">
     <!-- Content here -->
-    <div id="status"><p id="state"></p></div>
-    <div id="log"></div>
     <div class="row" style="margin-bottom:5px; ">
         <form class="form-inline">
             <div class="form-group form-pairs">
@@ -25,7 +22,6 @@
                     <option value="true">是</option>
                     <option value="false">否</option>
                 </select>
-                @*<input id="inpIsAdmin1" type="text" class="form-control" placeholder="IsAdmin" style="margin-bottom: 5px;">*@
             </div>
             <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
 
@@ -44,30 +40,32 @@
 </div>
 
 <script>
+    var dialog;
+    var form;
     var machineList = @Json.Serialize(ViewData["MachineList"]);
+    var newMachineList;
+    var userMachineData = null;
+
     $(document).ready(function () {
-
-        var dialog;
-        var form;
-
-        initGrid();
-
+        //initModelGrid();
+        //initGrid();
         $("#jsGrid").jsGrid({
             width: "100%",
             height: "400px",
 
             filtering: false,
-            editing: false,
+            editing: true,
             selecting: true,
             inserting: false,
             sorting: true,
             paging: false,
+
             autoload: false,
             invalidMessage: "欄位輸入有誤：",
 
-
             controller: {
                 loadData: function (filter) {
+
                     return filter;
                 },
 
@@ -97,71 +95,31 @@
             },
 
             fields: [
+
                 {
-                    name: "userID", type: "text", title: "使用者ID", width: 120,
-                    validate: [
-                    //{ validator: "required", message: "[IP]欄位為必填" },
-                    //{
-                    //    validator: function (value, item) {
-                    //        return "";
-                    //    },
-                    //    message: "[IP]欄位：請輸入正確IP格式。eg.(172.0.0.1)"
-                    //}
-                    ]
+                    name: "userID", type: "text", title: "使用者ID", width: 100,
                 },
                 {
                     name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
-                    validate: [
-                        { validator: "required", message: "[伺服器名稱]欄位為必填" }
-                    ],
                     itemTemplate: function (value, item) {
                         return chkIsAdmin(value, item)
                     }
                 },
                 {
-                    name: "loginID", type: "text", title: "授權機台", width: 120,
-                    validate: [
-                        { validator: "required", message: "[授權機台]欄位為必填" },
-                        {
-                            validator: function (value, item) {
-                                return /^[^\s]*$/g.test(value);
-                            },
-                            message: "[登入者帳號]欄位：不含空白字元"
-                        }
-                    ],
+                    name: "assignMachineKeys", type: "text", title: "授權機台", width: 100,
                     itemTemplate: function (value, item) {
+                        return btnDisabledPermission(value, item);
+                    },
+                    editTemplate: function(value , item) {
                         return btnPermission(value, item);
-                    }
-                    //itemtemplate: function (value, item) {
-                    //    return value.replace(/</g, "&lt;");
-                    //},
+                    },
+                },
+                {
+                    type: "control"
                 }
             ]
         });
     });
-
-    function initGrid() {
-        var d = $.Deferred();
-        $.ajax({
-            type: "GET",
-            url: '/Permission/GetAdminInfo'
-        }).done(function (response) {
-            d.resolve(response);
-            $("#jsGrid").jsGrid("loadData", response);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetAdminInfo Error.") {
-                alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
-            }
-            else if (jqXHR.responseText == "DBNoConnect") {
-                alert("Inital error：未連接上資料庫。")
-            }
-            else {
-                alert("發生錯誤。");
-                console.error(jqXHR.responseText);
-            }
-        });
-        return d.promise();
-    }
 
     //checkbox function
     function chkIsAdmin(value, item) {
@@ -172,30 +130,49 @@
                             });
     }
 
+    function btnDisabledPermission(value, item) {
+        var $btnPermission = $("<button class='btn btn-default btnPermission' disabled>");
+        return $btnPermission.text("授權設定");
+    }
+
     //permission button
     function btnPermission(value, item) {
         var $btnPermission = $("<button class='btn btn-default btnPermission'>");
         return $btnPermission.text("授權設定")
                             .on("click", function () {
                                 dialogForm();
-                                setUserPermission();
-                                PermissionGrid();
-                                showPermissionSet();
-                            });
+                                getUserID(value,item);
+                                //$("#pmjsGrid").jsGrid("loadData", machineList);
+                                setUserPermission(value,item);
+                                });
     }
 
-    function showPermissionSet() {
+    function getUserID(value,item){
+        var assignMachineKeys = value;
+        $.each(machineList, function (index, machine) {
+            if(assignMachineKeys.indexOf(machine.key) > -1){
+                machine.isApply = true;
+            }else{
+                machine.isApply = false;
+            }
+        });
+
+    }
+
+
+    function initModelGrid(){
         $("#pmjsGrid").jsGrid({
             width: "100%",
-            height: "400px",
+            height: "100%",
 
             filtering: false,
             editing: false,
             selecting: true,
             inserting: false,
-            sorting: true,
+            sorting: false,
             paging: false,
             autoload: false,
+            data: machineList,
             invalidMessage: "勾選有誤：",
 
             controller: {
@@ -204,11 +181,11 @@
                 },
 
                 insertItem: function (item) {
-
                     return $.ajax({
                         type: "POST",
                         url: "/home/InsertMachineData",
-                        data: item,
+                        datatype:JSON,
+                        data: machineList,
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         //if (jqXHR.responseText == "IPIsNull") {
                         //    alert("Insert Error:[IP]不能為空。");
@@ -230,72 +207,191 @@
 
             fields: [
                 {
-                    name: "ip", type: "text", title: "使用者ID", width: 120,
+                    headerTemplate: function() {
+                        return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll")
+                                .on("click", function () {
+                                    checkedAllItem(item, machineList);
+                                });
+                    },
+                    itemTemplate: function(value, item) {
+                        return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+                                .prop("checked", item.isApply)
+                                .on("change", function () {
+                                    $(this).is(":checked") ? item.isApply=true : item.isApply=false;
+
+                                });
+                        console.log("log");
+                    },
+                    align: "center",
+                    width: 50
                 },
                 {
-                    name: "name", type: "text", title: "伺服器名稱", width: 50,
+                    name: "ip", type: "text", title: "IP", width: 80,
                 },
                 {
-                    name: "os", type: "text", title: "作業系統", width: 120,
+                    name: "name", type: "text", title: "伺服器名稱", width: 80,
                 },
                 {
-                    name: "Description", type: "text", title: "描述", width: 120,
+                    name: "os", type: "text", title: "作業系統", width: 80,
+                },
+                {
+                    name: "description", type: "text", title: "描述", width: 80,
+                }
+            ]
+        })
+    }
+    //set front-end and process permissible of buotton
+    function setUserPermission(value,item) {
+        $("#pmjsGrid").jsGrid({
+            width: "100%",
+            height: "100%",
+
+            filtering: false,
+            editing: false,
+            selecting: true,
+            inserting: false,
+            sorting: false,
+            paging: false,
+            autoload: false,
+            data: machineList,
+            invalidMessage: "勾選有誤：",
+
+            controller: {
+                loadData: function (filter) {
+                    return filter;
+                },
+
+                insertItem: function (item) {
+                    return $.ajax({
+                        type: "POST",
+                        url: "/home/InsertMachineData",
+                        datatype:JSON,
+                        data: machineList,
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        //if (jqXHR.responseText == "IPIsNull") {
+                        //    alert("Insert Error:[IP]不能為空。");
+                        //}
+                        //else if (jqXHR.responseText == "Insert Error.") {
+                        //    alert("Insert error：新增資料發生錯誤")
+                        //}
+                        //else {
+                        //    alert("發生錯誤。");
+                        //    console.error(jqXHR.responseText);
+                        //}
+                    });
+                },
+
+                //updateItem:
+
+                //deleteItem:
+            },
+
+            fields: [
+                {
+                    headerTemplate: function() {
+                        return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll")
+                                .on("click", function () {
+                                    checkedAllItem(item, machineList);
+                                });
+                    },
+                    itemTemplate: function(value, item) {
+                        return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+                                .prop("checked", item.isApply)
+                                .on("change", function () {
+                                    $(this).is(":checked") ? item.isApply=true : item.isApply=false;
+
+                                });
+                        console.log("log");
+                    },
+                    align: "center",
+                    width: 50
+                },
+                {
+                    name: "ip", type: "text", title: "IP", width: 80,
+                },
+                {
+                    name: "name", type: "text", title: "伺服器名稱", width: 80,
+                },
+                {
+                    name: "os", type: "text", title: "作業系統", width: 80,
+                },
+                {
+                    name: "description", type: "text", title: "描述", width: 80,
                 }
             ]
         })
     }
 
-    function PermissionGrid() {
-        var d = $.Deferred();
-        $.ajax({
-            type: "GET",
-            url: '/Permission/GetUserPermission'
-        }).done(function (response) {
-            d.resolve(response);
-            $("#pmjsGrid").jsGrid("loadData", response);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetAdminInfo Error.") {
-                alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
-            }
-            else if (jqXHR.responseText == "DBNoConnect") {
-                alert("Inital error：未連接上資料庫。")
-            }
-            else {
-                alert("發生錯誤。");
-                console.error(jqXHR.responseText);
-            }
-        });
-        return d.promise();
-    }
 
-    function setUserPermission() {
-        $(".btnPermission").on("click", function () {
-            dialog.dialog("open");
-        });
-    }
+    var strCheckAllItemArray = [];
+    var jsonCheckAllItem;
+    var objCheckAllItem;
+    var checkedAllItem = function(item,machineList) {
+        if($("#inpCheckAll").prop("checked")) {
+            $("input[name='inpCheckItem']").prop("checked", true);
+            $.each(machineList, function (index, machine) {
+                var strCheckAllItem = {};
+
+                machine.isApply = true;
+                strCheckAllItem.MachineKey = machine.key;
+                strCheckAllItem.UserID = item.userID;
+                strCheckAllItemArray.push(strCheckAllItem);
+
+            });
+
+            jsonCheckAllItem = JSON.stringify(strCheckAllItemArray);
+            objCheckAllItem = JSON.parse(jsonCheckAllItem);
+            
+           
+        } else {
+            $("input[name='inpCheckItem']").prop("checked", false);
+
+            $.each(machineList, function (index, machine) {
+                var strCheckAllItem = {};
+
+                machine.isApply = false;
+                //record and delete usermachine table 的userID 與 machineKey
+                strCheckAllItem.MachineKey = machine.key;
+                strCheckAllItem.UserID = item.userID;
+                strCheckAllItemArray.push(strCheckAllItem);
+            });
+
+            jsonCheckAllItem = JSON.stringify(strCheckAllItemArray);
+            objCheckAllItem = JSON.parse(jsonCheckAllItem);
+            
+            
+        }
+        
+        strCheckAllItemArray.length=0;
+    };
 
     function dialogForm() {
         dialog = $("#dialog-form").dialog({
             autoOpen: true,
             height: 400,
-            width: 350,
+            width: 600,
             modal: true,
             buttons: {
-                "確定": "",
+                "確定": confirmUserMachine,
                 "取消": function () {
                     dialog.dialog("close");
                 }
             },
             close: function () {
-                form[0].reset();
-                //allFields.removeClass("ui-state-error");
+                //form[0].reset();
             }
         });
 
-        form = dialog.find("form").on("submit", function (event) {
-            event.preventDefault();
-            //addUser();
-        });
+    }
+
+    function confirmUserMachine() {
+        //newMachineList = $.extend(true, {}, machineList);
+        //machineList = newMachineList;
+
+        //userMachineData
+
+        dialog.dialog("close");
+        $("#pmjsGrid").jsGrid("loadData", machineList);
     }
 
     //button uery function
@@ -318,10 +414,13 @@
                 isAdminName: selIsAdmin
             }
         }).done(function (data) {
-            $("#jsGrid").jsGrid("loadData", data);
+            userMachineData = data;
+            $("#jsGrid").jsGrid("loadData", userMachineData);
+
+
         }).fail(function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.responseText == "GetServerInfo Error.") {
-                alert(alert("Query error：取得資料發生錯誤。"));
+                alert("Query error：取得資料發生錯誤。");
             }
             else if (jqXHR.responseText == "DBNoConnect") {
                 alert("Query error：未連接上資料庫。")

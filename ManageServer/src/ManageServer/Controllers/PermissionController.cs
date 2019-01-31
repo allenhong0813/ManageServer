@@ -26,8 +26,7 @@ namespace ManageServer.Controllers
 
         public IActionResult Permission()
         {
-            ViewData["Message"] = "Your application description page.";
-
+            ViewData["MachineList"] = _context.Machines.ToList();
             return View();
         }
 
@@ -37,9 +36,15 @@ namespace ManageServer.Controllers
 
             try
             {
-                var _user = _context.Users.Select(m => m);
-                //var Users = _context.Users;
-
+                //var _user = _context.Users.Select(m => m);
+                var _user = _context.Users.Select(
+                    u => new UserMachineViewModel
+                    {
+                        UserID = u.UserID,
+                        IsAdmin = u.IsAdmin,
+                        AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
+                    });
+                
                 // 如果有輸入使用者ID作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(userIDName))
                 {
@@ -51,7 +56,7 @@ namespace ManageServer.Controllers
                 {
                     _user = _user.Where(m => m.IsAdmin.Equals(Convert.ToBoolean(isAdminName)));
                 }
-
+                
                 return Ok(_user.ToList());
             }
             catch (Exception ex)
@@ -59,45 +64,6 @@ namespace ManageServer.Controllers
 
             }
 
-            return Ok();
-        }
-
-        [HttpGet]
-        public IActionResult GetUserPermission(string userPermissionName)
-        {
-
-            try
-            {
-                //var _user = _context.Users.Select(u => u);
-
-                var _user = _context.Users.Select(
-                    u => new UserMachineViewModel
-                    {
-                        UserID = u.UserID,
-                        IsAdmin = u.IsAdmin,
-                        AssignMachines = u.UserMachines.Select(t =>t.Machine).ToList()
-                    });
-                
-                
-
-
-
-                //List<User> machines = _user.ToList();
-
-                // 如果有輸入使用者ID作為搜尋條件時
-                //if (!string.IsNullOrWhiteSpace(userIDName))
-                //{
-                //    _user = _user.Where(m => m.UserID.Contains(userIDName));
-                //}
-
-
-
-                return Ok(_user.ToList());
-            }
-            catch (Exception ex)
-            {
-
-            }
             return Ok();
         }
     }
