@@ -97,11 +97,7 @@
             fields: [
 
                 {
-                    name: "userID", type: "text", title: "使用者ID", width: 100, 
-                    editTemplate: function(value) {
-                        var $editControl = jsGrid.fields.text.prototype.editTemplate.call(this, value);
-                        return $("<div>").attr("title", (value === undefined || value === null) ? "" : value).text((value === undefined || value === null) ? "" : value);
-                    }
+                    name: "userID", type: "text", title: "使用者ID", width: 100,
                 },
                 {
                     name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
@@ -148,11 +144,11 @@
                                 getUserID(value,item);
                                 //$("#pmjsGrid").jsGrid("loadData", machineList);
                                 setUserPermission(value,item);
-                            });
+                                });
     }
 
     function getUserID(value,item){
-        var assignMachineKeys = item.assignMachineKeys;
+        var assignMachineKeys = value;
         $.each(machineList, function (index, machine) {
             if(assignMachineKeys.indexOf(machine.key) > -1){
                 machine.isApply = true;
@@ -163,10 +159,9 @@
 
     }
 
-    //set front-end and process permissible of buotton
-    function setUserPermission(userValue,userItem) {
-        $("#pmjsGrid").jsGrid({
 
+    function initModelGrid(){
+        $("#pmjsGrid").jsGrid({
             width: "100%",
             height: "100%",
 
@@ -215,15 +210,97 @@
                     headerTemplate: function() {
                         return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll")
                                 .on("click", function () {
-                                    checkedAllItem(userItem, machineList);
+                                    checkedAllItem(item, machineList);
                                 });
                     },
-                    itemTemplate: function(machineValue, machineItem) {
+                    itemTemplate: function(value, item) {
                         return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
-                                .prop("checked", machineItem.isApply)
+                                .prop("checked", item.isApply)
                                 .on("change", function () {
-                                    $(this).is(":checked") ? checkedSingleItem(userItem, machineItem, machineList):uncheckedSingleItem(userItem, machineItem, machineList);
-                                    //item.isApply=true;
+                                    $(this).is(":checked") ? item.isApply=true : item.isApply=false;
+
+                                });
+                      
+                    },
+                    align: "center",
+                    width: 50
+                },
+                {
+                    name: "ip", type: "text", title: "IP", width: 80,
+                },
+                {
+                    name: "name", type: "text", title: "伺服器名稱", width: 80,
+                },
+                {
+                    name: "os", type: "text", title: "作業系統", width: 80,
+                },
+                {
+                    name: "description", type: "text", title: "描述", width: 80,
+                }
+            ]
+        })
+    }
+    //set front-end and process permissible of buotton
+    function setUserPermission(value,item) {
+        $("#pmjsGrid").jsGrid({
+            
+            width: "100%",
+            height: "100%",
+
+            filtering: false,
+            editing: false,
+            selecting: true,
+            inserting: false,
+            sorting: false,
+            paging: false,
+            autoload: false,
+            data: machineList,
+            invalidMessage: "勾選有誤：",
+
+            controller: {
+                loadData: function (filter) {
+                    return filter;
+                },
+
+                insertItem: function (item) {
+                    return $.ajax({
+                        type: "POST",
+                        url: "/home/InsertMachineData",
+                        datatype:JSON,
+                        data: machineList,
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        //if (jqXHR.responseText == "IPIsNull") {
+                        //    alert("Insert Error:[IP]不能為空。");
+                        //}
+                        //else if (jqXHR.responseText == "Insert Error.") {
+                        //    alert("Insert error：新增資料發生錯誤")
+                        //}
+                        //else {
+                        //    alert("發生錯誤。");
+                        //    console.error(jqXHR.responseText);
+                        //}
+                    });
+                },
+
+                //updateItem:
+
+                //deleteItem:
+            },
+
+            fields: [
+                {
+                    headerTemplate: function() {
+                        return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll")
+                                .on("click", function () {
+                                    checkedAllItem(item, machineList);
+                                });
+                    },
+                    itemTemplate: function(value, item) {
+                        return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+                                .prop("checked", item.isApply)
+                                .on("change", function () {
+                                    $(this).is(":checked") ? item.isApply=true : item.isApply=false;
+
                                 });
                     },
                     align: "center",
@@ -249,74 +326,46 @@
     var strCheckAllItemArray = [];
     var jsonCheckAllItem;
     var objCheckAllItem;
-    var onRowUserID;
-
-    var checkedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = true;
-        onRowUserID = userItem.userID;
-    };
-
-    var uncheckedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = false;
-        onRowUserID = userItem.userID;
-    };
-
-
-    var checkedAllItem = function(userItem,machineList) {
+    var checkedAllItem = function(item,machineList) {
         if($("#inpCheckAll").prop("checked")) {
             $("input[name='inpCheckItem']").prop("checked", true);
             $.each(machineList, function (index, machine) {
+                var strCheckAllItem = {};
+
                 machine.isApply = true;
+                strCheckAllItem.MachineKey = machine.key;
+                strCheckAllItem.UserID = item.userID;
+                strCheckAllItemArray.push(strCheckAllItem);
 
             });
-        }else{
+
+            jsonCheckAllItem = JSON.stringify(strCheckAllItemArray);
+            objCheckAllItem = JSON.parse(jsonCheckAllItem);
+            
+           
+        } else {
             $("input[name='inpCheckItem']").prop("checked", false);
+
             $.each(machineList, function (index, machine) {
+                var strCheckAllItem = {};
+
                 machine.isApply = false;
+                //record and delete usermachine table 的userID 與 machineKey
+                strCheckAllItem.MachineKey = machine.key;
+                strCheckAllItem.UserID = item.userID;
+                strCheckAllItemArray.push(strCheckAllItem);
             });
+
+            jsonCheckAllItem = JSON.stringify(strCheckAllItemArray);
+            objCheckAllItem = JSON.parse(jsonCheckAllItem);
+            
+            
         }
-        onRowUserID = userItem.userID;
-
-        //if($("#inpCheckAll").prop("checked")) {
-        //    $("input[name='inpCheckItem']").prop("checked", true);
-        //    $.each(machineList, function (index, machine) {
-        //        var strCheckAllItem = {};
-
-        //        machine.isApply = true;
-        //        strCheckAllItem.MachineKey = machine.key;
-        //        strCheckAllItem.UserID = item.userID;
-        //        strCheckAllItemArray.push(strCheckAllItem);
-
-        //    });
-        //} else if($("#inpCheckAll").prop("unchecked")){
-        //    $("input[name='inpCheckItem']").prop("checked", false);
-        //    $.each(machineList, function (index, machine) {
-        //        var strCheckAllItem = {};
-
-        //        machine.isApply = false;
-        //        strCheckAllItem.MachineKey = "";
-        //        strCheckAllItem.UserID = item.userID;
-        //        strCheckAllItemArray.push(strCheckAllItem);
-
-        //    });
-
-        //} else{
-        //    $.each(machineList, function (index, machine) {
-        //        var strCheckAllItem = {};
-        //        if(machine.isApply == false){
-        //            strCheckAllItem.MachineKey = "";
-        //            strCheckAllItem.UserID = item.userID;
-        //            strCheckAllItemArray.push(strCheckAllItem);
-        //        }
-        //    });
-
-        //}
-        //jsonCheckAllItem = JSON.stringify(strCheckAllItemArray);
-        //objCheckAllItem = JSON.parse(jsonCheckAllItem);
-        //strCheckAllItemArray.length=0;
+        
+        strCheckAllItemArray.length=0;
     };
 
-    function dialogForm(value,item) {
+    function dialogForm() {
         dialog = $("#dialog-form").dialog({
             autoOpen: true,
             height: 400,
@@ -336,47 +385,31 @@
     }
 
     function confirmUserMachine() {
-
-        var currentUserMachine = $.grep(userMachineData, function (element, index) {
-            return element.userID == onRowUserID;
-        });
-
-        currentUserMachine[0].assignMachineKeys = [];
-
-        $.each(machineList, function (indexInArray, machine) {
-            if(machine.isApply == true)
-                currentUserMachine[0].assignMachineKeys.push(machine.key);
-        });
-        $.each(userMachineData, function (indexInArray, userMachine) {
-            if(userMachine.userID == currentUserMachine[0].userID){
-                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
-            }   
-        });
-        //for(var i=0;i<userMachineData.length;i++){
-        //    for(var j=0;j<machineList.length;j++){
-        //        if(userMachineData[i].userID == onRowUserID ){
-
-        //            if(machineList[j].isApply==true){
-        //                userMachineData[i].assignMachineKeys[j]=machineList[j].key;
-        //            }
-        //        }
+        //newMachineList = $.extend(true, {}, machineList);
+        //machineList = newMachineList;
+        for(var i=0;i<userMachineData.length;i++){
+            for(var j=0;j<objCheckAllItem.length;j++){
+                if(userMachineData[i].userID==objCheckAllItem[j].UserID){
+                    userMachineData[i].assignMachineKeys=objCheckAllItem[j].MachineKey;
+            
+                }
+            }
+            
+        }
+        //if(userMachineData.userID == objCheckAllItem.userID){
+        //    for(var i=0;i<objCheckAllItem.length;i++){
+        //        userMachineData[i]="123";
+            
         //    }
+            
+        //    //userMachineData.assignMachineKeys = objCheckAllItem.MachineKey;
         //}
 
-        //for(var i=0;i<userMachineData.length;i++){
-        //    for(var j=0;j<objCheckAllItem.length;j++){
-        //        if(userMachineData[i].userID==objCheckAllItem[j].UserID && objCheckAllItem[j].MachineKey != ""){
-        //            userMachineData[i].assignMachineKeys[j]=objCheckAllItem[j].MachineKey;
+        
 
-        //        }else if(userMachineData[i].userID==objCheckAllItem[j].UserID && objCheckAllItem[j].MachineKey ==""){
-        //            userMachineData[i].assignMachineKeys[j]=objCheckAllItem[j].MachineKey;
-        //        }
-        //    }
-        //}
 
         dialog.dialog("close");
         $("#pmjsGrid").jsGrid("loadData", machineList);
-       // $("#jsGrid").jsGrid("loadData", userMachineData);
     }
 
     //button uery function

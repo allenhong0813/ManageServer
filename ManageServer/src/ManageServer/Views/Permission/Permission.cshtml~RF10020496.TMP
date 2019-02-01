@@ -97,11 +97,7 @@
             fields: [
 
                 {
-                    name: "userID", type: "text", title: "使用者ID", width: 100, 
-                    editTemplate: function(value) {
-                        var $editControl = jsGrid.fields.text.prototype.editTemplate.call(this, value);
-                        return $("<div>").attr("title", (value === undefined || value === null) ? "" : value).text((value === undefined || value === null) ? "" : value);
-                    }
+                    name: "userID", type: "text", title: "使用者ID", width: 100,
                 },
                 {
                     name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
@@ -152,7 +148,7 @@
     }
 
     function getUserID(value,item){
-        var assignMachineKeys = item.assignMachineKeys;
+        var assignMachineKeys = value;
         $.each(machineList, function (index, machine) {
             if(assignMachineKeys.indexOf(machine.key) > -1){
                 machine.isApply = true;
@@ -164,7 +160,7 @@
     }
 
     //set front-end and process permissible of buotton
-    function setUserPermission(userValue,userItem) {
+    function setUserPermission(value,item) {
         $("#pmjsGrid").jsGrid({
 
             width: "100%",
@@ -215,14 +211,15 @@
                     headerTemplate: function() {
                         return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll")
                                 .on("click", function () {
-                                    checkedAllItem(userItem, machineList);
+                                    checkedAllItem(item, machineList);
                                 });
                     },
-                    itemTemplate: function(machineValue, machineItem) {
+                    itemTemplate: function(value, item) {
                         return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
-                                .prop("checked", machineItem.isApply)
+                                .prop("checked", item.isApply)
                                 .on("change", function () {
-                                    $(this).is(":checked") ? checkedSingleItem(userItem, machineItem, machineList):uncheckedSingleItem(userItem, machineItem, machineList);
+                                    checkedAllItem(item, machineList);
+                                    //$(this).is(":checked") ? checkedSingleItem(item, machineList):uncheckedSingleItem(item, machineList);
                                     //item.isApply=true;
                                 });
                     },
@@ -250,19 +247,7 @@
     var jsonCheckAllItem;
     var objCheckAllItem;
     var onRowUserID;
-
-    var checkedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = true;
-        onRowUserID = userItem.userID;
-    };
-
-    var uncheckedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = false;
-        onRowUserID = userItem.userID;
-    };
-
-
-    var checkedAllItem = function(userItem,machineList) {
+    var checkedAllItem = function(item,machineList) {
         if($("#inpCheckAll").prop("checked")) {
             $("input[name='inpCheckItem']").prop("checked", true);
             $.each(machineList, function (index, machine) {
@@ -270,13 +255,14 @@
 
             });
         }else{
+
             $("input[name='inpCheckItem']").prop("checked", false);
             $.each(machineList, function (index, machine) {
                 machine.isApply = false;
             });
         }
-        onRowUserID = userItem.userID;
-
+        onRowUserID = item.userID;
+        console.log("123");
         //if($("#inpCheckAll").prop("checked")) {
         //    $("input[name='inpCheckItem']").prop("checked", true);
         //    $.each(machineList, function (index, machine) {
@@ -336,32 +322,16 @@
     }
 
     function confirmUserMachine() {
+        for(var i=0;i<userMachineData.length;i++){
+            for(var j=0;j<machineList.length;j++){
+                if(userMachineData[i].userID == item.userID ){
+                    if(machineList.isApply==true){
+                        userMachineData[i].assignMachineKeys[j]=machineList[j].MachineKey;
+                    }
 
-        var currentUserMachine = $.grep(userMachineData, function (element, index) {
-            return element.userID == onRowUserID;
-        });
-
-        currentUserMachine[0].assignMachineKeys = [];
-
-        $.each(machineList, function (indexInArray, machine) {
-            if(machine.isApply == true)
-                currentUserMachine[0].assignMachineKeys.push(machine.key);
-        });
-        $.each(userMachineData, function (indexInArray, userMachine) {
-            if(userMachine.userID == currentUserMachine[0].userID){
-                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
-            }   
-        });
-        //for(var i=0;i<userMachineData.length;i++){
-        //    for(var j=0;j<machineList.length;j++){
-        //        if(userMachineData[i].userID == onRowUserID ){
-
-        //            if(machineList[j].isApply==true){
-        //                userMachineData[i].assignMachineKeys[j]=machineList[j].key;
-        //            }
-        //        }
-        //    }
-        //}
+                }
+            }
+        }
 
         //for(var i=0;i<userMachineData.length;i++){
         //    for(var j=0;j<objCheckAllItem.length;j++){
@@ -375,8 +345,7 @@
         //}
 
         dialog.dialog("close");
-        $("#pmjsGrid").jsGrid("loadData", machineList);
-       // $("#jsGrid").jsGrid("loadData", userMachineData);
+        $("#jsGrid").jsGrid("loadData", userMachineData);
     }
 
     //button uery function

@@ -97,11 +97,7 @@
             fields: [
 
                 {
-                    name: "userID", type: "text", title: "使用者ID", width: 100, 
-                    editTemplate: function(value) {
-                        var $editControl = jsGrid.fields.text.prototype.editTemplate.call(this, value);
-                        return $("<div>").attr("title", (value === undefined || value === null) ? "" : value).text((value === undefined || value === null) ? "" : value);
-                    }
+                    name: "userID", type: "text", title: "使用者ID", width: 100, readOnly: false  
                 },
                 {
                     name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
