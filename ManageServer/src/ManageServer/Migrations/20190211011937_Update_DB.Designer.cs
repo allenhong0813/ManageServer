@@ -8,9 +8,10 @@ using ManageServer;
 namespace ManageServer.Migrations
 {
     [DbContext(typeof(PostgresSQLContext))]
-    partial class PostgresSQLContextModelSnapshot : ModelSnapshot
+    [Migration("20190211011937_Update_DB")]
+    partial class Update_DB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
