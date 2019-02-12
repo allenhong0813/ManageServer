@@ -65,22 +65,60 @@
 
             controller: {
                 loadData: function (filter) {
-
                     return filter;
                 },
 
-                insertItem: function (item) {
+                //insertItem: function (item) {
+                //    return alert("insertitem");
+                //    //return $.ajax({
+                //    //    type: "POST",
+                //    //    url: "/Home/InsertMachineData",
+                //    //    data: item,
+                //    //}).fail(function (jqXHR, textStatus, errorThrown) {
+                //        //if (jqXHR.responseText == "IPIsNull") {
+                //        //    alert("Insert Error:[IP]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "NameIsNull") {
+                //        //    alert("Insert Error:[伺服器名稱]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "LoginIDIsNull") {
+                //        //    alert("Insert Error:[登入者帳號]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "PasswordIsNull") {
+                //        //    alert("Insert Error:[密碼]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "OSIsNull") {
+                //        //    alert("Insert Error:[系統]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "HostIPIsNull") {
+                //        //    alert("Insert Error:[本機IP]不能為空。");
+                //        //}
+                //        //else if (jqXHR.responseText == "DBNoConnect") {
+                //        //    alert("Insert error：未連接上資料庫。")
+                //        //}
+                //        //else if (jqXHR.responseText == "Insert Error.") {
+                //        //    alert("Insert error：新增資料發生錯誤")
+                //        //}
+                //        //else {
+                //        //    alert("發生錯誤。");
+                //        //    console.error(jqXHR.responseText);
+                //        //}
+                //    //});
+                //},
 
+                updateItem: function (item) {
                     return $.ajax({
-                        type: "POST",
-                        url: "/Home/InsertMachineData",
-                        data: item,
+                        type: "PUT",
+                        url: "/Permission/UpdateUserMachineData",
+                        data: {
+                            isAdmin:item.isAdmin,
+                            userID:item.userID,
+                            machineKeys:item.assignMachineKeys
+                        }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        
+
                     });
                 },
-
-                //updateItem:
 
                 //deleteItem:
             },
@@ -88,20 +126,23 @@
             fields: [
 
                 {
-                    name: "userID", type: "text", title: "使用者ID", width: 100, 
+                    name: "userID", type: "text", title: "使用者ID", width: 100,
                     editTemplate: function(value) {
                         var $editControl = jsGrid.fields.text.prototype.editTemplate.call(this, value);
                         return $("<div>").attr("title", (value === undefined || value === null) ? "" : value).text((value === undefined || value === null) ? "" : value);
                     }
                 },
                 {
-                    name: "isAdmin", type: "checkbox", title: "是否是管理者", width: 50,
+                    name: "isAdmin", type: "customCheckbox", title: "是否是管理者", width: 50,
                     itemTemplate: function (value, item) {
-                        return chkIsAdmin(value, item)
-                    }
+                        return chkDisableAdmin(value, item);
+                    },
+                    editTemplate: function(value , item) {
+                        return chkIsAdmin(value, item);
+                    },
                 },
                 {
-                    name: "assignMachineKeys", type: "text", title: "授權機台", width: 100,
+                    name: "assignMachineKeys", type: "popButtom", title: "授權機台", width: 100,
                     itemTemplate: function (value, item) {
                         return btnDisabledPermission(value, item);
                     },
@@ -117,20 +158,38 @@
     });
 
     //checkbox function
-    function chkIsAdmin(value, item) {
-        var $chkIsAdmin = $("<input>").attr("type", "checkbox");
-        return $chkIsAdmin.attr("checked", value || item.Checked)
+    function chkDisableAdmin(isAdminValue, isAdminItem) {
+        var $chkIsAdmin = $("<input disabled>").attr("type", "checkbox");
+        return $chkIsAdmin.prop("checked", isAdminValue);
+    }
+
+    function chkIsAdmin(isAdminValue, isAdminItem) {
+        var $chkIsAdmin = $("<input >").attr("type", "checkbox");
+        return $chkIsAdmin.prop("checked", isAdminValue)
                             .on("change", function () {
-                                item.Checked = $(this).is(":checked");
+                                var isChecked = $(this).is(":checked");
+                                chkAdminItem(isChecked,isAdminValue,isAdminItem);
                             });
     }
 
+    function chkAdminItem(isChecked,isAdminValue,isAdminItem){
+        if(isChecked==true){
+            alert("check");
+            $(".btnPermission").prop('disabled', 'disabled');
+            isAdminItem.isAdmin=true;
+        }else {
+            alert("uncheck");
+            $(".btnPermission").prop('disabled', '');
+            isAdminItem.isAdmin=true;
+        }
+    }
+
+    //permission button
     function btnDisabledPermission(value, item) {
         var $btnPermission = $("<button class='btn btn-default btnPermission' disabled>");
         return $btnPermission.text("授權設定");
     }
 
-    //permission button
     function btnPermission(value, item) {
         var $btnPermission = $("<button class='btn btn-default btnPermission'>");
         return $btnPermission.text("授權設定")
@@ -182,7 +241,7 @@
                         datatype:JSON,
                         data: machineList,
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                       
+
                     });
                 },
 
@@ -290,19 +349,19 @@
             if(machine.isApply == true)
                 currentUserMachine[0].assignMachineKeys.push(machine.key);
         });
+
         $.each(userMachineData, function (indexInArray, userMachine) {
             if(userMachine.userID == currentUserMachine[0].userID){
                 userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
-            }   
+            }
         });
-        
 
         dialog.dialog("close");
         $("#pmjsGrid").jsGrid("loadData", machineList);
-       
+
     }
 
-    //button uery function
+    //button query function
     function query() {
         var inpUserID = "";
         var selIsAdmin = "";

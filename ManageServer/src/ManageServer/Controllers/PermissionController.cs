@@ -34,9 +34,10 @@ namespace ManageServer.Controllers
         public IActionResult GetAdminInfo(string userIDName, string isAdminName)
         {
 
+
+
             try
             {
-                //var _user = _context.Users.Select(m => m);
                 var _user = _context.Users.Select(
                     u => new UserMachineViewModel
                     {
@@ -44,7 +45,7 @@ namespace ManageServer.Controllers
                         IsAdmin = u.IsAdmin,
                         AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
                     });
-                
+
                 // 如果有輸入使用者ID作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(userIDName))
                 {
@@ -56,7 +57,7 @@ namespace ManageServer.Controllers
                 {
                     _user = _user.Where(m => m.IsAdmin.Equals(Convert.ToBoolean(isAdminName)));
                 }
-                
+
                 return Ok(_user.ToList());
             }
             catch (Exception ex)
@@ -66,7 +67,63 @@ namespace ManageServer.Controllers
 
             return Ok();
         }
+
+        [HttpPut]
+        public IActionResult UpdateUserMachineData(bool isAdmin, string userID, string[] machineKeys)
+        {
+            try
+            {
+                UserMachine userMachine = new UserMachine();
+                User users = new Models.User();
+
+                if (isAdmin == true)
+                {
+                    var _user = _context.Users.SingleOrDefault(m => m.UserID == userID);
+                    if (_user != null)//update
+                    {
+                        _user.IsAdmin = true;
+                    }
+                    else//insert
+                    {
+                        users.UserID = userID;
+                        users.IsAdmin = isAdmin;
+                    }
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    var _user = _context.Users.SingleOrDefault(m => m.UserID == userID);
+                    if (_user != null)//update
+                    {
+                        _user.IsAdmin = false;
+                    }
+
+                    var _userMachine = _context.UserMachines.Where(m => m.UserID.Contains(userID)).ToList();
+                    if (_userMachine != null)
+                    {
+                        _context.UserMachines.RemoveRange(_userMachine);
+                        
+                    }
+                    foreach (string machineKey in machineKeys)
+                    {
+                        userMachine.UserID = userID;
+                        userMachine.MachineKey = machineKey;
+                        _context.UserMachines.Add(userMachine);
+                        
+                    }
+                    _context.SaveChanges();
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Delete Error.");
+            }
+        }
+
+
     }
-
-
 }
+
+
+
