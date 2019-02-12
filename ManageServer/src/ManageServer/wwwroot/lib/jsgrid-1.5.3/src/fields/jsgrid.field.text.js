@@ -9,7 +9,7 @@
     TextField.prototype = new Field({
 
         autosearch: true,
-		readOnly: false,
+        readOnly: false,
 
         filterTemplate: function() {
             if(!this.filtering)
