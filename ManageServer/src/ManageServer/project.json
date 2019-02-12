@@ -28,7 +28,9 @@
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
     "System.ComponentModel.Annotations": "4.3.0",
     "jQuery.UI.Combined": "1.12.1",
-    "LinqKit.Core": "1.1.15"
+    "LinqKit.Core": "1.1.15",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.2",
+    "Microsoft.IdentityModel.Protocols": "2.1.2"
   },
 
   "tools": {
