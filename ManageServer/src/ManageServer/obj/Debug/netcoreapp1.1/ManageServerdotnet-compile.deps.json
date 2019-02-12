@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1/",
-    "signature": "02b0a739d991397b033c8a0c799df42ee41f0dda"
+    "signature": "2ec4fd9a32846dbd279ae3230a385c35d05dfae9"
   },
   "compilationOptions": {
     "defines": [
@@ -36,7 +36,8 @@
           "Microsoft.AspNetCore.Hosting": "1.1.2",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
           "System.ComponentModel.Annotations": "4.3.0",
-          "jQuery.UI.Combined": "1.12.1"
+          "jQuery.UI.Combined": "1.12.1",
+          "LinqKit.Core": "1.1.15"
         },
         "compile": {
           "ManageServer.dll": {}
@@ -51,6 +52,21 @@
       "Libuv/1.9.2": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.1"
+        }
+      },
+      "LinqKit.Core/1.1.15": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.Linq.Expressions": "4.3.0",
+          "System.Linq.Queryable": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/LinqKit.Core.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/1.1.2": {
@@ -2796,7 +2812,8 @@
           "Microsoft.AspNetCore.Hosting": "1.1.2",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.2",
           "System.ComponentModel.Annotations": "4.3.0",
-          "jQuery.UI.Combined": "1.12.1"
+          "jQuery.UI.Combined": "1.12.1",
+          "LinqKit.Core": "1.1.15"
         },
         "runtime": {
           "ManageServer.dll": {}
@@ -2811,6 +2828,21 @@
       "Libuv/1.9.2": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.1"
+        }
+      },
+      "LinqKit.Core/1.1.15": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.Linq.Expressions": "4.3.0",
+          "System.Linq.Queryable": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/LinqKit.Core.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/1.1.2": {
@@ -5458,6 +5490,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-2j/vKV72d2hFMc6uXoeNIb/gTHb7OWUXRxbzlZGFxi3KTdaeQYS6V7YLhzIXxMqXY6BvrBCgsfkuwaL3E4tDWg=="
+    },
+    "LinqKit.Core/1.1.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nyJfvzxHEnFmiI5NhM0CSdLKg4NDcrCuJH6cUt6nBHUlz8hoHD/3G2Zg0bGv7iTSwVxLwlXHMdtrF3D319NuvQ=="
     },
     "Microsoft.AspNetCore.Antiforgery/1.1.2": {
       "type": "package",
