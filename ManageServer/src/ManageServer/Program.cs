@@ -52,8 +52,8 @@ namespace ManageServer
 
         public static bool SelfLdapAuth(string username, string password)
         {
-            //var Host = "172.21.50.254";
-            //var BaseDC = "cn=users,dc=pbg";
+            var Host = "172.21.50.254";
+            var BaseDC = "cn=users,dc=pbg";
             //var Host = "dap.forumsys.com";
             //var BaseDC = "cn=read-only-admin,dc=example,dc=com";
             try

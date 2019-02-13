@@ -1,0 +1,56 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Login";
+}
+<h2><b></b></h2>
+<div class="container">
+    <!-- Content here -->
+    <label class="text-right">帳號：</label>
+    <input id="inpUsername" type="text" class="form-control" placeholder="" style="margin-bottom: 5px;">
+    <label class="text-right">密碼</label>
+    <input id="inpPassword" type="password" class="form-control" placeholder="" style="margin-bottom: 5px;">
+    <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="login()">登入</button>
+
+
+</div>
+
+<script>
+    //$(document).ready(function () {
+
+    //});
+
+    //btn_login
+    function login() {
+        var username = "";
+        var password = "";
+
+        if ($("#inpUsername").val() != null & $("#inpUsername").val() != "") {
+            username = $("#inpUsername").val();
+        }
+        if ($("#inpPassword").val() != null & $("#inpPassword").val() != "") {
+            password = $("#inpPassword").val();
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Account/Login",
+            data: {
+                username: username,
+                password:password
+            }
+        }).done(function (data) {
+            alert("Login Success!"+data);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText == "Login Error.") {
+                alert("Login error：登入發生錯誤。");
+            } else {
+                alert("發生錯誤。");
+                //console.error(jqXHR.responseText);
+            }
+        });
+
+        alert('User Account：' + username + ' ' + password);
+    }
+</script>

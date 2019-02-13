@@ -216,9 +216,14 @@
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Xml.ReaderWriter\4.3.1\ref\netstandard1.3\System.Xml.ReaderWriter.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Xml.XDocument\4.3.0\ref\netstandard1.3\System.Xml.XDocument.dll
 --resource:"C:\workspace\ManageServer\ManageServer\src\ManageServer\obj\Debug\netcoreapp1.1\ManageServerdotnet-compile.deps.json",ManageServer.deps.json
+C:\workspace\ManageServer\ManageServer\src\ManageServer\AppUser.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\IAuthenticationService.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\LdapAuthenticationService.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\LdapConfig.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\PostgresSQLContext.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Program.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Startup.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\AccountController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\HomeController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\PermissionController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\_HomeController.cs
