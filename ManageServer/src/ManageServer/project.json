@@ -30,8 +30,8 @@
     "jQuery.UI.Combined": "1.12.1",
     "LinqKit.Core": "1.1.15",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.2",
-    "Microsoft.IdentityModel.Protocols": "2.1.2"
-  },
+    "Microsoft.IdentityModel.Protocols": "2.1.2",
+    "Novell.Directory.Ldap.NETStandard": "2.3.8"  },
 
   "tools": {
     "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final",

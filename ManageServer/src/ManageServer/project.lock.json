@@ -1825,6 +1825,39 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "Novell.Directory.Ldap.NETStandard/2.3.8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "1.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Logging.Debug": "1.0.0",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Console": "4.0.0",
+          "System.IO": "4.1.0",
+          "System.IO.FileSystem": "4.0.1",
+          "System.Linq": "4.1.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Requests": "4.0.11",
+          "System.Net.Security": "4.0.0",
+          "System.Net.Sockets": "4.1.0",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Reflection.Primitives": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Security.Cryptography.Algorithms": "4.2.0",
+          "System.Security.Cryptography.X509Certificates": "4.1.0",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Threading.Thread": "4.0.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll": {}
+        }
+      },
       "Npgsql/3.2.5": {
         "type": "package",
         "dependencies": {
@@ -6304,6 +6337,18 @@
         "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "tools/install.ps1"
+      ]
+    },
+    "Novell.Directory.Ldap.NETStandard/2.3.8": {
+      "sha512": "hcsEeBj+MIp3tMNdaan/sovKBbuyq7IMZNL8BjUzIPmWt90H+T1FlsoNv1rliuIoQuKuiLRFS9fpvvkQotlmsw==",
+      "type": "package",
+      "path": "Novell.Directory.Ldap.NETStandard/2.3.8",
+      "files": [
+        ".signature.p7s",
+        "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll",
+        "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.xml",
+        "novell.directory.ldap.netstandard.2.3.8.nupkg.sha512",
+        "novell.directory.ldap.netstandard.nuspec"
       ]
     },
     "Npgsql/3.2.5": {
@@ -11915,6 +11960,7 @@
       "Microsoft.IdentityModel.Protocols >= 2.1.2",
       "Microsoft.NETCore.App >= 1.1.9",
       "Microsoft.VisualStudio.Web.BrowserLink.Loader >= 14.0.0",
+      "Novell.Directory.Ldap.NETStandard >= 2.3.8",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 1.1.1",
       "System.ComponentModel.Annotations >= 4.3.0",
       "jQuery.UI.Combined >= 1.12.1"

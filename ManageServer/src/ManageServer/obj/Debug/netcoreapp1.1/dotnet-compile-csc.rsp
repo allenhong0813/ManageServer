@@ -103,6 +103,7 @@
 -r:"C:\Users\LenovoT450\.nuget\packages\Microsoft.Win32.Primitives\4.3.0\ref\netstandard1.3\Microsoft.Win32.Primitives.dll"
 -r:"C:\Users\LenovoT450\.nuget\packages\Microsoft.Win32.Registry\4.3.0\ref\netstandard1.3\Microsoft.Win32.Registry.dll"
 -r:"C:\Users\LenovoT450\.nuget\packages\Newtonsoft.Json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll"
+-r:"C:\Users\LenovoT450\.nuget\packages\Novell.Directory.Ldap.NETStandard\2.3.8\lib\netstandard1.3\Novell.Directory.Ldap.NETStandard.dll"
 -r:"C:\Users\LenovoT450\.nuget\packages\Npgsql\3.2.5\lib\netstandard1.3\Npgsql.dll"
 -r:"C:\Users\LenovoT450\.nuget\packages\Npgsql.EntityFrameworkCore.PostgreSQL\1.1.1\lib\netstandard1.3\Npgsql.EntityFrameworkCore.PostgreSQL.dll"
 -r:"C:\Users\LenovoT450\.nuget\packages\NuGet.Common\3.5.0-beta2-1484\lib\netstandard1.3\NuGet.Common.dll"

@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1/",
-    "signature": "49fca76fec8b89757c60107b61bf988f0cc0f11c"
+    "signature": "35a00d8cb8641f59228be1536d0e2fd5f32273a0"
   },
   "compilationOptions": {
     "defines": [
@@ -39,7 +39,8 @@
           "jQuery.UI.Combined": "1.12.1",
           "LinqKit.Core": "1.1.15",
           "Microsoft.EntityFrameworkCore.SqlServer": "1.1.2",
-          "Microsoft.IdentityModel.Protocols": "2.1.2"
+          "Microsoft.IdentityModel.Protocols": "2.1.2",
+          "Novell.Directory.Ldap.NETStandard": "2.3.8"
         },
         "compile": {
           "ManageServer.dll": {}
@@ -1299,6 +1300,35 @@
         },
         "compile": {
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Novell.Directory.Ldap.NETStandard/2.3.8": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "1.1.2",
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2",
+          "Microsoft.Extensions.Logging.Debug": "1.1.2",
+          "System.Collections.NonGeneric": "4.3.0",
+          "System.Console": "4.3.1",
+          "System.IO": "4.3.0",
+          "System.IO.FileSystem": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Net.NameResolution": "4.3.0",
+          "System.Net.Requests": "4.3.0",
+          "System.Net.Security": "4.3.2",
+          "System.Net.Sockets": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.1",
+          "System.Security.Cryptography.X509Certificates": "4.3.2",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Thread": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll": {}
         }
       },
       "Npgsql/3.2.5": {
@@ -2958,7 +2988,8 @@
           "jQuery.UI.Combined": "1.12.1",
           "LinqKit.Core": "1.1.15",
           "Microsoft.EntityFrameworkCore.SqlServer": "1.1.2",
-          "Microsoft.IdentityModel.Protocols": "2.1.2"
+          "Microsoft.IdentityModel.Protocols": "2.1.2",
+          "Novell.Directory.Ldap.NETStandard": "2.3.8"
         },
         "runtime": {
           "ManageServer.dll": {}
@@ -4215,6 +4246,35 @@
         },
         "runtime": {
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Novell.Directory.Ldap.NETStandard/2.3.8": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "1.1.2",
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2",
+          "Microsoft.Extensions.Logging.Debug": "1.1.2",
+          "System.Collections.NonGeneric": "4.3.0",
+          "System.Console": "4.3.1",
+          "System.IO": "4.3.0",
+          "System.IO.FileSystem": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Net.NameResolution": "4.3.0",
+          "System.Net.Requests": "4.3.0",
+          "System.Net.Security": "4.3.2",
+          "System.Net.Sockets": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.1",
+          "System.Security.Cryptography.X509Certificates": "4.3.2",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Thread": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Novell.Directory.Ldap.NETStandard.dll": {}
         }
       },
       "Npgsql/3.2.5": {
@@ -6280,6 +6340,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw=="
+    },
+    "Novell.Directory.Ldap.NETStandard/2.3.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hcsEeBj+MIp3tMNdaan/sovKBbuyq7IMZNL8BjUzIPmWt90H+T1FlsoNv1rliuIoQuKuiLRFS9fpvvkQotlmsw=="
     },
     "Npgsql/3.2.5": {
       "type": "package",
