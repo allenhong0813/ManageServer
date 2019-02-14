@@ -40,10 +40,10 @@ namespace ManageServer
             //    }
             //}
 
-            var User = new { username = "allen", password = "Shine@0813" };
-            //var User = new { username = "password", password = "password" };
-            var result = SelfLdapAuth(User.username, User.password);
-            Console.WriteLine($"LDAP Auth Result: {result}");
+            //var User = new { username = "allen", password = "Shine@0813" };
+            ////var User = new { username = "password", password = "password" };
+            //var result = SelfLdapAuth(User.username, User.password);
+            //Console.WriteLine($"LDAP Auth Result: {result}");
 
 
 

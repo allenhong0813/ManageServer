@@ -31,21 +31,16 @@ namespace ManageServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            //services.AddMvc(config =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //    .RequireAuthenticatedUser()
-            //    .Build();
-            //    config.Filters.Add(new AuthorizeFilter(policy));
-            //});
-
+            
             services.AddMvc();
 
             services.AddEntityFrameworkNpgsql()
                .AddDbContext<PostgresSQLContext>(options => 
                options.UseNpgsql(Configuration.GetConnectionString("ManagerServer")))
                .BuildServiceProvider();
+            //
             services.Configure<LdapConfig>(Configuration.GetSection("ldap"));
+            services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

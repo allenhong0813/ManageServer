@@ -13,13 +13,13 @@ namespace ManageServer.Controllers
     public class AccountController : Controller
     {
         // GET: /<controller>/
-        //public IActionResult Login()
-        //{
-        //    return View();
-        //}
+        public IActionResult Login()
+        {
+            return View();
+        }
 
-        private readonly LdapAuthenticationService _authService;
-        public AccountController(LdapAuthenticationService authService)
+        private readonly IAuthenticationService _authService;
+        public AccountController(IAuthenticationService authService)
         {
             _authService = authService;
         }

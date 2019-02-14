@@ -16,18 +16,15 @@ namespace ManageServer
         {
             // Config from appsettings, injected through the pipeline
             _config = configAccessor.Value;
-            _connection = new LdapConnection
-            {
-                SecureSocketLayer = true
-            };
+            _connection = new LdapConnection();
         }
 
-        public bool Login(string username, string password)
+        public Boolean Login(string username, string password)
         {
             try
             {
                 _connection.Connect(_config.Url, LdapConnection.DEFAULT_PORT);
-                _connection.Bind(_config.UserName, _config.Password);
+                _connection.Bind($"uid={username},{_config.BindDn}", password);
                 return _connection.Bound;
             }
             catch (LdapException ldapex)
