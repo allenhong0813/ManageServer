@@ -14,3 +14,45 @@ pre code {
   display: block;
   padding: 20px;
 }
+
+/*#region nav bar user name*/
+.username-inline {
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+.username-text-wrap {
+    vertical-align: top;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+
+    .navbar-default .navbar-collapse,
+    .navbar-default .navbar-form {
+        border-color: #2B60A5;
+    }
+
+
+    @media (max-width: 999px) {
+    .dropdown-menu {
+        max-height: none;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+
+    .fixedDropdownSubMenu {
+        position: fixed;
+        display: none;
+    }
+
+    .navbar-nav > .dropdown > .dropdown-menu > .dropdown-submenu > .dropdown-menu > li > a.cloneLineItem {
+        padding-left: 40px !important;
+    }
+
+    .navbar-nav > .dropdown > .dropdown-menu > .dropdown-submenu > .dropdown-menu > li > a {
+        padding-left: 50px !important;
+    }
+}

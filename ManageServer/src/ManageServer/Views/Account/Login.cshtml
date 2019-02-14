@@ -4,17 +4,35 @@
 @{
     ViewData["Title"] = "Login";
 }
-<h2><b></b></h2>
-<div class="container">
+<style>
+    .center-panel {
+        max-width: 360px;
+        margin: 18% auto;
+    }
+    input{
+    max-width: 100%;
+}
+</style>
+
+@*<div class="container">*@
     <!-- Content here -->
-    <label class="text-right">帳號：</label>
-    <input id="inpUsername" type="text" class="form-control" placeholder="" style="margin-bottom: 5px;">
-    <label class="text-right">密碼</label>
-    <input id="inpPassword" type="password" class="form-control" placeholder="" style="margin-bottom: 5px;">
-    <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="login()">登入</button>
-
-
-</div>
+    <div class="center-panel">
+        <div class="login-panel panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title" style="font-size:20px">登入</h4>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <input id="inpUsername" type="text" class="form-control" placeholder="帳號" style="margin-bottom: 5px;width:100%;">
+                </div>
+                <div class="form-group">
+                    <input id="inpPassword" type="password" class="form-control" placeholder="密碼" style="margin-bottom: 5px;width:100%;">
+                </div>
+                <button type="button" class="btn btn-lg btn-click btn-block btn-primary" style="margin-bottom: 5px;" onclick="login()">登入</button>
+            </div>
+        </div>
+    </div>
+@*</div>*@
 
 <script>
     //$(document).ready(function () {
@@ -38,10 +56,10 @@
             url: "/Account/Login",
             data: {
                 username: username,
-                password:password
+                password: password
             }
         }).done(function (data) {
-            alert("Login Success!"+data);
+            alert("Login Success!" + data);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.responseText == "Login Error.") {
                 alert("Login error：登入發生錯誤。");
