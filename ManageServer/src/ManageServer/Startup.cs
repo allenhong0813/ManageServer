@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ManageServer
 {
@@ -41,6 +42,8 @@ namespace ManageServer
             //
             services.Configure<LdapConfig>(Configuration.GetSection("ldap"));
             services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +63,18 @@ namespace ManageServer
             }
 
             app.UseStaticFiles();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AccessDeniedPath = "/Account/Forbidden/",
+                AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme,
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                //LoginPath = "/Account/Unauthorized/"
+                LoginPath = "/Account/Login/"
+            });
+
+           // app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

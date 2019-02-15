@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ManageServer;
 using System.Net.Sockets;
+using System.Security.Claims;
+using System.Threading;
+using System.Security.Principal;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,6 +21,14 @@ namespace ManageServer.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+            //get cookies in web application
+            var user = HttpContext.User;
+            // Get the claims values
+            var tt = user.Claims.Where(c => c.Type == "IsAdmin").FirstOrDefault();
+            if(tt != null) { 
+                ViewData["IsAdmin"] = tt.Value;
+            }
+
             return View();
         }
 
