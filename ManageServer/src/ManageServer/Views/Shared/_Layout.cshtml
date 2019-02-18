@@ -84,23 +84,53 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li style="font-size:large;padding:0">
-                        <a asp-area="" asp-controller="Permission" asp-action="Permission">權限管理</a>
-                    </li>
+                    @{
+                        if (User.HasClaim(c => c.Type == "Username"))
+                        {
+                            var IsAdmin = User.Claims.Where(u => u.Type == "IsAdmin").FirstOrDefault().Value;
+                            if (Convert.ToBoolean(IsAdmin))
+                            {
+                                <li style="font-size:large;padding:0">
+                                    <a asp-area="" asp-controller="Permission" asp-action="Permission">權限管理</a>
+                                </li>
+                            }
+
+                        }
+                    }
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown ">
                         <a class="dropdown-toggle username" data-toggle="dropdown" aria-expanded="false">
                             <span class="username-inline username-text-wrap" style="padding:0">
-                                <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
-                                    用戶
-                                </i>
+                                @if (User.HasClaim(c => c.Type == "Username"))
+                                {
+                                    <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
+                                        @User.Claims.Where(u => u.Type == "Username").FirstOrDefault().Value
+                                    </i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
+                                        用戶
+                                    </i>
+                                }
+
                             </span>
                             <i class="fa fa-caret-down " aria-hidden="true"></i>
                         </a>
+                        
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a asp-area="" asp-controller="Account" asp-action="Login">登入</a></li>
+                            @if (User.HasClaim(c => c.Type == "Username"))
+                            {
+                                <li><a asp-area="" asp-controller="Account" asp-action="Logout">登出</a></li>
+                            }
+                            else
+                            {
+                                <li><a asp-area="" asp-controller="Account" asp-action="Login">登入</a></li>
+                            }
+
                         </ul>
+
                         <!-- /.dropdown-user -->
                     </li>
                     <!-- /.dropdown -->

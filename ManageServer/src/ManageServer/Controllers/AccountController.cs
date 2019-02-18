@@ -19,7 +19,7 @@ namespace ManageServer.Controllers
 
         private readonly IAuthenticationService _authService;
         private readonly PostgresSQLContext _context;
-        public AccountController(PostgresSQLContext context,IAuthenticationService authService)
+        public AccountController(PostgresSQLContext context, IAuthenticationService authService)
         {
             _context = context;
             _authService = authService;
@@ -38,7 +38,7 @@ namespace ManageServer.Controllers
             try
             {
                 var user = _authService.Login(username, password);
-                
+
                 if (user)
                 {
 
@@ -53,14 +53,14 @@ namespace ManageServer.Controllers
                     var claims = new List<Claim> {
                         new Claim("Username",_user.Username),
                         new Claim("IsAdmin", _user.IsAdmin.ToString())
-                    }; 
+                    };
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                        claims, 
+                        claims,
                         CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
                     ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
 
                     await HttpContext.Authentication.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme, 
+                        CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         new AuthenticationProperties()
                         {
@@ -71,11 +71,12 @@ namespace ManageServer.Controllers
 
 
                     return RedirectToAction("Index", "Home");
-                }else
+                }
+                else//Login Error
                 {
                     return StatusCode(500, "Login Error.");
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -87,9 +88,10 @@ namespace ManageServer.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.Authentication.SignOutAsync("MyCookieMiddlewareInstance");
+            await HttpContext.Authentication
+                .SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction("Account","Login");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
