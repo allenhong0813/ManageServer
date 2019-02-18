@@ -8,18 +8,15 @@ namespace ManageServer.Models
 {
     public class LoginViewModel
     {
-        //[Required(ErrorMessageResourceName = "UsernameRequired",
-        //          ErrorMessageResourceType = typeof(Login))]
+        [Required(ErrorMessage = "帳號為必填欄位")]
         [DataType(DataType.Text)]
         public string Username { get; set; }
 
-        //[Required(ErrorMessageResourceName = "PasswordRequired",
-        //           ErrorMessageResourceType = typeof(Login))]
+        [Required(ErrorMessage = "密碼為必填欄位")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         
-        public bool IsAdmin{ get; set; }
-
+        
 
     }
 }

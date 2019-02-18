@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Novell.Directory.Ldap;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ManageServer.Models;
 namespace ManageServer
 {
     public class LdapAuthenticationService : IAuthenticationService
@@ -19,22 +19,24 @@ namespace ManageServer
             _connection = new LdapConnection();
         }
 
-        public Boolean Login(string username, string password)
+        public LdapResultModel LdapLogin(string username, string password)
         {
+            LdapResultModel result = new LdapResultModel();
             try
             {
                 _connection.Connect(_config.Url, LdapConnection.DEFAULT_PORT);
                 _connection.Bind($"uid={username},{_config.BindDn}", password);
-                return _connection.Bound;
+                result.IsSuccess = _connection.Bound;
             }
             catch (LdapException ldapex)
             {
-                throw ldapex;
+
+                result.IsSuccess = false;
+                result.ExceptionMessage = ldapex.Message;
+                result.ResultCode = ldapex.ResultCode;
             }
-            finally
-            {
-                _connection.Disconnect();
-            }
+            _connection.Disconnect();
+            return result;
         }
     }
 }

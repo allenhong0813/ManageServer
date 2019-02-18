@@ -233,6 +233,7 @@ C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\2019011607530
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190211011937_Update_DB.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190211011937_Update_DB.Designer.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\PostgresSQLContextModelSnapshot.cs
+C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\LdapResultModel.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\LoginViewModel.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\Machine.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\SeedData.cs

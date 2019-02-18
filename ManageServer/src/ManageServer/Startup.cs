@@ -44,6 +44,12 @@ namespace ManageServer
             services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             //    .AddCookie();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdmin",
+                    policy => policy.RequireClaim("IsAdmin","true"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +75,7 @@ namespace ManageServer
                 AccessDeniedPath = "/Account/Forbidden/",
                 AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme,
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                //LoginPath = "/Account/Unauthorized/"
+                AutomaticChallenge = true,      
                 LoginPath = "/Account/Login/"
             });
 

@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Security.Claims;
 using System.Threading;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,6 +19,7 @@ namespace ManageServer.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         // GET: /<controller>/
         public IActionResult Index()
         {

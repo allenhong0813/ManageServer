@@ -5,6 +5,7 @@
     ViewData["Title"] = "Login";
 }
 @model ManageServer.Models.LoginViewModel
+
 <style>
     .center-panel {
         max-width: 360px;
@@ -15,8 +16,6 @@
         max-width: 100%;
     }
 </style>
-<!-- Content here -->
-
 <div class="center-panel">
     <div class="login-panel panel panel-default">
         <div class="panel-heading">
@@ -24,13 +23,14 @@
         </div>
         <div class="panel-body">
             <section>
+                <div asp-validation-summary="All" class="text-danger"></div>
                 <form asp-controller="Account" asp-action="Login" method="post">
                     <fieldset>
                         <div class="form-group">
-                            <input asp-for="Username" class="form-control" placeholder="帳號" type="text" />
+                            <input asp-for="Username" class="form-control"  placeholder="帳號" type="text" />
                         </div>
                         <div class="form-group">
-                            <input asp-for="Password" class="form-control" placeholder="密碼" type="password" />                   </div>
+                            <input asp-for="Password" class="form-control"  placeholder="密碼" type="password" />                   </div>
                         <!-- Change this to a button or input when using this as a form -->
                         <button type="submit" class="btn btn-lg btn-click btn-block btn-primary" style="margin-bottom: 5px;">登入</button>
                     </fieldset>
@@ -39,14 +39,3 @@
             </div>
     </div>
 </div>
-
-
-<script>
-    //$(document).ready(function () {
-
-    //});
-
-    function login() {
-        
-    }
-</script>

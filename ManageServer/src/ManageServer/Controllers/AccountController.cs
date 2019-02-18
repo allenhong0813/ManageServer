@@ -33,54 +33,58 @@ namespace ManageServer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             try
             {
-                var user = _authService.Login(username, password);
+                var username = model.Username;
+                var password = model.Password;
 
-                if (user)
+                if (ModelState.IsValid)
                 {
+                    var user = _authService.LdapLogin(username, password);
+                    if (user.IsSuccess)
+                    {
+                        var _user = _context.Users.Where(u => u.UserID == username).SingleOrDefault();
+                        //取名Username，在登入後的頁面，讀取登入者的帳號會用得到，自己先記在大腦
+                        var claims = new List<Claim> {
+                            new Claim("Username",_user.UserID),
+                            new Claim("IsAdmin", _user.IsAdmin.ToString())
+                            };
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                            claims,
+                            CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
+                        ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
 
-                    var _user = _context.Users.Where(u => u.UserID == username).Select(
-                       u => new LoginViewModel
-                       {
-                           Username = u.UserID,
-                           IsAdmin = u.IsAdmin
-                       }).SingleOrDefault();
-
-                    //取名Username，在登入後的頁面，讀取登入者的帳號會用得到，自己先記在大腦
-                    var claims = new List<Claim> {
-                        new Claim("Username",_user.Username),
-                        new Claim("IsAdmin", _user.IsAdmin.ToString())
-                    };
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                        claims,
-                        CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
-                    ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-
-                    await HttpContext.Authentication.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        new AuthenticationProperties()
+                        await HttpContext.Authentication.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity),
+                            new AuthenticationProperties()
+                            {
+                                IsPersistent = false,
+                                ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
+                            }
+                            );
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        switch (user.ResultCode)
                         {
-                            IsPersistent = false,
-                            ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
+                            case 49:
+                                ModelState.AddModelError(string.Empty, "您輸入的帳號或密碼錯誤，請重新輸入！");
+                                break;
                         }
-                        );
+                        ModelState.Clear();//清空繫結的資料
+                        return View(model);
 
-
-                    return RedirectToAction("Index", "Home");
+                    }
                 }
-                else//Login Error
-                {
-                    return StatusCode(500, "Login Error.");
-                }
-
+                return View(model);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Login Error.");
+                return View(model);
             }
 
 
