@@ -9,7 +9,5 @@ namespace ManageServer
     {
         public string Url { get; set; }
         public string BindDn { get; set; }
-        //public string UserName { get; set; }
-        //public string Password { get; set; }
     }
 }

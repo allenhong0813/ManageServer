@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ManageServer.Models;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap;
+using NLog.Web;
 
 namespace ManageServer
 {
@@ -21,8 +22,9 @@ namespace ManageServer
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
-            
+
             host.Run();
         }
     }
+
 }

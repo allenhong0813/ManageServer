@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "ebc718e795f356417de173cb562afb0cea2e0ef7"
+    "signature": "7740a9d161503bc294baf43e9106beda25fd9cc9"
   },
   "compilationOptions": {
     "defines": [
@@ -39,6 +39,10 @@
           "Microsoft.IdentityModel.Protocols": "2.1.2",
           "Microsoft.NETCore.App": "1.1.9",
           "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
+          "NLog": "4.5.11",
+          "NLog.Extensions.Logging": "1.4.0",
+          "NLog.InstallNLogConfig": "2.0.0",
+          "NLog.Web.AspNetCore": "4.5.4",
           "Novell.Directory.Ldap.NETStandard": "2.3.8",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.1",
           "System.ComponentModel.Annotations": "4.3.0"
@@ -1415,6 +1419,65 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "NLog/4.5.11": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.ComponentModel.Primitives": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Data.Common": "4.3.0",
+          "System.Diagnostics.Process": "4.3.0",
+          "System.Diagnostics.StackTrace": "4.3.0",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.IO.FileSystem.Watcher": "4.3.0",
+          "System.Net.NameResolution": "4.3.0",
+          "System.Net.Requests": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.Loader": "4.3.0",
+          "System.Threading.Thread": "4.3.0",
+          "System.Xml.XmlDocument": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.dll": {}
+        }
+      },
+      "NLog.Extensions.Logging/1.4.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.1.2",
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.2",
+          "NETStandard.Library": "1.6.1",
+          "NLog": "4.5.11"
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.Extensions.Logging.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.Extensions.Logging.dll": {}
+        }
+      },
+      "NLog.InstallNLogConfig/2.0.0": {
+        "dependencies": {
+          "NLog": "4.5.11"
+        }
+      },
+      "NLog.Web.AspNetCore/4.5.4": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.2",
+          "Microsoft.AspNetCore.Http": "1.1.2",
+          "Microsoft.AspNetCore.Http.Extensions": "1.1.2",
+          "Microsoft.AspNetCore.Routing.Abstractions": "1.1.2",
+          "NETStandard.Library": "1.6.1",
+          "NLog.Extensions.Logging": "1.4.0"
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.Web.AspNetCore.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.Web.AspNetCore.dll": {}
+        }
+      },
       "Novell.Directory.Ldap.NETStandard/2.3.8": {
         "dependencies": {
           "Microsoft.Extensions.Logging": "1.1.2",
@@ -1887,6 +1950,32 @@
         },
         "compile": {
           "ref/netstandard1.3/System.Diagnostics.StackTrace.dll": {}
+        }
+      },
+      "System.Diagnostics.TraceSource/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.1",
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "runtime.native.System": "4.3.1"
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
         }
       },
       "System.IdentityModel.Tokens.Jwt/5.1.2": {
@@ -3791,6 +3880,9 @@
           "System.Threading": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.1"
         },
+        "compile": {
+          "ref/netstandard1.3/System.Xml.XmlDocument.dll": {}
+        },
         "compileOnly": true
       },
       "System.Xml.XPath/4.0.1": {
@@ -4294,6 +4386,26 @@
       "serviceable": true,
       "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw=="
     },
+    "NLog/4.5.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7TI+dYvEIOcCN6fjr3yjMN5AtPBSbHNxKGmn/5rkqbBk81MGsnQBkParoGOidibDIe3dwThJJndxl7O3zmd3rA=="
+    },
+    "NLog.Extensions.Logging/1.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FvCGr0FSntm9a8z/QaZv9+01LmEXh9NZ44BExArAn+kwyhPJCze5lnPekoHo0iWUKnwNtJFUo/9XOjFfIs0GXQ=="
+    },
+    "NLog.InstallNLogConfig/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BDDkA+/HsDVn6F5lQco/JZrnA13+E5RXzoVHWmmZT7FdRK0sPaa3AfEiYmlQ41qNWRAHSmM5FC7i/a2WMDar6Q=="
+    },
+    "NLog.Web.AspNetCore/4.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rShQL8AShvf5YfO3ebohQF8ngPsqi7fGPxPNus2ALP5+FLeh6V8PsrpUfGbGHdBONExisZt0YXFbwQMOjwhPwg=="
+    },
     "Novell.Directory.Ldap.NETStandard/2.3.8": {
       "type": "package",
       "serviceable": true,
@@ -4438,6 +4550,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-On2V/V1k2LSQwS1+kMIrLUdsJay3ohG5IFYm1qkALFEHqsGo79CCFxgUc+CS5qveFc+ys1zO6G4YvRu3/tLL6A=="
+    },
+    "System.Diagnostics.TraceSource/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6WVCczFZKXwpWpzd/iJkYnsmWTSFFiU24Xx/YdHXBcu+nFI/ehTgeqdJQFbtRPzbrO3KtRNjvkhtj4t5/WwWsA=="
     },
     "System.IdentityModel.Tokens.Jwt/5.1.2": {
       "type": "package",

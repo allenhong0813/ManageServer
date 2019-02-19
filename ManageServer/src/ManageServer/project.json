@@ -30,6 +30,10 @@
       "type": "platform"
     },
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
+    "NLog": "4.5.11",
+    "NLog.Extensions.Logging": "1.4.0",
+    "NLog.InstallNLogConfig": "2.0.0",
+    "NLog.Web.AspNetCore": "4.5.4",
     "Novell.Directory.Ldap.NETStandard": "2.3.8",
     "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.1",
     "System.ComponentModel.Annotations": "4.3.0"
@@ -68,7 +72,8 @@
       "wwwroot",
       "**/*.cshtml",
       "appsettings.json",
-      "web.config"
+      "web.config",
+      "nlog.config"
     ]
   },
 

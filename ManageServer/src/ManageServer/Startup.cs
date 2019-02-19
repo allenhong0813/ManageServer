@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using NLog.Extensions.Logging;
+using NLog.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace ManageServer
 {
@@ -24,6 +27,7 @@ namespace ManageServer
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+            env.ConfigureNLog("nlog.config");
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -50,6 +54,8 @@ namespace ManageServer
                 options.AddPolicy("Users",
                     policy => policy.RequireClaim("IsAdmin", "False", "True"));
             });
+            //call this in case you need aspnet-user-authtype/aspnet-user-identity
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +85,11 @@ namespace ManageServer
                 LoginPath = "/Account/Login/"
             });
 
-            //app.UseAuthentication();
+            //add NLog to ASP.NET Core
+            loggerFactory.AddNLog();
+
+            //add NLog.Web
+            app.AddNLogWeb();
 
             app.UseMvc(routes =>
             {

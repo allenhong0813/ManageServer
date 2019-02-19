@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,22 +29,26 @@ namespace ManageServer.Controllers
             //get cookies in web application
             var user = HttpContext.User;
             // Get the claims values
-            var tt = user.Claims.Where(c => c.Type == "IsAdmin").FirstOrDefault();
-            if(tt != null) { 
-                ViewData["IsAdmin"] = tt.Value;
+            var getClaim = user.Claims.Where(c => c.Type == "IsAdmin").FirstOrDefault();
+            if(getClaim != null) { 
+                ViewData["IsAdmin"] = getClaim.Value;
             }
+
+            _logger.LogInformation("Index page says hello", new object[0]);
 
             return View();
         }
 
         //get DB connect object
         private readonly PostgresSQLContext _context;
-
+        private readonly ILogger<HomeController> _logger;
         //建構函式會使用[相依性插入]將資料庫內容(PostgresSQLContext) 插入到控制器中。 
         //控制器中的每一個 CRUD 方法都會使用資料庫內容。
-        public HomeController(PostgresSQLContext context)
+        public HomeController(PostgresSQLContext context, ILogger<HomeController> logger)
         {
             _context = context;
+            _logger = logger;
+
         }
 
         [HttpPost]

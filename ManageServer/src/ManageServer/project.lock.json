@@ -1858,6 +1858,69 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "NLog/4.5.11": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.0",
+          "System.ComponentModel.Primitives": "4.1.0",
+          "System.ComponentModel.TypeConverter": "4.1.0",
+          "System.Data.Common": "4.1.0",
+          "System.Diagnostics.Process": "4.1.0",
+          "System.Diagnostics.StackTrace": "4.0.1",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.IO.FileSystem.Watcher": "4.0.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Requests": "4.0.11",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime.Loader": "4.0.0",
+          "System.Threading.Thread": "4.0.0",
+          "System.Xml.XmlDocument": "4.0.1"
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.dll": {}
+        }
+      },
+      "NLog.Extensions.Logging/1.4.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+          "NETStandard.Library": "1.6.0",
+          "NLog": "[4.5.11, 5.0.0-beta01)"
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.Extensions.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.Extensions.Logging.dll": {}
+        }
+      },
+      "NLog.InstallNLogConfig/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "NLog": "4.0.0"
+        }
+      },
+      "NLog.Web.AspNetCore/4.5.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.1.1",
+          "Microsoft.AspNetCore.Http": "1.1.1",
+          "Microsoft.AspNetCore.Http.Extensions": "1.1.1",
+          "Microsoft.AspNetCore.Routing.Abstractions": "1.1.1",
+          "NETStandard.Library": "1.6.1",
+          "NLog.Extensions.Logging": "1.0.2"
+        },
+        "compile": {
+          "lib/netstandard1.5/NLog.Web.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/NLog.Web.AspNetCore.dll": {}
+        }
+      },
       "Novell.Directory.Ldap.NETStandard/2.3.8": {
         "type": "package",
         "dependencies": {
@@ -2997,6 +3060,33 @@
         },
         "runtime": {
           "lib/portable-net45+win8+wp8+wpa81/_._": {}
+        }
+      },
+      "System.Diagnostics.TraceSource/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Collections": "4.0.11",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "runtime.native.System": "4.0.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Diagnostics.Tracing/4.3.0": {
@@ -4618,7 +4708,7 @@
           "System.Xml.ReaderWriter": "4.0.11"
         },
         "compile": {
-          "ref/netstandard1.3/_._": {}
+          "ref/netstandard1.3/System.Xml.XmlDocument.dll": {}
         },
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
@@ -6400,6 +6490,89 @@
         "tools/install.ps1"
       ]
     },
+    "NLog/4.5.11": {
+      "sha512": "7TI+dYvEIOcCN6fjr3yjMN5AtPBSbHNxKGmn/5rkqbBk81MGsnQBkParoGOidibDIe3dwThJJndxl7O3zmd3rA==",
+      "type": "package",
+      "path": "NLog/4.5.11",
+      "files": [
+        ".signature.p7s",
+        "NLog.4.5.11.nupkg.sha512",
+        "NLog.nuspec",
+        "lib/monoandroid44/NLog.dll",
+        "lib/monoandroid44/NLog.xml",
+        "lib/net35/NLog.dll",
+        "lib/net35/NLog.xml",
+        "lib/net40-client/NLog.dll",
+        "lib/net40-client/NLog.xml",
+        "lib/net45/NLog.dll",
+        "lib/net45/NLog.xml",
+        "lib/netstandard1.3/NLog.dll",
+        "lib/netstandard1.3/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
+        "lib/sl4/NLog.dll",
+        "lib/sl4/NLog.xml",
+        "lib/sl5/NLog.dll",
+        "lib/sl5/NLog.xml",
+        "lib/wp8/NLog.dll",
+        "lib/wp8/NLog.xml",
+        "lib/xamarinios10/NLog.dll",
+        "lib/xamarinios10/NLog.xml"
+      ]
+    },
+    "NLog.Extensions.Logging/1.4.0": {
+      "sha512": "FvCGr0FSntm9a8z/QaZv9+01LmEXh9NZ44BExArAn+kwyhPJCze5lnPekoHo0iWUKnwNtJFUo/9XOjFfIs0GXQ==",
+      "type": "package",
+      "path": "NLog.Extensions.Logging/1.4.0",
+      "files": [
+        ".signature.p7s",
+        "lib/net451/NLog.Extensions.Logging.dll",
+        "lib/net451/NLog.Extensions.Logging.xml",
+        "lib/net461/NLog.Extensions.Logging.dll",
+        "lib/net461/NLog.Extensions.Logging.xml",
+        "lib/netstandard1.3/NLog.Extensions.Logging.dll",
+        "lib/netstandard1.3/NLog.Extensions.Logging.xml",
+        "lib/netstandard1.5/NLog.Extensions.Logging.dll",
+        "lib/netstandard1.5/NLog.Extensions.Logging.xml",
+        "lib/netstandard2.0/NLog.Extensions.Logging.dll",
+        "lib/netstandard2.0/NLog.Extensions.Logging.xml",
+        "nlog.extensions.logging.1.4.0.nupkg.sha512",
+        "nlog.extensions.logging.nuspec"
+      ]
+    },
+    "NLog.InstallNLogConfig/2.0.0": {
+      "sha512": "BDDkA+/HsDVn6F5lQco/JZrnA13+E5RXzoVHWmmZT7FdRK0sPaa3AfEiYmlQ41qNWRAHSmM5FC7i/a2WMDar6Q==",
+      "type": "package",
+      "path": "NLog.InstallNLogConfig/2.0.0",
+      "files": [
+        ".signature.p7s",
+        "nlog.installnlogconfig.2.0.0.nupkg.sha512",
+        "nlog.installnlogconfig.nuspec",
+        "tools/netfx35/NLog.InstallNLogConfig.exe",
+        "tools/netfx40/NLog.InstallNLogConfig.exe",
+        "tools/netfx45/NLog.InstallNLogConfig.exe"
+      ]
+    },
+    "NLog.Web.AspNetCore/4.5.4": {
+      "sha512": "rShQL8AShvf5YfO3ebohQF8ngPsqi7fGPxPNus2ALP5+FLeh6V8PsrpUfGbGHdBONExisZt0YXFbwQMOjwhPwg==",
+      "type": "package",
+      "path": "NLog.Web.AspNetCore/4.5.4",
+      "files": [
+        ".signature.p7s",
+        "NLog.Web.AspNetCore.4.5.4.nupkg.sha512",
+        "NLog.Web.AspNetCore.nuspec",
+        "lib/net451/NLog.Web.AspNetCore.dll",
+        "lib/net451/NLog.Web.AspNetCore.xml",
+        "lib/net461/NLog.Web.AspNetCore.dll",
+        "lib/net461/NLog.Web.AspNetCore.xml",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.dll",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.xml",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.dll",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.xml"
+      ]
+    },
     "Novell.Directory.Ldap.NETStandard/2.3.8": {
       "sha512": "hcsEeBj+MIp3tMNdaan/sovKBbuyq7IMZNL8BjUzIPmWt90H+T1FlsoNv1rliuIoQuKuiLRFS9fpvvkQotlmsw==",
       "type": "package",
@@ -8175,6 +8348,45 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Diagnostics.TraceSource/4.0.0": {
+      "sha512": "6WVCczFZKXwpWpzd/iJkYnsmWTSFFiU24Xx/YdHXBcu+nFI/ehTgeqdJQFbtRPzbrO3KtRNjvkhtj4t5/WwWsA==",
+      "type": "package",
+      "path": "System.Diagnostics.TraceSource/4.0.0",
+      "files": [
+        "System.Diagnostics.TraceSource.4.0.0.nupkg.sha512",
+        "System.Diagnostics.TraceSource.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Diagnostics.TraceSource.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/de/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/es/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/fr/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/it/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ja/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ko/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ru/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hans/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hant/System.Diagnostics.TraceSource.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/net46/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll"
       ]
     },
     "System.Diagnostics.Tracing/4.3.0": {
@@ -12022,6 +12234,10 @@
       "Microsoft.IdentityModel.Protocols >= 2.1.2",
       "Microsoft.NETCore.App >= 1.1.9",
       "Microsoft.VisualStudio.Web.BrowserLink.Loader >= 14.0.0",
+      "NLog >= 4.5.11",
+      "NLog.Extensions.Logging >= 1.4.0",
+      "NLog.InstallNLogConfig >= 2.0.0",
+      "NLog.Web.AspNetCore >= 4.5.4",
       "Novell.Directory.Ldap.NETStandard >= 2.3.8",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 1.1.1",
       "System.ComponentModel.Annotations >= 4.3.0",

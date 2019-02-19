@@ -109,6 +109,9 @@
 --reference:C:\Users\LenovoT450\.nuget\packages\Microsoft.Win32.Primitives\4.3.0\ref\netstandard1.3\Microsoft.Win32.Primitives.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\Microsoft.Win32.Registry\4.3.0\ref\netstandard1.3\Microsoft.Win32.Registry.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\Newtonsoft.Json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll
+--reference:C:\Users\LenovoT450\.nuget\packages\NLog\4.5.11\lib\netstandard1.5\NLog.dll
+--reference:C:\Users\LenovoT450\.nuget\packages\NLog.Extensions.Logging\1.4.0\lib\netstandard1.5\NLog.Extensions.Logging.dll
+--reference:C:\Users\LenovoT450\.nuget\packages\NLog.Web.AspNetCore\4.5.4\lib\netstandard1.5\NLog.Web.AspNetCore.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\Novell.Directory.Ldap.NETStandard\2.3.8\lib\netstandard1.3\Novell.Directory.Ldap.NETStandard.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\Npgsql\3.2.5\lib\netstandard1.3\Npgsql.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\Npgsql.EntityFrameworkCore.PostgreSQL\1.1.1\lib\netstandard1.3\Npgsql.EntityFrameworkCore.PostgreSQL.dll
@@ -147,6 +150,7 @@
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Diagnostics.Process\4.3.0\ref\netstandard1.4\System.Diagnostics.Process.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Diagnostics.StackTrace\4.3.0\ref\netstandard1.3\System.Diagnostics.StackTrace.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Diagnostics.Tools\4.3.0\ref\netstandard1.0\System.Diagnostics.Tools.dll
+--reference:C:\Users\LenovoT450\.nuget\packages\System.Diagnostics.TraceSource\4.0.0\ref\netstandard1.3\System.Diagnostics.TraceSource.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Diagnostics.Tracing\4.3.0\ref\netstandard1.5\System.Diagnostics.Tracing.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Dynamic.Runtime\4.3.0\ref\netstandard1.3\System.Dynamic.Runtime.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Globalization\4.3.0\ref\netstandard1.3\System.Globalization.dll
@@ -217,6 +221,7 @@
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Threading.Timer\4.3.0\ref\netstandard1.2\System.Threading.Timer.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Xml.ReaderWriter\4.3.1\ref\netstandard1.3\System.Xml.ReaderWriter.dll
 --reference:C:\Users\LenovoT450\.nuget\packages\System.Xml.XDocument\4.3.0\ref\netstandard1.3\System.Xml.XDocument.dll
+--reference:C:\Users\LenovoT450\.nuget\packages\System.Xml.XmlDocument\4.0.1\ref\netstandard1.3\System.Xml.XmlDocument.dll
 --resource:"C:\workspace\ManageServer\ManageServer\src\ManageServer\obj\Debug\netcoreapp1.1\ManageServerdotnet-compile.deps.json",ManageServer.deps.json
 C:\workspace\ManageServer\ManageServer\src\ManageServer\IAuthenticationService.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\LdapAuthenticationService.cs
@@ -227,7 +232,6 @@ C:\workspace\ManageServer\ManageServer\src\ManageServer\Startup.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\AccountController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\HomeController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\PermissionController.cs
-C:\workspace\ManageServer\ManageServer\src\ManageServer\Controllers\_HomeController.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190116075304_Initial.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190116075304_Initial.Designer.cs
 C:\workspace\ManageServer\ManageServer\src\ManageServer\Migrations\20190211011937_Update_DB.cs
