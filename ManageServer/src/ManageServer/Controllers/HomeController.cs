@@ -17,9 +17,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ManageServer.Controllers
 {
+
+    [Authorize(Policy = "Users")]
     public class HomeController : Controller
     {
-        [Authorize]
+        
         // GET: /<controller>/
         public IActionResult Index()
         {

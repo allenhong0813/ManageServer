@@ -32,23 +32,23 @@ namespace ManageServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            
+
             services.AddMvc();
 
             services.AddEntityFrameworkNpgsql()
-               .AddDbContext<PostgresSQLContext>(options => 
+               .AddDbContext<PostgresSQLContext>(options =>
                options.UseNpgsql(Configuration.GetConnectionString("ManagerServer")))
                .BuildServiceProvider();
-            //
+            
             services.Configure<LdapConfig>(Configuration.GetSection("ldap"));
             services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie();
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsAdmin",
-                    policy => policy.RequireClaim("IsAdmin","true"));
+                options.AddPolicy("Admin",
+                    policy => policy.RequireClaim("IsAdmin", "True"));
+                options.AddPolicy("Users",
+                    policy => policy.RequireClaim("IsAdmin", "False", "True"));
             });
         }
 
@@ -75,11 +75,11 @@ namespace ManageServer
                 AccessDeniedPath = "/Account/Forbidden/",
                 AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme,
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true,      
+                AutomaticChallenge = true,
                 LoginPath = "/Account/Login/"
             });
 
-           // app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

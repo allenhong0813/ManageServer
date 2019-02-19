@@ -31,8 +31,12 @@ namespace ManageServer.Controllers
             return View();
         }
 
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             try
@@ -45,26 +49,7 @@ namespace ManageServer.Controllers
                     var user = _authService.LdapLogin(username, password);
                     if (user.IsSuccess)
                     {
-                        var _user = _context.Users.Where(u => u.UserID == username).SingleOrDefault();
-                        //取名Username，在登入後的頁面，讀取登入者的帳號會用得到，自己先記在大腦
-                        var claims = new List<Claim> {
-                            new Claim("Username",_user.UserID),
-                            new Claim("IsAdmin", _user.IsAdmin.ToString())
-                            };
-                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                            claims,
-                            CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
-                        ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-
-                        await HttpContext.Authentication.SignInAsync(
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(claimsIdentity),
-                            new AuthenticationProperties()
-                            {
-                                IsPersistent = false,
-                                ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
-                            }
-                            );
+                        SetClaim(username,password);                        
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -75,9 +60,6 @@ namespace ManageServer.Controllers
                                 ModelState.AddModelError(string.Empty, "您輸入的帳號或密碼錯誤，請重新輸入！");
                                 break;
                         }
-                        ModelState.Clear();//清空繫結的資料
-                        return View(model);
-
                     }
                 }
                 return View(model);
@@ -86,9 +68,31 @@ namespace ManageServer.Controllers
             {
                 return View(model);
             }
-
-
         }
+
+        public async void SetClaim(string username, string password)
+        {
+            var _user = _context.Users.Where(u => u.UserID == username).SingleOrDefault();
+            var claims = new List<Claim> {
+                            new Claim("Username",_user.UserID),
+                            new Claim("IsAdmin", _user.IsAdmin.ToString())
+                            };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
+            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.Authentication.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties()
+                {
+                    IsPersistent = false,
+                    ExpiresUtc = DateTime.UtcNow.AddDays(0.5)
+                }
+                );
+        }
+        
 
         public async Task<IActionResult> Logout()
         {

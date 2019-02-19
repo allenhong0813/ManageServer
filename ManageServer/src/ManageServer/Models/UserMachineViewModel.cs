@@ -11,6 +11,4 @@ namespace ManageServer.Models
         public bool IsAdmin { get; set; }
         public List<string> AssignMachineKeys { get; set; }
     }
-    
-
 }

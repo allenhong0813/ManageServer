@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ManageServer.Models;
 using LinqKit;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ManageServer.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class PermissionController : Controller
     {
         // GET: /<controller>/
@@ -41,14 +43,12 @@ namespace ManageServer.Controllers
                 if (!string.IsNullOrWhiteSpace(userID))
                 {
                     predicate = predicate.And(u => u.UserID.Contains(userID));
-                    //_user = _user.Where(m => m.UserID.Contains(userID));
                 }
 
                 // 如果有輸入是否是管理者作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(isAdmin))
                 {
                     predicate = predicate.And(u => u.IsAdmin.Equals(Convert.ToBoolean(isAdmin)));
-                    //_user = _user.Where(m => m.IsAdmin.Equals(Convert.ToBoolean(isAdmin)));
                 }
 
                 var _user = _context.Users.AsExpandable().Where(predicate).Select(
@@ -65,8 +65,6 @@ namespace ManageServer.Controllers
             {
                 return StatusCode(500, "GetServerInf Error.");
             }
-
-
         }
 
         [HttpPut]

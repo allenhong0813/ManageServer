@@ -9,7 +9,6 @@ namespace ManageServer.Models
     {
         public bool IsSuccess { get; set; }
         public string ExceptionMessage { get; set; }
-
         public int ResultCode { get; set; }
     }
 }
