@@ -10,12 +10,12 @@ function dialogForm(value, item, confirmFunction) {
             "取消": function () {
                 dialog.dialog("close");
             }
-        },
+        }
     });
 }
 
 function checkOrRemoveCheckAll() {
-    if ($('input[name="inpCheckItem"]:checked').length == $('input[name="inpCheckItem"]').length) {
+    if ($('input[name="inpCheckItem"]:checked').length === $('input[name="inpCheckItem"]').length) {
         $('#inpCheckAll').prop("checked", true);
 
     } else {
