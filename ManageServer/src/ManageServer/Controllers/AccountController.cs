@@ -8,21 +8,25 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Authentication;
 using ManageServer.Models;
+using Microsoft.Extensions.Logging;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ManageServer.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
 
         private readonly IAuthenticationService _authService;
         private readonly PostgresSQLContext _context;
-        public AccountController(PostgresSQLContext context, IAuthenticationService authService)
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(PostgresSQLContext context, IAuthenticationService authService, ILogger<AccountController> logger) : base(context, logger)
         {
-            _context = context;
             _authService = authService;
+            _context = context;
+            _logger = logger;
         }
 
         // GET: /<controller>/   
@@ -37,7 +41,7 @@ namespace ManageServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public IActionResult Login(LoginViewModel model)
         {
             try
             {
@@ -46,10 +50,10 @@ namespace ManageServer.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var user = _authService.LdapLogin(username, password);
+                    var user = _authService.LdapValid(username, password);
                     if (user.IsSuccess)
                     {
-                        SetClaim(username,password);                        
+                        SetClaim(username, password);
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -59,46 +63,62 @@ namespace ManageServer.Controllers
                             case 49:
                                 ModelState.AddModelError(string.Empty, "您輸入的帳號或密碼錯誤，請重新輸入！");
                                 break;
+                            default:
+                                ModelState.AddModelError(string.Empty, "Error");
+                                break;
                         }
                     }
                 }
-                return View(model);
             }
             catch (Exception ex)
             {
-                return View(model);
+                ExceptionHandler(ex, "Login Error.");
             }
+            return View(model);
         }
 
         public async void SetClaim(string username, string password)
         {
-            var _user = _context.Users.Where(u => u.UserID == username).SingleOrDefault();
-            var claims = new List<Claim> {
+            try
+            {
+                var _user = _context.Users.Where(u => u.UserID == username).SingleOrDefault();
+                var claims = new List<Claim> {
                             new Claim("Username",_user.UserID),
                             new Claim("IsAdmin", _user.IsAdmin.ToString())
                             };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
-            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                    claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme);//Scheme必填
+                ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
 
-            await HttpContext.Authentication.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                new AuthenticationProperties()
-                {
-                    IsPersistent = false,
-                    ExpiresUtc = DateTime.UtcNow.AddDays(0.5)
-                }
-                );
+                await HttpContext.Authentication.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    new AuthenticationProperties()
+                    {
+                        IsPersistent = false,
+                        ExpiresUtc = DateTime.UtcNow.AddDays(0.5)
+                    }
+                    );
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler(ex, "SetClaim Error.");
+            }
         }
-        
+
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.Authentication
+            try
+            {
+                await HttpContext.Authentication
                 .SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler(ex, "Logout Error.");
+            }
             return RedirectToAction("Login", "Account");
         }
     }

@@ -18,37 +18,22 @@ using Microsoft.Extensions.Logging;
 
 namespace ManageServer.Controllers
 {
-
-    [Authorize(Policy = "Users")]
-    public class HomeController : Controller
+    [Authorize]
+    public class HomeController : BaseController
     {
-        
-        // GET: /<controller>/
-        public IActionResult Index()
-        {
-            //get cookies in web application
-            var user = HttpContext.User;
-            // Get the claims values
-            var getClaim = user.Claims.Where(c => c.Type == "IsAdmin").FirstOrDefault();
-            if(getClaim != null) { 
-                ViewData["IsAdmin"] = getClaim.Value;
-            }
-
-            _logger.LogInformation("Index page says hello", new object[0]);
-
-            return View();
-        }
-
-        //get DB connect object
         private readonly PostgresSQLContext _context;
         private readonly ILogger<HomeController> _logger;
         //建構函式會使用[相依性插入]將資料庫內容(PostgresSQLContext) 插入到控制器中。 
         //控制器中的每一個 CRUD 方法都會使用資料庫內容。
-        public HomeController(PostgresSQLContext context, ILogger<HomeController> logger)
+        public HomeController(PostgresSQLContext context, ILogger<HomeController> logger):base(context,logger)
         {
             _context = context;
             _logger = logger;
-
+        }
+        // GET: /<controller>/
+        public IActionResult Index()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -65,30 +50,13 @@ namespace ManageServer.Controllers
                 }
                 _context.Add(machine);
                 _context.SaveChanges();
-
                 return Ok();
-
             }
             catch (Exception ex)
             {
-                if (ex.GetType().Name.Equals("SocketException"))
-                {
-                    SocketException pgex = (SocketException)ex;
-                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
-                    {
-                        return StatusCode(500, "DBNoConnect");
-                    }
-                }
-                else if (ex.InnerException.GetType().Name.Equals("PostgresException"))
-                {
-                    Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
-                    if (pgex.SqlState.Equals("23502"))
-                    {
-                        return StatusCode(400, pgex.ColumnName + "IsNull");
-                    }
-                }
-                    return StatusCode(500, "Insert Error.");
+                 return ExceptionHandler(ex, "Insert Error.");
             }
+           
         }
 
         [HttpPut]
@@ -108,26 +76,11 @@ namespace ManageServer.Controllers
                 _context.Update(machine);
                 _context.SaveChanges();
                 return Ok();
+
             }
             catch (Exception ex)
             {
-                if (ex.GetType().Name.Equals("SocketException"))
-                {
-                    SocketException pgex = (SocketException)ex;
-                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
-                    {
-                        return StatusCode(500, "DBNoConnect");
-                    }
-                }
-                else if (ex.InnerException.GetType().Name.Equals("PostgresException"))
-                {
-                    Npgsql.PostgresException pgex = (Npgsql.PostgresException)ex.InnerException;
-                    if (pgex.SqlState.Equals("23502"))
-                    {
-                        return StatusCode(400, pgex.ColumnName + "IsNull");
-                    }
-                }
-                return StatusCode(500, "Update Error.");
+               return ExceptionHandler(ex, "Update Error.");
             }
         }
 
@@ -143,27 +96,19 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.GetType().Name.Equals("SocketException"))
-                {
-                    SocketException pgex = (SocketException)ex;
-                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
-                    {
-                        return StatusCode(500, "DBNoConnect");
-                    }
-                }
-                return StatusCode(500, "Delete Error.");
+                return ExceptionHandler(ex, "Delete Error.");
             }
         }
 
         [HttpGet]
         public IActionResult GetServerInfo(string ipName, string serverName)
         {
+            
             try
             {
                 var _machine = from m in _context.Machines
                                select m;
                 List<Machine> machines = _machine.ToList();
-
                 foreach (var item in machines)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
@@ -188,16 +133,9 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.GetType().Name.Equals("SocketException"))
-                {
-                    SocketException pgex = (SocketException)ex;
-                    if (pgex.SocketErrorCode.ToString().Equals("ConnectionRefused"))
-                    {
-                        return StatusCode(500, "DBNoConnect");
-                    }
-                }
-                return StatusCode(500, "GetServerInf Error.");
+                return ExceptionHandler(ex, "GetServerInf Error.");
             }
+            
         }
     }
 }

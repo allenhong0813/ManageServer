@@ -7,6 +7,6 @@ namespace ManageServer
 {
     public interface IAuthenticationService
     {
-        LdapResultModel LdapLogin(string username, string password);
+        LdapResultModel LdapValid(string username, string password);
     }
 }

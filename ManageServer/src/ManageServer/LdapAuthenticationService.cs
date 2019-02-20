@@ -5,21 +5,25 @@ using Novell.Directory.Ldap;
 using System.Linq;
 using System.Threading.Tasks;
 using ManageServer.Models;
+using Microsoft.Extensions.Logging;
+
 namespace ManageServer
 {
     public class LdapAuthenticationService : IAuthenticationService
     {
         private readonly LdapConfig _config;
         private readonly LdapConnection _connection;
+        private readonly ILogger<LdapAuthenticationService> _logger;
 
-        public LdapAuthenticationService(IOptions<LdapConfig> configAccessor)
+        public LdapAuthenticationService(IOptions<LdapConfig> configAccessor, ILogger<LdapAuthenticationService> logger)
         {
             // Config from appsettings, injected through the pipeline
             _config = configAccessor.Value;
             _connection = new LdapConnection();
+            _logger = logger;
         }
 
-        public LdapResultModel LdapLogin(string username, string password)
+        public LdapResultModel LdapValid(string username, string password)
         {
             LdapResultModel result = new LdapResultModel();
             try
@@ -30,10 +34,10 @@ namespace ManageServer
             }
             catch (LdapException ldapex)
             {
-
                 result.IsSuccess = false;
                 result.ExceptionMessage = ldapex.Message;
                 result.ResultCode = ldapex.ResultCode;
+                _logger.LogError("[{0}] {1}",ldapex.Message, ldapex.StackTrace);
             }
             _connection.Disconnect();
             return result;

@@ -123,7 +123,7 @@
                         else if (jqXHR.responseText == "Update Error.") {
                             alert("Update error：更新資料發生錯誤。")
                         }
-                        else  {
+                        else {
                             alert("發生錯誤。");
                             console.error(jqXHR.responseText);
                         }
@@ -231,12 +231,15 @@
                 return (value == null) ? value : value.replace(/</g, "&lt;");
             },
         },
+        {
+            name: "aaa", type: "text", title: "授權使用者", width: 80,
+
+
+        },
         { type: "control" }
             ]
         });
-
-      
-
+        
         function initGrid() {
             var d = $.Deferred();
             $.ajax({

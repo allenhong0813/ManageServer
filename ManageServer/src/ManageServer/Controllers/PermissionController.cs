@@ -6,27 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using ManageServer.Models;
 using LinqKit;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ManageServer.Controllers
 {
     [Authorize(Policy = "Admin")]
-    public class PermissionController : Controller
+    public class PermissionController : BaseController
     {
-        // GET: /<controller>/
-        public IActionResult Index()
-        {
-            return View();
-        }
+        private readonly ILogger<PermissionController> _logger;
 
         private readonly PostgresSQLContext _context;
 
-        public PermissionController(PostgresSQLContext context)
+        public PermissionController(PostgresSQLContext context, ILogger<PermissionController> logger) : base(context, logger)
         {
             _context = context;
+            _logger = logger;
         }
-
+        // GET: /<controller>/
         public IActionResult Permission()
         {
             ViewData["MachineList"] = _context.Machines.ToList();
@@ -57,13 +55,13 @@ namespace ManageServer.Controllers
                         UserID = u.UserID,
                         IsAdmin = u.IsAdmin,
                         AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
-                    }).OrderBy(u=>u.UserID);
+                    }).OrderBy(u => u.UserID);
 
                 return Ok(_user.ToList());
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "GetServerInf Error.");
+                return ExceptionHandler(ex, "GetServerInfo Error.");
             }
         }
 
@@ -120,11 +118,9 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Update Error.");
+                return ExceptionHandler(ex, "Update Error.");
             }
         }
-
-
     }
 }
 

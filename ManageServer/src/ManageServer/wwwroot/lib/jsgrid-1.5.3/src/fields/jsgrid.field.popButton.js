@@ -7,13 +7,7 @@
     }
 
     PopButtonField.prototype = new Field({
-
-        itemTemplate: function (value, item) {
-            return btnDisabledPermission(value, item);
-        },
-        editTemplate: function (value, item) {
-            return btnPermission(value, item);
-        },
+      
     });
 
     jsGrid.fields.popButton = jsGrid.PopButtonField = PopButtonField;

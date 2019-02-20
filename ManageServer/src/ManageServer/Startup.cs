@@ -50,9 +50,7 @@ namespace ManageServer
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin",
-                    policy => policy.RequireClaim("IsAdmin", "True"));
-                options.AddPolicy("Users",
-                    policy => policy.RequireClaim("IsAdmin", "False", "True"));
+                    policy => policy.RequireClaim("IsAdmin", "True"));               
             });
             //call this in case you need aspnet-user-authtype/aspnet-user-identity
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

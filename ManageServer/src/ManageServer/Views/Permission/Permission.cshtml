@@ -47,6 +47,9 @@
     var userMachineData = null;
 
     $(document).ready(function () {
+
+        initGrid();
+
         $("#jsGrid").jsGrid({
             width: "100%",
             height: "400px",
@@ -103,13 +106,13 @@
                     },
                 },
                 {
-                    name: "assignMachineKeys", type: "popButton", title: "授權機台", width: 100,
-                    //itemTemplate: function (value, item) {
-                    //    return btnDisabledPermission(value, item);
-                    //},
-                    //editTemplate: function(value , item) {
-                    //    return btnPermission(value, item);
-                    //},
+                    name: "assignMachineKeys", type: "", title: "授權機台", width: 100,
+                    itemTemplate: function (value, item) {
+                        return btnDisabledPermission(value, item);
+                    },
+                    editTemplate: function (value, item) {
+                        return btnPermission(value, item);
+                    },
                 },
                 {
                     type: "control", deleteButton: false
@@ -117,14 +120,59 @@
                 }
             ]
         });
+
+
+        function initGrid() {
+            var d = $.Deferred();
+            $.ajax({
+                type: "GET",
+                url: '/Permission/GetAdminInfo'
+            }).done(function (response) {
+                d.resolve(response);
+                $("#jsGrid").jsGrid("loadData", response);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.responseText == "GetAdminInfo Error.") {
+                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+                }
+                else if (jqXHR.responseText == "DBNoConnect") {
+                    alert("Inital error：未連接上資料庫。")
+                }
+                else {
+                    alert("發生錯誤。");
+                    console.error(jqXHR.responseText);
+                }
+            });
+            return d.promise();
+        }
     });
 
-    //GridState
-    function setGridState(){
 
-        console.log(userMachineData);
-        console.log("setGridState");
+
+    function btnDisabledPermission(value, item) {
+        var $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
+        return $btnPermission.text("授權設定");
     }
+
+    function btnPermission(value, item) {
+        var $btnPermission;
+        if (item.isAdmin == true) {
+            $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
+        } else {
+            $btnPermission = $("<button class='btn btn-default btnPermission'>");
+        }
+
+        return $btnPermission.text("授權設定")
+                            .on("click", function () {
+                                dialogForm();
+                                getUserID(value, item);
+                                setUserPermission(value, item);
+                                checkOrRemoveCheckAll();
+                            });
+    }
+
+
+
+
 
     //checkbox function
     function chkDisableAdmin(isAdminValue, isAdminItem) {
@@ -150,39 +198,7 @@
             $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', false);
 
         }
-    }
-
-    //permission button
-    //function btnDisabledPermission(value, item) {
-    //    var $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled',true);
-    //    return $btnPermission.text("授權設定");
-    //}
-
-    //function btnPermission(value, item) {
-    //    var $btnPermission;
-    //    if(item.isAdmin == true){
-    //        $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled',true);
-    //    }else{
-    //        $btnPermission = $("<button class='btn btn-default btnPermission'>");
-    //    }
-
-    //    return $btnPermission.text("授權設定")
-    //                        .on("click", function () {
-    //                            dialogForm();
-    //                            getUserID(value,item);
-    //                            setUserPermission(value,item);
-    //                            checkOrRemoveCheckAll();
-    //                        });
-    //}
-
-    function checkOrRemoveCheckAll(){
-        if($('input[name="inpCheckItem"]:checked').length == $('input[name="inpCheckItem"]').length){
-            $('#inpCheckAll').prop("checked",true);
-
-        }else{
-            $('#inpCheckAll').prop("checked",false);
-        }
-    }
+    }   
 
     function getUserID(value,item){
         var assignMachineKeys = item.assignMachineKeys;
@@ -284,23 +300,8 @@
 
     };
 
-    function dialogForm(value,item) {
-        dialog = $("#dialog-form").dialog({
-            autoOpen: true,
-            height: 400,
-            width: 600,
-            modal: true,
-            buttons: {
-                "確定": confirmUserMachine,
-                "取消": function () {
-                    dialog.dialog("close");
-                }
-            },
-        });
-
-    }
-
-    function confirmUserMachine() {
+    //dialog confirm button
+    var confirmFunction = function() {
         var currentUserMachine = $.grep(userMachineData, function (element, index) {
             return element.userID == onRowUserID;
         });
@@ -320,8 +321,8 @@
 
         dialog.dialog("close");
         $("#pmjsGrid").jsGrid("loadData", machineList);
-
     }
+
 
     //button query function
     function query() {
