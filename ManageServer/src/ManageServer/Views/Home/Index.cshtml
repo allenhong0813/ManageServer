@@ -32,6 +32,9 @@
 
 <div id="jsGrid"></div>
 <script>
+    var userList = @Json.Serialize(ViewData["UserList"]);
+    var machineUserData = null;
+
     $(document).ready(function () {
         initGrid();
 
@@ -39,11 +42,10 @@
             width: "100%",
             height: "400px",
 
-            filtering: false,
+            
             editing: true,
             selecting: true,
             inserting: true,
-            sorting: true,
             paging: false,
             autoload: false,
             invalidMessage: "欄位輸入有誤：",
@@ -150,9 +152,6 @@
                 },
             },
 
-
-
-
             fields: [
                 {
                     name: "ip", type: "text", title: "IP", width: 100,
@@ -232,25 +231,72 @@
             },
         },
         {
-            name: "aaa", type: "text", title: "授權使用者", width: 80,
-
-
+            name: "assignUserKeys", type: "", title: "授權使用者", width: 80,
+            itemTemplate: function (value, item) {
+                return btnDisabledPermission(value, item);
+            },
+            editTemplate: function (value, item) {
+                return btnPermission(value, item);
+            },
         },
-        { type: "control" }
+        {
+            type: "control"
+        }
             ]
         });
-        
+
+        var $btnPermissionSetting;
+        var btnDisabledPermission = function (value, item) {
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
+            return $btnPermissionSetting;
+        };
+
+        var btnPermission = function (value, item) {
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
+            $btnPermissionSetting.on("click", function () {
+
+                dialogForm(value, item, confirmFunction);
+                alert("PermissionSetting");
+            })
+            return $btnPermissionSetting;
+        };
+
+        //dialog confirm button
+        var confirmFunction = function () {
+            alert("yes");
+            //var currentMachineUser = $.grep(machineUserData, function (element, index) {
+            //    return element.userID == onRowMachineID;
+            //});
+
+            //currentMachineUser[0].assignMachineKeys = [];
+
+            //$.each(userList, function (indexInArray, user) {
+            //    if (user.isApply == true)
+            //        currentMachineUser[0].assignUserKeys.push(user.userID);
+            //});
+
+            //$.each(machineUserData, function (indexInArray, userMachine) {
+            //    if (userMachine.userID == currentMachineUser[0].userID) {
+            //        userMachine.assignMachineKeys = currentMachineUser[0].assignMachineKeys;
+            //    }
+            //});
+
+            //dialog.dialog("close");
+            //$("#pmjsGrid").jsGrid("loadData", userList);
+        }
+
         function initGrid() {
             var d = $.Deferred();
             $.ajax({
                 type: "GET",
                 url: '/Home/GetServerInfo'
-            }).done(function (response) {
-                d.resolve(response);
-                $("#jsGrid").jsGrid("loadData", response);
+            }).done(function (data) {
+                d.resolve(data);
+                machineUserData = data;
+                $("#jsGrid").jsGrid("loadData", machineUserData);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.responseText == "GetServerInfo Error.") {
-                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+                    alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
                 }
                 else if (jqXHR.responseText == "DBNoConnect") {
                     alert("Inital error：未連接上資料庫。")
@@ -283,7 +329,8 @@
                 serverName: serverName
             }
         }).done(function (data) {
-            $("#jsGrid").jsGrid("loadData", data);
+            machineUserData = data;
+            $("#jsGrid").jsGrid("loadData", machineUserData);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             if (jqXHR.responseText == "GetServerInfo Error.") {
                 alert(alert("Query error：取得資料發生錯誤。"));

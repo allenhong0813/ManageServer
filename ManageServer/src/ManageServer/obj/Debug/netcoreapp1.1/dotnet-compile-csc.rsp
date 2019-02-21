@@ -237,6 +237,7 @@
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\LdapResultModel.cs"
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\LoginViewModel.cs"
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\Machine.cs"
+"C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\MachineUserViewModel.cs"
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\SeedData.cs"
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\User.cs"
 "C:\workspace\ManageServer\ManageServer\src\ManageServer\Models\UserMachine.cs"

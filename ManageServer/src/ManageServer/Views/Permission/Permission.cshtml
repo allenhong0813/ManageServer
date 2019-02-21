@@ -43,7 +43,6 @@
     var dialog;
     var form;
     var machineList = @Json.Serialize(ViewData["MachineList"]);
-    var newMachineList;
     var userMachineData = null;
 
     $(document).ready(function () {
@@ -121,15 +120,15 @@
             ]
         });
 
-
         function initGrid() {
             var d = $.Deferred();
             $.ajax({
                 type: "GET",
                 url: '/Permission/GetAdminInfo'
-            }).done(function (response) {
-                d.resolve(response);
-                $("#jsGrid").jsGrid("loadData", response);
+            }).done(function (data) {
+                d.resolve(data);
+                userMachineData = data;
+                $("#jsGrid").jsGrid("loadData", userMachineData);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.responseText == "GetAdminInfo Error.") {
                     alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
@@ -146,8 +145,6 @@
         }
     });
 
-
-
     function btnDisabledPermission(value, item) {
         var $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
         return $btnPermission.text("授權設定");
@@ -163,16 +160,35 @@
 
         return $btnPermission.text("授權設定")
                             .on("click", function () {
-                                dialogForm();
+                                dialogForm(value, item, confirmFunction);
                                 getUserID(value, item);
                                 setUserPermission(value, item);
                                 checkOrRemoveCheckAll();
                             });
     }
 
+    //dialog confirm button
+    var confirmFunction = function() {
+        var currentUserMachine = $.grep(userMachineData, function (element, index) {
+            return element.userID == onRowUserID;
+        });
 
+        currentUserMachine[0].assignMachineKeys = [];
 
+        $.each(machineList, function (indexInArray, machine) {
+            if(machine.isApply == true)
+                currentUserMachine[0].assignMachineKeys.push(machine.key);
+        });
 
+        $.each(userMachineData, function (indexInArray, userMachine) {
+            if(userMachine.userID == currentUserMachine[0].userID){
+                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
+            }
+        });
+
+        dialog.dialog("close");
+        $("#pmjsGrid").jsGrid("loadData", machineList);
+    }
 
     //checkbox function
     function chkDisableAdmin(isAdminValue, isAdminItem) {
@@ -198,7 +214,7 @@
             $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', false);
 
         }
-    }   
+    }
 
     function getUserID(value,item){
         var assignMachineKeys = item.assignMachineKeys;
@@ -209,7 +225,6 @@
                 machine.isApply = false;
             }
         });
-
     }
 
     //set front-end and process permissible of buotton
@@ -300,28 +315,6 @@
 
     };
 
-    //dialog confirm button
-    var confirmFunction = function() {
-        var currentUserMachine = $.grep(userMachineData, function (element, index) {
-            return element.userID == onRowUserID;
-        });
-
-        currentUserMachine[0].assignMachineKeys = [];
-
-        $.each(machineList, function (indexInArray, machine) {
-            if(machine.isApply == true)
-                currentUserMachine[0].assignMachineKeys.push(machine.key);
-        });
-
-        $.each(userMachineData, function (indexInArray, userMachine) {
-            if(userMachine.userID == currentUserMachine[0].userID){
-                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
-            }
-        });
-
-        dialog.dialog("close");
-        $("#pmjsGrid").jsGrid("loadData", machineList);
-    }
 
 
     //button query function

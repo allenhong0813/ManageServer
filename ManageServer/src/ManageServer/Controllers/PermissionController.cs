@@ -27,7 +27,15 @@ namespace ManageServer.Controllers
         // GET: /<controller>/
         public IActionResult Permission()
         {
-            ViewData["MachineList"] = _context.Machines.ToList();
+            try
+            {
+                ViewData["MachineList"] = _context.Machines.ToList();
+            }
+            catch (Exception ex)
+            {
+                return ExceptionHandler(ex, "Constructor Error.");
+            }
+            
             return View();
         }
 
