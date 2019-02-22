@@ -70,10 +70,21 @@ namespace ManageServer.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateMachineData(Machine machine)
+        public IActionResult UpdateMachineData(MachineUserViewModel machineUser)
         {
             try
             {
+                //insert machine table
+                Machine machine = new Machine();
+                machine.Key = machineUser.MachineKey;
+                machine.IP = machineUser.IP;
+                machine.Name = machineUser.Name;
+                machine.LoginID = machineUser.LoginID;
+                machine.Password = machineUser.Password;
+                machine.OS = machineUser.OS;
+                machine.HostIP = machineUser.HostIP;
+                machine.Description = machineUser.Description;
+
                 if (machine.Password == null)
                 {
                     return StatusCode(400, "PasswordIsNull");
@@ -85,6 +96,28 @@ namespace ManageServer.Controllers
                 }
                 _context.Update(machine);
                 _context.SaveChanges();
+
+                /**Delete MachineKey in intermediary table, Then, Insert new MachineKey and User in intermediary talbe**/
+                //Delete
+                var _machineUser = _context.UserMachines.Where(um => um.MachineKey.Contains(machineUser.MachineKey)).ToList();
+                _context.UserMachines.RemoveRange(_machineUser);
+                _context.SaveChanges();
+
+                //Insert
+                UserMachine userMachine = new UserMachine();
+                foreach(var machineUserID in machineUser.AssignUserKeys)
+                {
+                    userMachine.MachineKey = machineUser.MachineKey;
+                    userMachine.UserID = machineUserID;
+                    _context.UserMachines.Add(userMachine);
+                    _context.SaveChanges();
+                    
+                }
+                //userMachineList.MachineKey = machineUser.MachineKey;
+                //userMachineList.UserID =
+                
+
+
                 return Ok();
 
             }
@@ -129,10 +162,10 @@ namespace ManageServer.Controllers
                     predicate = predicate.And(m => m.Name.Contains(serverName));
                 }
 
-                var _machine = _context.Machines.Select(
+                var _machine = _context.Machines.AsExpandable().Where(predicate).Select(
                 u => new MachineUserViewModel
                 {
-                    MachineKeys = u.Key,
+                    MachineKey = u.Key,
                     IP = u.IP,
                     Name = u.Name,
                     LoginID = u.LoginID,
@@ -141,17 +174,16 @@ namespace ManageServer.Controllers
                     HostIP = u.HostIP,
                     Description = u.Description,
                     AssignUserKeys = u.UserMachines.Select(t => t.User.UserID).ToList()
-                });
+                }).OrderBy(m => m.IP).ThenBy(m => m.Name).ToList();
 
                 //Decode
-                List<MachineUserViewModel> machines = _machine.ToList();
-                foreach (var item in machines)
+                
+                foreach (var item in _machine)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
                     item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
                 }
-                //Sort
-                _machine = _machine.OrderBy(m => m.IP).ThenBy(m => m.Name);
+                
                 return Ok(_machine.ToList());
             }
             catch (Exception ex)

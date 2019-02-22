@@ -7,7 +7,7 @@ namespace ManageServer.Models
 {
     public class MachineUserViewModel
     {
-        public string MachineKeys { get; set; }
+        public string MachineKey { get; set; }
         public string IP { get; set; }
         public string Name { get; set; }
         public string LoginID { get; set; }
