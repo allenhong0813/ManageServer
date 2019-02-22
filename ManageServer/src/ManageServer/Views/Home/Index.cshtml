@@ -27,10 +27,12 @@
 
         </form>
     </div>
-
 </div>
-
 <div id="jsGrid"></div>
+@*dialog page*@
+<div id="dialog-form" title="授權設定" style="display:none">
+    <div id="pmjsGrid"></div>
+</div>
 <script>
     var userList = @Json.Serialize(ViewData["UserList"]);
     var machineUserData = null;
@@ -42,7 +44,7 @@
             width: "100%",
             height: "400px",
 
-            
+
             editing: true,
             selecting: true,
             inserting: true,
@@ -57,7 +59,6 @@
                 },
 
                 insertItem: function (item) {
-
                     return $.ajax({
                         type: "POST",
                         url: "/Home/InsertMachineData",
@@ -232,11 +233,11 @@
         },
         {
             name: "assignUserKeys", type: "", title: "授權使用者", width: 80,
-            itemTemplate: function (value, item) {
-                return btnDisabledPermission(value, item);
+            itemTemplate: function (userValue, machineItem) {
+                return btnDisabledPermission(userValue, machineItem);
             },
-            editTemplate: function (value, item) {
-                return btnPermission(value, item);
+            editTemplate: function (userValue, machineItem) {
+                return btnPermission(userValue, machineItem);
             },
         },
         {
@@ -246,44 +247,126 @@
         });
 
         var $btnPermissionSetting;
-        var btnDisabledPermission = function (value, item) {
+        var btnDisabledPermission = function (userValue, machineItem) {
             $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
             return $btnPermissionSetting;
         };
 
-        var btnPermission = function (value, item) {
+        var btnPermission = function (userValue, machineItem) {
             $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
             $btnPermissionSetting.on("click", function () {
-
-                dialogForm(value, item, confirmFunction);
-                alert("PermissionSetting");
+                dialogForm(userValue, machineItem, confirmFunction);
+                getMachineUser(userValue,machineItem);
+                setMachinePermission(userValue, machineItem);
+                checkOrRemoveCheckAll();
+                
             })
             return $btnPermissionSetting;
         };
 
+        var getMachineUser = function(userValue,machineItem){
+            var assignUserKeys = machineItem.assignUserKeys;
+            $.each(userList,function(index, user){
+                if(assignUserKeys.indexOf(user.userID)>-1){
+                    user.isApply=true;
+                }else{
+                    user.isApply=false;
+                }
+            });
+        }
+
         //dialog confirm button
         var confirmFunction = function () {
-            alert("yes");
-            //var currentMachineUser = $.grep(machineUserData, function (element, index) {
-            //    return element.userID == onRowMachineID;
-            //});
+            var currentMachineUser = $.grep(machineUserData, function (element, index) {
+                return element.machineKeys == onRowMachineKey;
+            });
 
-            //currentMachineUser[0].assignMachineKeys = [];
+            currentMachineUser[0].assignUserKeys = [];
 
-            //$.each(userList, function (indexInArray, user) {
-            //    if (user.isApply == true)
-            //        currentMachineUser[0].assignUserKeys.push(user.userID);
-            //});
+            $.each(userList, function (indexInArray, user) {
+                if (user.isApply == true)
+                    currentMachineUser[0].assignUserKeys.push(user.userID);
+            });
 
-            //$.each(machineUserData, function (indexInArray, userMachine) {
-            //    if (userMachine.userID == currentMachineUser[0].userID) {
-            //        userMachine.assignMachineKeys = currentMachineUser[0].assignMachineKeys;
-            //    }
-            //});
-
-            //dialog.dialog("close");
-            //$("#pmjsGrid").jsGrid("loadData", userList);
+            $.each(machineUserData, function (indexInArray, machineUser) {
+                if (machineUser.machineKeys == currentMachineUser[0].machineKeys) {
+                    machineUser.assignUserKeys = currentMachineUser[0].assignUserKeys;
+                }
+            });
+            dialog.dialog("close");
+            $("#pmjsGrid").jsGrid("loadData", userList);
         }
+
+        var setMachinePermission = function(userValue,machineItem){
+            $("#pmjsGrid").jsGrid({
+                width: "100%",
+                height: "100%",
+                filtering: false,
+                editing: false,
+                selecting: true,
+                inserting: false,
+                sorting: false,
+                paging: false,
+                autoload: false,
+                data: userList,
+                invalidMessage: "勾選有誤：",
+
+                controller: {
+                    loadData: function (filter) {
+                        return filter;
+                    },
+                },
+
+                fields: [
+                    {
+                        headerTemplate: function() {
+                            return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll").attr("name","inpCheckAll")
+                                    .on("click", function () {
+                                        checkedAllItem(machineItem, userList);
+                                    });
+                        },
+                        itemTemplate: function(userValue, userItem) {
+                            return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+                                    .prop("checked", userItem.isApply)
+                                    .on("change", function () {
+                                        $(this).is(":checked") ? checkedSingleItem(machineItem, userItem, userList):uncheckedSingleItem(machineItem, userItem, userList);
+                                        checkOrRemoveCheckAll();
+                                    });
+                        },
+                        align: "center",
+                        width: 20
+                    },
+                    {
+                        name: "userID", type: "text", title: "", width: 80,
+                    },
+                ]
+            })
+        }
+        var onRowMachineKey;
+        var checkedAllItem = function(machineItem,userList) {
+            if($("#inpCheckAll").prop("checked")) {
+                $("input[name='inpCheckItem']").prop("checked", true);
+                $.each(userList, function (index, user) {
+                    user.isApply = true;
+                });
+            }else{
+                $("input[name='inpCheckItem']").prop("checked", false);
+                $.each(userList, function (index, user) {
+                    user.isApply = false;
+                });
+            }
+            onRowMachineKey = machineItem.machineKeys;
+        };
+
+        var checkedSingleItem = function(machineItem,userItem,userList) {
+            userItem.isApply = true;
+            onRowMachineKey = machineItem.machineKeys;
+        };
+
+        var uncheckedSingleItem = function(machineItem,userItem,userList) {
+            userItem.isApply = false;
+            onRowMachineKey = machineItem.machineKeys;
+        };
 
         function initGrid() {
             var d = $.Deferred();
@@ -308,7 +391,6 @@
             });
             return d.promise();
         }
-
     });
 
     //btn_query

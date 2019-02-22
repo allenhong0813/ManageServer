@@ -36,15 +36,7 @@ namespace ManageServer.Controllers
         {
             try
             {
-                //_context.Machines.Select(
-                //u => new MachineUserViewModel
-                //    {
-                //        MachineKeys = u.Key,
-                //        AssignUserKeys = u.UserMachines.Select(t => t.User.UserID).ToList()
-                //    });
                 ViewData["UserList"] = _context.Users.ToList();
-
-
             }
             catch (Exception ex)
             {
@@ -125,7 +117,6 @@ namespace ManageServer.Controllers
 
             try
             {
-
                 // 如果有輸入IP名稱作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(ipName))
                 {
@@ -158,9 +149,7 @@ namespace ManageServer.Controllers
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
                     item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
-
                 }
-
                 //Sort
                 _machine = _machine.OrderBy(m => m.IP).ThenBy(m => m.Name);
                 return Ok(_machine.ToList());
@@ -169,7 +158,6 @@ namespace ManageServer.Controllers
             {
                 return ExceptionHandler(ex, "GetServerInf Error.");
             }
-
         }
     }
 }
