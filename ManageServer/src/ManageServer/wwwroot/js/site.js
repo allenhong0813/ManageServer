@@ -1,12 +1,12 @@
 ﻿// Write your Javascript code.
-function dialogForm(value, item, confirmFunction) {
+function dialogForm(action, value, item, confirmFunction) {
     dialog = $("#dialog-form").dialog({
         autoOpen: true,
         height: 400,
         width: 600,
         modal: true,
         buttons: {
-            "確定": function(){
+            "確定": function () {
                 confirmFunction(action);
             },
             "取消": function () {

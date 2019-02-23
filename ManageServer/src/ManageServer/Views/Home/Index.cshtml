@@ -290,7 +290,7 @@
         $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
         $btnPermissionSetting.on("click", function () {
             action ="insertAction"
-            dialogForm(userValue, machineItem, confirmFunction);
+            dialogForm(action,userValue, machineItem, confirmFunction);
             setMachinePermission(action, userValue, machineItem);
             checkOrRemoveCheckAll();
         })
@@ -301,7 +301,7 @@
         $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
         $btnPermissionSetting.on("click", function () {
             action ="editAction"
-            dialogForm(userValue, machineItem, confirmFunction);
+            dialogForm(action,userValue, machineItem, confirmFunction);
             getMachineUser(userValue,machineItem);
             setMachinePermission(action, userValue, machineItem);
             checkOrRemoveCheckAll();

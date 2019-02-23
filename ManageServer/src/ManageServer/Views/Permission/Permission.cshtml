@@ -165,28 +165,7 @@
                             });
     }
 
-    //dialog confirm button
-    var confirmFunction = function() {
-        var currentUserMachine = $.grep(userMachineData, function (element, index) {
-            return element.userID == onRowUserID;
-        });
-
-        currentUserMachine[0].assignMachineKeys = [];
-
-        $.each(machineList, function (indexInArray, machine) {
-            if(machine.isApply == true)
-                currentUserMachine[0].assignMachineKeys.push(machine.key);
-        });
-
-        $.each(userMachineData, function (indexInArray, userMachine) {
-            if(userMachine.userID == currentUserMachine[0].userID){
-                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
-            }
-        });
-
-        dialog.dialog("close");
-        $("#pmjsGrid").jsGrid("loadData", machineList);
-    }
+    
 
     //checkbox function
     function chkDisableAdmin(isAdminValue, isAdminItem) {
@@ -281,10 +260,29 @@
         })
     }
 
+    //dialog confirm button
+    var confirmFunction = function(action) {
+        var currentUserMachine = $.grep(userMachineData, function (element, index) {
+            return element.userID == onRowUserID;
+        });
 
-    //var strCheckAllItemArray = [];
-    //var jsonCheckAllItem;
-    //var objCheckAllItem;
+        currentUserMachine[0].assignMachineKeys = [];
+
+        $.each(machineList, function (indexInArray, machine) {
+            if(machine.isApply == true)
+                currentUserMachine[0].assignMachineKeys.push(machine.key);
+        });
+
+        $.each(userMachineData, function (indexInArray, userMachine) {
+            if(userMachine.userID == currentUserMachine[0].userID){
+                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
+            }
+        });
+
+        dialog.dialog("close");
+        $("#pmjsGrid").jsGrid("loadData", machineList);
+    }
+ 
     var onRowUserID;
 
     var checkedSingleItem = function(userItem,machineItem,machineList) {
