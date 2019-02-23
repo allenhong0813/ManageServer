@@ -113,10 +113,6 @@ namespace ManageServer.Controllers
                     _context.SaveChanges();
                     
                 }
-                //userMachineList.MachineKey = machineUser.MachineKey;
-                //userMachineList.UserID =
-                
-
 
                 return Ok();
 

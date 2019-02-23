@@ -6,7 +6,9 @@ function dialogForm(value, item, confirmFunction) {
         width: 600,
         modal: true,
         buttons: {
-            "確定": confirmFunction,
+            "確定": function(){
+                confirmFunction(action);
+            },
             "取消": function () {
                 dialog.dialog("close");
             }

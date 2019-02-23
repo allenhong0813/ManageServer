@@ -34,8 +34,7 @@
     <div id="pmjsGrid"></div>
 </div>
 <script>
-    var editUserList = @Json.Serialize(ViewData["UserList"]);
-    var insertUserList = @Json.Serialize(ViewData["UserList"]);
+    var userList = @Json.Serialize(ViewData["UserList"]);
     var machineUserData = null;
 
     $(document).ready(function () {
@@ -232,222 +231,176 @@
             },
         },
         {
-            name: "assignUserKeys",title: "授權使用者", width: 80,
+            name: "assignUserKeys", title: "授權使用者", width: 80,
             itemTemplate: function (userValue, machineItem) {
                 return btnDisabledPermission(userValue, machineItem);
             },
-
             editTemplate: function (userValue, machineItem) {
-                return btnEditPermission(userValue, machineItem);
+                return btnPermission(userValue, machineItem);
             },
-            insertTemplate: function (userValue,machineItem) {
-                return btnInsertPermission(userValue,machineItem);
-            },
-
         },
         {
             type: "control"
         }
             ]
 
-
+            
         });
-    });
 
-    function initGrid() {
-        var d = $.Deferred();
-        $.ajax({
-            type: "GET",
-            url: '/Home/GetServerInfo'
-        }).done(function (data) {
-            d.resolve(data);
-            machineUserData = data;
-            $("#jsGrid").jsGrid("loadData", machineUserData);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetServerInfo Error.") {
-                alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
-            }
-            else if (jqXHR.responseText == "DBNoConnect") {
-                alert("Inital error：未連接上資料庫。")
-            }
-            else {
-                alert("發生錯誤。");
-                console.error(jqXHR.responseText);
-            }
-        });
-        return d.promise();
-    }
+        var $btnPermissionSetting;
+        var btnDisabledPermission = function (userValue, machineItem) {
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
+            return $btnPermissionSetting;
+        };
 
-    var $btnPermissionSetting;
-    var action="";
+        var btnPermission = function (userValue, machineItem) {
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
+            $btnPermissionSetting.on("click", function () {
+                dialogForm(userValue, machineItem, confirmFunction);
+                getMachineUser(userValue,machineItem);
+                setMachinePermission(userValue, machineItem);
+                checkOrRemoveCheckAll();
+                
+            })
+            return $btnPermissionSetting;
+        };
 
-    var btnDisabledPermission = function (userValue, machineItem) {
-        $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
-        return $btnPermissionSetting;
-    };
-
-    var btnInsertPermission = function(userValue,machineItem){
-        $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
-        $btnPermissionSetting.on("click", function () {
-            action ="insertAction"
-            dialogForm(userValue, machineItem, confirmFunction);
-            setMachinePermission(action, userValue, machineItem);
-            checkOrRemoveCheckAll();
-        })
-        return $btnPermissionSetting;
-    }
-
-    var btnEditPermission = function (userValue, machineItem) {
-        $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', false).text("授權設定");
-        $btnPermissionSetting.on("click", function () {
-            action ="editAction"
-            dialogForm(userValue, machineItem, confirmFunction);
-            getMachineUser(userValue,machineItem);
-            setMachinePermission(action, userValue, machineItem);
-            checkOrRemoveCheckAll();
-        })
-        return $btnPermissionSetting;
-    };
-
-    var getMachineUser = function(userValue,machineItem){
-        var assignUserKeys = machineItem.assignUserKeys;
-        $.each(editUserList,function(index, user){
-            if(assignUserKeys.indexOf(user.userID)>-1){
-                user.isApply=true;
-            }else{
-                user.isApply=false;
-            }
-        });
-    }
-
-    var setMachinePermission = function(action,userValue,machineItem){
-        var userList;
-        if(action == "insertAction"){
-            userList = insertUserList;
-        }else if(action =="editAction"){
-            userList = editUserList;
+        var getMachineUser = function(userValue,machineItem){
+            var assignUserKeys = machineItem.assignUserKeys;
+            $.each(userList,function(index, user){
+                if(assignUserKeys.indexOf(user.userID)>-1){
+                    user.isApply=true;
+                }else{
+                    user.isApply=false;
+                }
+            });
         }
-        $("#pmjsGrid").jsGrid({
-            width: "100%",
-            height: "100%",
-            filtering: false,
-            editing: false,
-            selecting: true,
-            inserting: false,
-            sorting: false,
-            paging: false,
-            autoload: false,
-            data: userList,
-            invalidMessage: "勾選有誤：",
-            controller: {
-                loadData: function (filter) {
-                    return filter;
-                },
-            },
 
-            fields: [
-                {
-                    headerTemplate: function() {
-                        return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll").attr("name","inpCheckAll")
-                                .on("click", function () {
-                                    checkedAllItem(action ,machineItem, userList);
-                                });
-                    },
-                    itemTemplate: function(userValue, userItem) {
-                        return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
-                                .prop("checked", userItem.isApply)
-                                .on("change", function () {
-                                    $(this).is(":checked") ? checkedSingleItem(action, machineItem, userItem, userList):uncheckedSingleItem(action, machineItem, userItem, userList);
-                                    checkOrRemoveCheckAll();
-                                });
-                    },
-                    align: "center",
-                    width: 20
-                },
-                {
-                    name: "userID", type: "text", title: "", width: 80,
-                },
-            ]
-        })
-    }
-
-    //dialog confirm button
-    var confirmFunction = function (action) {
-
-        if(action == "insertAction"){
-            var insertMachineUser = {assignUserKeys:[]};
-
-            $.each(insertUserList, function (indexInArray, user) {
-                insertMachineUser.assignUserKeys.push(user.userID);
-            });
-            $("#pmjsGrid").jsGrid("loadData", insertUserList);
-        }else if(action == "editAction"){
-
+        //dialog confirm button
+        var confirmFunction = function () {
             var currentMachineUser = $.grep(machineUserData, function (element, index) {
-                return element.machineKey == onRowMachineKey;
+                return element.machineKeys == onRowMachineKey;
             });
+
             currentMachineUser[0].assignUserKeys = [];
 
-            $.each(editUserList, function (indexInArray, user) {
+            $.each(userList, function (indexInArray, user) {
                 if (user.isApply == true)
                     currentMachineUser[0].assignUserKeys.push(user.userID);
             });
 
             $.each(machineUserData, function (indexInArray, machineUser) {
-                if (machineUser.machineKey == currentMachineUser[0].machineKey) {
+                if (machineUser.machineKeys == currentMachineUser[0].machineKeys) {
                     machineUser.assignUserKeys = currentMachineUser[0].assignUserKeys;
                 }
             });
-            $("#pmjsGrid").jsGrid("loadData", editUserList);
+            dialog.dialog("close");
+            $("#pmjsGrid").jsGrid("loadData", userList);
         }
-        
-        dialog.dialog("close");
 
-    }
+        var setMachinePermission = function(userValue,machineItem){
+            $("#pmjsGrid").jsGrid({
+                width: "100%",
+                height: "100%",
+                filtering: false,
+                editing: false,
+                selecting: true,
+                inserting: false,
+                sorting: false,
+                paging: false,
+                autoload: false,
+                data: userList,
+                invalidMessage: "勾選有誤：",
 
-    var onRowMachineKey;
-    var checkedAllItem = function(action,machineItem,userList) {
-        if(action =="insertAction"){
+                controller: {
+                    loadData: function (filter) {
+                        return filter;
+                    },
+                },
+
+                fields: [
+                    {
+                        headerTemplate: function() {
+                            return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll").attr("name","inpCheckAll")
+                                    .on("click", function () {
+                                        checkedAllItem(machineItem, userList);
+                                    });
+                        },
+                        itemTemplate: function(userValue, userItem) {
+                            return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+                                    .prop("checked", userItem.isApply)
+                                    .on("change", function () {
+                                        $(this).is(":checked") ? checkedSingleItem(machineItem, userItem, userList):uncheckedSingleItem(machineItem, userItem, userList);
+                                        checkOrRemoveCheckAll();
+                                    });
+                        },
+                        align: "center",
+                        width: 20
+                    },
+                    {
+                        name: "userID", type: "text", title: "", width: 80,
+                    },
+                ]
+            })
+        }
+        var onRowMachineKey;
+        var checkedAllItem = function(machineItem,userList) {
             if($("#inpCheckAll").prop("checked")) {
                 $("input[name='inpCheckItem']").prop("checked", true);
-                $.each(insertUserList, function (index, user) {
+                $.each(userList, function (index, user) {
                     user.isApply = true;
                 });
             }else{
                 $("input[name='inpCheckItem']").prop("checked", false);
-                $.each(insertUserList, function (index, user) {
+                $.each(userList, function (index, user) {
                     user.isApply = false;
                 });
             }
-        }else  if(action =="editAction"){
-            if($("#inpCheckAll").prop("checked")) {
-                $("input[name='inpCheckItem']").prop("checked", true);
-                $.each(editUserList, function (index, user) {
-                    user.isApply = true;
-                });
-            }else{
-                $("input[name='inpCheckItem']").prop("checked", false);
-                $.each(editUserList, function (index, user) {
-                    user.isApply = false;
-                });
-            }
-            onRowMachineKey = machineItem.machineKey;
+            onRowMachineKey = machineItem.machineKeys;
+        };
+
+        var checkedSingleItem = function(machineItem,userItem,userList) {
+            userItem.isApply = true;
+            onRowMachineKey = machineItem.machineKeys;
+        };
+
+        var uncheckedSingleItem = function(machineItem,userItem,userList) {
+            userItem.isApply = false;
+            onRowMachineKey = machineItem.machineKeys;
+        };
+
+        function initGrid() {
+            var d = $.Deferred();
+            $.ajax({
+                type: "GET",
+                url: '/Home/GetServerInfo'
+            }).done(function (data) {
+                d.resolve(data);
+                machineUserData = data;
+                $("#jsGrid").jsGrid("loadData", machineUserData);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.responseText == "GetServerInfo Error.") {
+                    alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
+                }
+                else if (jqXHR.responseText == "DBNoConnect") {
+                    alert("Inital error：未連接上資料庫。")
+                }
+                else {
+                    alert("發生錯誤。");
+                    console.error(jqXHR.responseText);
+                }
+            });
+            return d.promise();
         }
+    });
+
+
+
+
+    var initGridCustomFields = function(){
+        alert("123");
     };
 
-    var checkedSingleItem = function(action,machineItem,userItem,userList) {
-        userItem.isApply = true;
-        if(action == "editAction"){
-            onRowMachineKey = machineItem.machineKey;
-        }
-    };
-
-    var uncheckedSingleItem = function(action,machineItem,userItem,userList) {
-        userItem.isApply = false;
-        if(action == "editAction"){
-            onRowMachineKey = machineItem.machineKey;
-        }
-    };
 
     //btn_query
     function query() {
