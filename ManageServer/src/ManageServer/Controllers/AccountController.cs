@@ -50,11 +50,12 @@ namespace ManageServer.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var user = _authService.LdapValid(username, password);
+                    var user = _authService.LdapValid(username,password);
                     if (user.IsSuccess)
                     {
+                        DBHasUser(username);
                         SetClaim(username, password);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("index", "Home");
                     }
                     else
                     {
@@ -75,6 +76,20 @@ namespace ManageServer.Controllers
                 ExceptionHandler(ex, "Login Error.");
             }
             return View(model);
+        }
+
+        public void DBHasUser(string username)
+        {
+            var HasUser = _context.Users.Where(u => u.UserID == username).FirstOrDefault();
+            if(HasUser == null)
+            {
+                User addUser = new User();
+                addUser.UserID = username;
+                addUser.IsAdmin = false;
+                _context.Users.Add(addUser);
+                _context.SaveChanges();
+            }
+            
         }
 
         public async void SetClaim(string username, string password)

@@ -142,8 +142,13 @@ namespace ManageServer.Controllers
         [HttpGet]
         public IActionResult GetServerInfo(string ipName, string serverName)
         {
-            var predicate = PredicateBuilder.New<Machine>(true);
+            
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity; ;
+            var user = identity.Claims; 
+            var userName = user.Where(u => u.Type == "Username").SingleOrDefault().Value;
+            var isAdmin = user.Where(u=>u.Type == "IsAdmin").SingleOrDefault().Value;
 
+            var predicate = PredicateBuilder.New<Machine>(true);
             try
             {
                 // 如果有輸入IP名稱作為搜尋條件時
@@ -172,14 +177,22 @@ namespace ManageServer.Controllers
                     AssignUserKeys = u.UserMachines.Select(t => t.User.UserID).ToList()
                 }).OrderBy(m => m.IP).ThenBy(m => m.Name).ToList();
 
-                //Decode
-                
+                //Decode                
                 foreach (var item in _machine)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
-                    item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
+                    foreach(var useritem in item.AssignUserKeys)
+                    {
+                        if(useritem == userName)
+                        {
+                            item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
+                        }else
+                        {
+                            item.Password = "******";
+                        }
+                    }
+                    
                 }
-                
                 return Ok(_machine.ToList());
             }
             catch (Exception ex)

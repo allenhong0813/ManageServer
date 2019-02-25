@@ -94,7 +94,7 @@
                     }
                 },
                 {
-                    name: "isAdmin", type: "customCheckbox", title: "是否是管理者", width: 50,
+                    name: "isAdmin", type: "", title: "是否是管理者", width: 50,
                     itemTemplate: function (value, item) {
                         return chkDisableAdmin(value, item);
                     },
@@ -147,7 +147,7 @@
         var $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
         return $btnPermission.text("授權設定");
     }
-
+    var active
     function btnPermission(value, item) {
         var $btnPermission;
         if (item.isAdmin == true) {
@@ -158,7 +158,7 @@
 
         return $btnPermission.text("授權設定")
                             .on("click", function () {
-                                dialogForm(value, item, confirmFunction);
+                                dialogForm(active, value, item, confirmFunction);
                                 getUserID(value, item);
                                 setUserPermission(value, item);
                                 checkOrRemoveCheckAll();

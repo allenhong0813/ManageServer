@@ -3,10 +3,11 @@
 *@
 
 @model ManageServer.Models.MachineList
-
 @{
     ViewData["Title"] = "Home";
+    var isAdmin = User.Claims.Where(u => u.Type == "IsAdmin").FirstOrDefault().Value;
 }
+
 
 <h2><b>伺服器管理</b></h2>
 <div class="container">
@@ -37,9 +38,12 @@
     var editUserList = @Json.Serialize(ViewData["UserList"]);
     var insertUserList = @Json.Serialize(ViewData["UserList"]);
     var machineUserData = null;
+    var isAdmin= @isAdmin.ToLower();
 
     $(document).ready(function () {
         initGrid();
+        
+        
 
         $("#jsGrid").jsGrid({
             width: "100%",
@@ -191,7 +195,7 @@
                     },
                 },
                 {
-                    name: "password", type: "text", title: "密碼", width: 80, myCustomProperty: "bar",
+                    name: "password", type: "text", title: "密碼", width: 80,
                     validate: [
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
@@ -202,7 +206,11 @@
                         }
                     ],
                     itemTemplate: function (value, item) {
-                        return value.replace(/</g, "&lt;");
+                        //processPassword(value.replace(/</g, "&lt;"),item);
+                        return processPassword(value.replace(/</g, "&lt;"),item);
+                    },
+                    editTemplate: function (value, item) {
+                        return processPassword(value.replace(/</g, "&lt;"),item);
                     },
                 },
                 {
@@ -230,6 +238,7 @@
             itemTemplate: function (value, item) {
                 return (value == null) ? value : value.replace(/</g, "&lt;");
             },
+
         },
         {
             name: "assignUserKeys",title: "授權使用者", width: 80,
@@ -245,14 +254,24 @@
             },
 
         },
-        {
-            type: "control"
-        }
+         {
+                name: "control" ,type: "control" 
+         }
+
+
             ]
-
-
         });
+        if(!isAdmin){
+            $("#jsGrid").jsGrid("fieldOption", "control", "visible", false);
+        }
+        
     });
+
+
+    var processPassword = function(value,item){
+        $inpPassword = value;
+        return $inpPassword;
+    }
 
     function initGrid() {
         var d = $.Deferred();
@@ -400,7 +419,7 @@
             });
             $("#pmjsGrid").jsGrid("loadData", editUserList);
         }
-        
+
         dialog.dialog("close");
 
     }
