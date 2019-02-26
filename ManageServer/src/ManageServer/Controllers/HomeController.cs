@@ -46,10 +46,21 @@ namespace ManageServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult InsertMachineData(Machine machine)
+        public IActionResult InsertMachineData(MachineUserViewModel machineUser)
         {
             try
             {
+                //insert machine table
+                Machine machine = new Machine();
+                machine.Key = machineUser.MachineKey;
+                machine.IP = machineUser.IP;
+                machine.Name = machineUser.Name;
+                machine.LoginID = machineUser.LoginID;
+                machine.Password = machineUser.Password;
+                machine.OS = machineUser.OS;
+                machine.HostIP = machineUser.HostIP;
+                machine.Description = machineUser.Description;
+
                 if (machine.Password == null)
                 {
                     return StatusCode(400, "PasswordIsNull");
@@ -61,6 +72,21 @@ namespace ManageServer.Controllers
                 }
                 _context.Add(machine);
                 _context.SaveChanges();
+
+                //Insert userMachine table
+                var insertMachineKey = _context.Machines.Where(um => um.IP.Contains(machineUser.IP) && um.Name.Contains(machineUser.Name)).SingleOrDefault();
+                UserMachine userMachine = new UserMachine();
+                if (machineUser.AssignUserKeys != null)
+                {
+                    foreach (var machineUserID in machineUser.AssignUserKeys)
+                    {
+                        userMachine.MachineKey = insertMachineKey.Key;
+                        userMachine.UserID = machineUserID;
+                        _context.UserMachines.Add(userMachine);
+                        _context.SaveChanges();
+                    }
+                }
+
                 return Ok();
             }
             catch (Exception ex)
@@ -100,22 +126,26 @@ namespace ManageServer.Controllers
                 /**Delete MachineKey in intermediary table, Then, Insert new MachineKey and User in intermediary talbe**/
                 //Delete
                 var _machineUser = _context.UserMachines.Where(um => um.MachineKey.Contains(machineUser.MachineKey)).ToList();
-                _context.UserMachines.RemoveRange(_machineUser);
-                _context.SaveChanges();
+
+                if (_machineUser.Count != 0)
+                {
+                    _context.UserMachines.RemoveRange(_machineUser);
+                    _context.SaveChanges();
+                }
 
                 //Insert
                 UserMachine userMachine = new UserMachine();
-                foreach(var machineUserID in machineUser.AssignUserKeys)
+                if (machineUser.AssignUserKeys != null)
                 {
-                    userMachine.MachineKey = machineUser.MachineKey;
-                    userMachine.UserID = machineUserID;
-                    _context.UserMachines.Add(userMachine);
-                    _context.SaveChanges();
-                    
+                    foreach (var machineUserID in machineUser.AssignUserKeys)
+                    {
+                        userMachine.MachineKey = machineUser.MachineKey;
+                        userMachine.UserID = machineUserID;
+                        _context.UserMachines.Add(userMachine);
+                        _context.SaveChanges();
+                    }
                 }
-
                 return Ok();
-
             }
             catch (Exception ex)
             {
@@ -124,11 +154,19 @@ namespace ManageServer.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteMachineData(Machine machine)
+        public IActionResult DeleteMachineData(MachineUserViewModel machineUser)
         {
+            Machine _machine;
             try
             {
-                var _machine = _context.Machines.SingleOrDefault(m => m.Key == machine.Key);
+                if (machineUser.MachineKey == null)
+                {
+                     _machine = _context.Machines.SingleOrDefault(m => m.IP == machineUser.IP && m.Name == machineUser.Name);
+                }
+                else
+                {
+                    _machine = _context.Machines.SingleOrDefault(m => m.Key == machineUser.MachineKey);
+                }
                 _context.Remove(_machine);
                 _context.SaveChanges();
                 return Ok();
@@ -142,11 +180,11 @@ namespace ManageServer.Controllers
         [HttpGet]
         public IActionResult GetServerInfo(string ipName, string serverName)
         {
-            
+
             ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity; ;
-            var user = identity.Claims; 
+            var user = identity.Claims;
             var userName = user.Where(u => u.Type == "Username").SingleOrDefault().Value;
-            var isAdmin = user.Where(u=>u.Type == "IsAdmin").SingleOrDefault().Value;
+            var isAdmin = user.Where(u => u.Type == "IsAdmin").SingleOrDefault().Value;
 
             var predicate = PredicateBuilder.New<Machine>(true);
             try
@@ -181,17 +219,32 @@ namespace ManageServer.Controllers
                 foreach (var item in _machine)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
-                    foreach(var useritem in item.AssignUserKeys)
+                    if (Convert.ToBoolean(isAdmin))
                     {
-                        if(useritem == userName)
+                        item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
+                    }
+                    else
+                    {
+                        if (item.AssignUserKeys.Count > 0)
                         {
-                            item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
-                        }else
+                            foreach (var useritem in item.AssignUserKeys)
+                            {
+                                if (useritem == userName)
+                                {
+                                    item.Password = System.Text.Encoding.UTF8.GetString(decodedBytes);
+                                    break;
+                                }
+                                else
+                                {
+                                    item.Password = "******";
+                                }
+                            }
+                        }
+                        else
                         {
                             item.Password = "******";
                         }
                     }
-                    
                 }
                 return Ok(_machine.ToList());
             }

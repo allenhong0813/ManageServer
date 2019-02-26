@@ -42,8 +42,6 @@
 
     $(document).ready(function () {
         initGrid();
-        
-        
 
         $("#jsGrid").jsGrid({
             width: "100%",
@@ -159,7 +157,7 @@
 
             fields: [
                 {
-                    name: "ip", type: "text", title: "IP", width: 100,
+                    name: "ip", type: "text", title: "IP", width: 100,  
                     validate: [
                     { validator: "required", message: "[IP]欄位為必填" },
                     {
@@ -206,11 +204,7 @@
                         }
                     ],
                     itemTemplate: function (value, item) {
-                        //processPassword(value.replace(/</g, "&lt;"),item);
-                        return processPassword(value.replace(/</g, "&lt;"),item);
-                    },
-                    editTemplate: function (value, item) {
-                        return processPassword(value.replace(/</g, "&lt;"),item);
+                        return value.replace(/</g, "&lt;");
                     },
                 },
                 {
@@ -252,6 +246,15 @@
             insertTemplate: function (userValue,machineItem) {
                 return btnInsertPermission(userValue,machineItem);
             },
+            insertValue :function(){
+                var insertAssignUserKeys=[];
+                $.each(insertUserList,function(index,userKey){
+                    if(userKey.isApply == true){
+                        insertAssignUserKeys.push(userKey.userID);
+                    }
+                });
+                return insertAssignUserKeys;
+            }
 
         },
          {
@@ -262,16 +265,17 @@
             ]
         });
         if(!isAdmin){
+            $("#jsGrid").jsGrid("fieldOption", "ip", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "name", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "loginID", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "password", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "os", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "hostIP", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "description", "editing", false);
+            $("#jsGrid").jsGrid("fieldOption", "assignUserKeys", "visible", false);
             $("#jsGrid").jsGrid("fieldOption", "control", "visible", false);
-        }
-        
+        }   
     });
-
-
-    var processPassword = function(value,item){
-        $inpPassword = value;
-        return $inpPassword;
-    }
 
     function initGrid() {
         var d = $.Deferred();
