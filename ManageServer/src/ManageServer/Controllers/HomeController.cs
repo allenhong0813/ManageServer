@@ -36,7 +36,7 @@ namespace ManageServer.Controllers
         {
             try
             {
-                ViewData["UserList"] = _context.Users.ToList();
+                ViewData["UserList"] = _context.Users.Where(u=>u.IsAdmin != true).ToList();
             }
             catch (Exception ex)
             {
