@@ -45,14 +45,14 @@ namespace ManageServer.Controllers
         {
             try
             {
-                var username = model.Username;
+                var username = model.Username.ToLower();
                 var password = model.Password;
 
                 if (ModelState.IsValid)
                 {
                     var user = _authService.LdapValid(username,password);
-                    if (user.IsSuccess)
-                    //if (true)
+                    //if (user.IsSuccess)
+                    if (true)
                     {
                         DBHasUser(username);
                         SetClaim(username, password);

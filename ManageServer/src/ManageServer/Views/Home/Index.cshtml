@@ -36,11 +36,14 @@
     var insertUserList = @Json.Serialize(ViewData["UserList"]);
     var machineUserData = null;
     var isAdmin= @isAdmin.ToLower();
+    var oldEditUserList;
+   
 
     $(document).ready(function () {
         initGrid();
 
         $("#jsGrid").jsGrid({
+
             width: "100%",
             height: "400px",
 
@@ -91,7 +94,7 @@
 
             fields: [
                 {
-                    name: "ip", type: "text", title: "IP", width: 100,
+                    name: "ip", type: "text", title: "*IP", width: 100,
                     validate: [
                     { validator: "required", message: "[IP]欄位為必填" },
                     {
@@ -103,7 +106,7 @@
                     ]
                 },
                 {
-                    name: "name", type: "text", title: "伺服器名稱", width: 80,
+                    name: "name", type: "text", title: "*伺服器名稱", width: 80,
                     validate: [
                         { validator: "required", message: "[伺服器名稱]欄位為必填" }
                     ],
@@ -112,7 +115,7 @@
                     },
                 },
                 {
-                    name: "loginID", type: "text", title: "登入者帳號", width: 80 ,
+                    name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,
                     validate: [
                         { validator: "required", message: "[登入者帳號]欄位為必填" },
                         {
@@ -127,7 +130,7 @@
                     },
                 },
                 {
-                    name: "password", type: "text", title: "密碼", width: 80,
+                    name: "password", type: "text", title: "*密碼", width: 80,
                     validate: [
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
@@ -142,7 +145,7 @@
                     },
                 },
                 {
-                    name: "os", type: "text", title: "系統", width: 100,
+                    name: "os", type: "text", title: "*系統", width: 150,
                     validate: [
                         { validator: "required", message: "[系統]欄位為必填" }
                     ],
@@ -151,7 +154,7 @@
                     },
                 },
                 {
-                    name: "hostIP", type: "text", title: "本機IP", width: 100, validate: [
+                    name: "hostIP", type: "text", title: "*本機IP", width: 100, validate: [
                     { validator: "required", message: "[本機IP]欄位為必填" },
                     {
                         validator: function (value, item) {
@@ -162,19 +165,21 @@
                     ]
                 },
         {
-            name: "description", type: "text", title: "描述", width: 200,
+            name: "description", type: "text", title: "描述", width: 150,
             itemTemplate: function (value, item) {
                 return (value == null) ? value : value.replace(/</g, "&lt;");
             },
 
         },
         {
-            name: "assignUserKeys",title: "授權使用者", width: 80,
+            name: "assignUserKeys",title: "授權使用者", width: 80, visible:isAdmin,
             itemTemplate: function (userValue, machineItem) {
                 return btnDisabledPermission(userValue, machineItem);
             },
 
             editTemplate: function (userValue, machineItem) {
+                oldUserValue = userValue;
+                oldMachineItem = machineItem;
                 return btnEditPermission(userValue, machineItem);
             },
             insertTemplate: function (userValue,machineItem) {
@@ -191,12 +196,19 @@
             }
          },
          {
-             name: "control" ,type: "control" , visible:isAdmin
+             name: "control" ,type: "control" , visible:isAdmin,
+             _createCancelEditButton: function() {
+                 var $result = jsGrid.fields.control.prototype._createCancelEditButton.apply(this, arguments);
+                 $result.on("click", function() { 
+                     $("#pmjsGrid").jsGrid("loadData", oldEditUserList);
+                 });
+                 return $result;
+             }
          }
             ]
         });
     });
-
+    
     function initGrid() {
         var d = $.Deferred();
         $.ajax({
@@ -259,6 +271,7 @@
         if(action == "insertAction"){
             userList = insertUserList;
         }else if(action =="editAction"){
+            oldEditUserList = editUserList;
             userList = editUserList;
         }
         $("#pmjsGrid").jsGrid({

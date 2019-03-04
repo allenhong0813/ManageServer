@@ -2,6 +2,7 @@
 function dialogForm(action, value, item, confirmFunction) {
     dialog = $("#dialog-form").dialog({
         autoOpen: true,
+        dialogClass: "dlg-no-close",
         height: 400,
         width: 600,
         modal: true,
