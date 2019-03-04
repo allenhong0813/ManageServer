@@ -1,9 +1,6 @@
-﻿// Configure bundling and minification for the project.
-// More info at https://go.microsoft.com/fwlink/?LinkId=808241
 [
   {
     "outputFileName": "wwwroot/css/site.min.css",
-    // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
       "wwwroot/css/site.css"
     ]
@@ -13,12 +10,105 @@
     "inputFiles": [
       "wwwroot/js/site.js"
     ],
-    // Optionally specify minification options
     "minify": {
       "enabled": true,
       "renameLocals": true
-    },
-    // Optinally generate .map file
-    "sourceMap": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/css/myCss.min.css",
+    "inputFiles": [
+      "wwwroot/css/myCss.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/managerServerStyle-Blue.min.css",
+    "inputFiles": [
+      "wwwroot/css/managerServerStyle-Blue.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.validation.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.validation.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.core.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.core.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.field.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/jsgrid.field.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popButton.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popButton.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popUp.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popUp.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.js"
+    ]
   }
 ]

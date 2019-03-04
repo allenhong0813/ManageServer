@@ -7,19 +7,19 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link href="~/lib/jsgrid-1.5.3/css/jsgrid.css" rel="stylesheet" />
         <link href="~/lib/jsgrid-1.5.3/css/theme.css" rel="stylesheet" />
         <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
-        <link href="~/css/myCss.css" rel="stylesheet" />
-        <link href="~/css/managerServerStyle-Blue.css" rel="stylesheet" />
-        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+        <link href="~/css/managerServerStyle-Blue.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/myCss.css" rel="stylesheet" asp-append-version="true" />
+        <script src="~/js/site.js"  asp-append-version="true"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.core.js"></script>
-        <script src="~/js/site.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.js"></script>
@@ -33,123 +33,119 @@
         <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popButton.js"></script>
         <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popUp.js"></script>
-
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />        
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-
-        <link href="~/lib/jsgrid-1.5.3/css/jsgrid.css" rel="stylesheet" />
-        <link href="~/lib/jsgrid-1.5.3/css/theme.css" rel="stylesheet" />
+        <link href="~/lib/jsgrid-1.5.3/dist/jsgrid-theme.min.css" rel="stylesheet" />
+        <link href="~/lib/jsgrid-1.5.3/dist/jsgrid.min.css" rel="stylesheet" />
         <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
         <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
         <link href="~/lib/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
-        <link href="~/css/myCss.css" rel="stylesheet" />
-        <link href="~/css/managerServerStyle-Blue.css" rel="stylesheet" />
-        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
+        <link href="~/css/managerServerStyle-Blue.min.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" asp-append-version="true" />
+        <link href="~/css/myCss.min.css" rel="stylesheet" asp-append-version="true" />
+        <script src="~/js/site.min.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.validation.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.core.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.field.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.js"></script>>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popButton.js"></script>
-        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popUp.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/dist/jsgrid.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.core.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-indicator.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.load-strategies.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.sort-strategies.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.validation.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/jsgrid.field.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.text.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.number.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.select.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.textarea.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.checkbox.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.control.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popButton.min.js"></script>
+        <script src="~/lib/jsgrid-1.5.3/src/fields/jsgrid.field.popUp.min.js"></script>
     </environment>
 </head>
 <body>
-    <div class="navbar navbar-default navbar-fixed-top">
-        <div class="container" id="header">
-            <div class="navbar-header ">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand ">
-                    <i class="fa fa-home " aria-hidden="true" style="font-size:x-large;"></i>
-                </a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @{
-                        if (User.HasClaim(c => c.Type == "Username"))
-                        {
-                            var IsAdmin = User.Claims.Where(u => u.Type == "IsAdmin").FirstOrDefault().Value;
-                            if (Convert.ToBoolean(IsAdmin))
+    <div id='id_wrapper'>
+        <div class="navbar navbar-default navbar-fixed-top " id='id_header'>
+            <div class="container" id="header" style="width:95%">
+                <div class="navbar-header ">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand ">
+                        <i class="fa fa-home " aria-hidden="true" style="font-size:x-large;"></i>
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        @{
+                            if (User.HasClaim(c => c.Type == "Username"))
                             {
-                                <li style="font-size:large;padding:0">
-                                    <a asp-area="" asp-controller="Permission" asp-action="Permission">權限管理</a>
-                                </li>
-                            }
+                                var IsAdmin = User.Claims.Where(u => u.Type == "IsAdmin").FirstOrDefault().Value;
+                                if (Convert.ToBoolean(IsAdmin))
+                                {
+                                    <li style="font-size:large;padding:0">
+                                        <a asp-area="" asp-controller="Permission" asp-action="Permission">權限管理</a>
+                                    </li>
+                                }
 
+                            }
                         }
-                    }
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown ">
-                        <a class="dropdown-toggle username" data-toggle="dropdown" aria-expanded="false">
-                            <span class="username-inline username-text-wrap" style="padding:0">
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown ">
+                            <a class="dropdown-toggle username" data-toggle="dropdown" aria-expanded="false">
+                                <span class="username-inline username-text-wrap" style="padding:0">
+                                    @if (User.HasClaim(c => c.Type == "Username"))
+                                    {
+                                        <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
+                                            @User.Claims.Where(u => u.Type == "Username").FirstOrDefault().Value
+                                        </i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
+                                            用戶
+                                        </i>
+                                    }
+
+                                </span>
+                                <i class="fa fa-caret-down " aria-hidden="true"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-user">
                                 @if (User.HasClaim(c => c.Type == "Username"))
                                 {
-                                    <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
-                                        @User.Claims.Where(u => u.Type == "Username").FirstOrDefault().Value
-                                    </i>
+                                    <li><a asp-area="" asp-controller="Account" asp-action="Logout">登出</a></li>
                                 }
                                 else
                                 {
-                                    <i class="fa fa-user-circle-o " aria-hidden="true" style="font-size:large">
-                                        用戶
-                                    </i>
+                                    <li><a asp-area="" asp-controller="Account" asp-action="Login">登入</a></li>
                                 }
 
-                            </span>
-                            <i class="fa fa-caret-down " aria-hidden="true"></i>
-                        </a>
-                        
-                        <ul class="dropdown-menu dropdown-user">
-                            @if (User.HasClaim(c => c.Type == "Username"))
-                            {
-                                <li><a asp-area="" asp-controller="Account" asp-action="Logout">登出</a></li>
-                            }
-                            else
-                            {
-                                <li><a asp-area="" asp-controller="Account" asp-action="Login">登入</a></li>
-                            }
+                            </ul>
 
-                        </ul>
-
-                        <!-- /.dropdown-user -->
-                    </li>
-                    <!-- /.dropdown -->
-                </ul>
+                            <!-- /.dropdown-user -->
+                        </li>
+                        <!-- /.dropdown -->
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
-
-        @RenderBody()
-
-        <hr />
-        <footer>
-            <p>&copy; 2019 - ManageServer Information</p>
-        </footer>
-    </div>
-
-    @RenderSection("scripts", required: false)
+        <div class="container body-content id='id_content'" style="width:95%">
+            @RenderBody()
+            @RenderSection("scripts", required: false)
+            <footer id="id_footer">
+                <p>&copy; 2019 - ManageServer Information</p>
+            </footer>
+        </div>
+    </div><!-- id_wrapper-->
 </body>
 </html>

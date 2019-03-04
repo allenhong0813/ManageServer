@@ -102,7 +102,15 @@ namespace ManageServer.Controllers
             {
                 //insert machine table
                 Machine machine = new Machine();
-                machine.Key = machineUser.MachineKey;
+
+                if (machineUser.MachineKey == null)
+                {
+                    machine = _context.Machines.SingleOrDefault(m => m.IP == machineUser.IP && m.Name == machineUser.Name);
+                }
+                else
+                {
+                    machine.Key = machineUser.MachineKey;
+                }
                 machine.IP = machineUser.IP;
                 machine.Name = machineUser.Name;
                 machine.LoginID = machineUser.LoginID;
@@ -125,7 +133,7 @@ namespace ManageServer.Controllers
 
                 /**Delete MachineKey in intermediary table, Then, Insert new MachineKey and User in intermediary talbe**/
                 //Delete
-                var _machineUser = _context.UserMachines.Where(um => um.MachineKey.Contains(machineUser.MachineKey)).ToList();
+                var _machineUser = _context.UserMachines.Where(um => um.MachineKey.Contains(machine.Key)).ToList();
 
                 if (_machineUser.Count != 0)
                 {
@@ -139,7 +147,7 @@ namespace ManageServer.Controllers
                 {
                     foreach (var machineUserID in machineUser.AssignUserKeys)
                     {
-                        userMachine.MachineKey = machineUser.MachineKey;
+                        userMachine.MachineKey = machine.Key;
                         userMachine.UserID = machineUserID;
                         _context.UserMachines.Add(userMachine);
                         _context.SaveChanges();

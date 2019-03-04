@@ -7,9 +7,9 @@
 }
 
 <h2><b>授權管理</b></h2>
-<div class="container">
+
     <!-- Content here -->
-    <div class="row" style="margin-bottom:5px; ">
+    
         <form class="form-inline">
             <div class="form-group form-pairs">
                 <label class="text-right">使用者ID</label>
@@ -26,8 +26,7 @@
             <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
 
         </form>
-    </div>
-</div>
+    
 
 <div id="jsGrid"></div>
 
@@ -57,7 +56,7 @@
             inserting: false,
             sorting: true,
             paging: false,
-
+            rowClick: function () { return; },
             autoload: false,
             invalidMessage: "欄位輸入有誤：",
 

@@ -10,11 +10,9 @@
 
 
 <h2><b>伺服器管理</b></h2>
-<div class="container">
+
     <!-- Content here -->
-    <div id="status"><p id="state"></p></div>
-    <div id="log"></div>
-    <div class="row" style="margin-bottom:5px; ">
+    
         <form class="form-inline">
             <div class="form-group form-pairs">
                 <label class="text-right">IP</label>
@@ -27,9 +25,8 @@
             <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
 
         </form>
-    </div>
-</div>
-<div id="jsGrid"></div>
+    
+<div id="jsGrid" style="min-height:100%"></div>
 @*dialog page*@
 <div id="dialog-form" title="授權設定" style="display:none">
     <div id="pmjsGrid"></div>
@@ -47,14 +44,14 @@
             width: "100%",
             height: "400px",
 
-            editing: true,
+            editing: isAdmin,
             selecting: true,
-            inserting: true,
+            inserting: isAdmin,
             paging: false,
             autoload: false,
             invalidMessage: "欄位輸入有誤：",
             deleteConfirm: "確定刪除這筆資料嗎？",
-
+            rowClick: function () { return; },
             controller: {
                 loadData: function (filter) {
                     return filter;
@@ -66,34 +63,7 @@
                         url: "/Home/InsertMachineData",
                         data: item,
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.responseText == "IPIsNull") {
-                            alert("Insert Error:[IP]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "NameIsNull") {
-                            alert("Insert Error:[伺服器名稱]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "LoginIDIsNull") {
-                            alert("Insert Error:[登入者帳號]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "PasswordIsNull") {
-                            alert("Insert Error:[密碼]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "OSIsNull") {
-                            alert("Insert Error:[系統]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "HostIPIsNull") {
-                            alert("Insert Error:[本機IP]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "DBNoConnect") {
-                            alert("Insert error：未連接上資料庫。")
-                        }
-                        else if (jqXHR.responseText == "Insert Error.") {
-                            alert("Insert error：新增資料發生錯誤")
-                        }
-                        else {
-                            alert("發生錯誤。");
-                            console.error(jqXHR.responseText);
-                        }
+                        ErrorMessage(jqXHR);
                     });
                 },
 
@@ -104,34 +74,7 @@
                         data: item
 
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.responseText == "IPIsNull") {
-                            alert("Update Error:[IP]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "NameIsNull") {
-                            alert("Update Error:[伺服器名稱]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "LoginIDIsNull") {
-                            alert("Update Error:[登入者帳號]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "PasswordIsNull") {
-                            alert("Update Error:[密碼]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "OSIsNull") {
-                            alert("Update Error:[系統]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "HostIPIsNull") {
-                            alert("Update Error:[本機IP]不能為空。");
-                        }
-                        else if (jqXHR.responseText == "DBNoConnect") {
-                            alert("Update error：未連接上資料庫。")
-                        }
-                        else if (jqXHR.responseText == "Update Error.") {
-                            alert("Update error：更新資料發生錯誤。")
-                        }
-                        else {
-                            alert("發生錯誤。");
-                            console.error(jqXHR.responseText);
-                        }
+                        ErrorMessage(jqXHR);
                     });
                 },
 
@@ -141,23 +84,14 @@
                         url: "/Home/DeleteMachineData",
                         data: item
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.responseText == "Delete Error.") {
-                            alert(alert("Delete error：刪除資料發生錯誤。"));
-                        }
-                        else if (jqXHR.responseText == "DBNoConnect") {
-                            alert("Delete error：未連接上資料庫。")
-                        }
-                        else {
-                            alert("發生錯誤。");
-                            console.error(jqXHR.responseText);
-                        }
+                        ErrorMessage(jqXHR);
                     });
                 },
             },
 
             fields: [
                 {
-                    name: "ip", type: "text", title: "IP", width: 100,  
+                    name: "ip", type: "text", title: "IP", width: 100,
                     validate: [
                     { validator: "required", message: "[IP]欄位為必填" },
                     {
@@ -255,26 +189,12 @@
                 });
                 return insertAssignUserKeys;
             }
-
-        },
+         },
          {
-                name: "control" ,type: "control" 
+             name: "control" ,type: "control" , visible:isAdmin
          }
-
-
             ]
         });
-        if(!isAdmin){
-            $("#jsGrid").jsGrid("fieldOption", "ip", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "name", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "loginID", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "password", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "os", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "hostIP", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "description", "editing", false);
-            $("#jsGrid").jsGrid("fieldOption", "assignUserKeys", "visible", false);
-            $("#jsGrid").jsGrid("fieldOption", "control", "visible", false);
-        }   
     });
 
     function initGrid() {
@@ -287,16 +207,7 @@
             machineUserData = data;
             $("#jsGrid").jsGrid("loadData", machineUserData);
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetServerInfo Error.") {
-                alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。");
-            }
-            else if (jqXHR.responseText == "DBNoConnect") {
-                alert("Inital error：未連接上資料庫。")
-            }
-            else {
-                alert("發生錯誤。");
-                console.error(jqXHR.responseText);
-            }
+            ErrorMessage(jqXHR);
         });
         return d.promise();
     }
@@ -481,7 +392,6 @@
 
         if ($("#inpServerName").val() != null && $("#inpServerName").val() != "")
             serverName = $("#inpServerName").val();
-
         $.ajax({
             type: "GET",
             url: "/Home/GetServerInfo",
