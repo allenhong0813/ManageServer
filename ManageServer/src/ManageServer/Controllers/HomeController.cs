@@ -75,16 +75,17 @@ namespace ManageServer.Controllers
 
                 //Insert userMachine table
                 var insertMachineKey = _context.Machines.Where(um => um.IP.Contains(machineUser.IP) && um.Name.Contains(machineUser.Name)).SingleOrDefault();
-                UserMachine userMachine = new UserMachine();
+             
                 if (machineUser.AssignUserKeys != null)
                 {
                     foreach (var machineUserID in machineUser.AssignUserKeys)
                     {
+                        UserMachine userMachine = new UserMachine();
                         userMachine.MachineKey = insertMachineKey.Key;
                         userMachine.UserID = machineUserID;
-                        _context.UserMachines.Add(userMachine);
-                        _context.SaveChanges();
+                        _context.UserMachines.Add(userMachine);                   
                     }
+                    _context.SaveChanges();
                 }
 
                 return Ok();

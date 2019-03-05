@@ -59,7 +59,7 @@
         },
 
         _createTextBox: function() {
-            return $("<input>").attr("type", "text")
+            return $("<input>").attr("type", "text").attr("title", this.validTip)
                 .prop("readonly", !!this.readOnly);
         }
     });

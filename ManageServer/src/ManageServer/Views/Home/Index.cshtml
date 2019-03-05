@@ -11,21 +11,21 @@
 
 <h2><b>伺服器管理</b></h2>
 
-    <!-- Content here -->
-    
-        <form class="form-inline">
-            <div class="form-group form-pairs">
-                <label class="text-right">IP</label>
-                <input id="inpIPName" type="text" class="form-control" placeholder="IP Name" style="margin-bottom: 5px;">
-            </div>
-            <div class="form-group  form-pairs">
-                <label class="text-right">伺服器名稱</label>
-                <input id="inpServerName" type="text" class="form-control" placeholder="Server Name" style="margin-bottom: 5px;">
-            </div>
-            <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+<!-- Content here -->
 
-        </form>
-    
+<form class="form-inline">
+    <div class="form-group form-pairs">
+        <label class="text-right">IP</label>
+        <input id="inpIPName" type="text" class="form-control" placeholder="IP Name" style="margin-bottom: 5px;">
+    </div>
+    <div class="form-group  form-pairs">
+        <label class="text-right">伺服器名稱</label>
+        <input id="inpServerName" type="text" class="form-control" placeholder="Server Name" style="margin-bottom: 5px;">
+    </div>
+    <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+
+</form>
+
 <div id="jsGrid" style="min-height:100%"></div>
 @*dialog page*@
 <div id="dialog-form" title="授權設定" style="display:none">
@@ -36,12 +36,14 @@
     var insertUserList = @Json.Serialize(ViewData["UserList"]);
     var machineUserData = null;
     var isAdmin= @isAdmin.ToLower();
-    var oldEditUserList;
-   
+    var origin = false;
+    var originallyEditUserList; 
+
+    //var currentMachineItem = null;
 
     $(document).ready(function () {
         initGrid();
-
+        //initDetailGrid();
         $("#jsGrid").jsGrid({
 
             width: "100%",
@@ -61,6 +63,7 @@
                 },
 
                 insertItem: function (item) {
+                    
                     return $.ajax({
                         type: "POST",
                         url: "/Home/InsertMachineData",
@@ -94,9 +97,9 @@
 
             fields: [
                 {
-                    name: "ip", type: "text", title: "*IP", width: 100,
+                    name: "ip", type: "text", title: "*IP", width: 100,validTip: "[必填欄位]需要輸入IP位置。eg.127.0.0.1",
                     validate: [
-                    { validator: "required", message: "[IP]欄位為必填" },
+                    { validator: "required", message: "[IP]欄位為必填" }, 
                     {
                         validator: function (value, item) {
                             return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
@@ -106,7 +109,7 @@
                     ]
                 },
                 {
-                    name: "name", type: "text", title: "*伺服器名稱", width: 80,
+                    name: "name", type: "text", title: "*伺服器名稱", width: 80,validTip: "[必填欄位]需要輸入伺服器名稱。",
                     validate: [
                         { validator: "required", message: "[伺服器名稱]欄位為必填" }
                     ],
@@ -115,14 +118,14 @@
                     },
                 },
                 {
-                    name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,
+                    name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,validTip: "[必填欄位]需要輸入伺服器登入ID。",
                     validate: [
                         { validator: "required", message: "[登入者帳號]欄位為必填" },
                         {
                             validator: function (value, item) {
                                 return /^[^\s]*$/g.test(value);
                             },
-                            message: "[登入者帳號]欄位：不含空白字元"
+                            message: "[登入者帳號]欄位：不含空白字元與中文字"
                         }
                     ],
                     itemTemplate: function (value, item) {
@@ -130,12 +133,12 @@
                     },
                 },
                 {
-                    name: "password", type: "text", title: "*密碼", width: 80,
+                    name: "password", type: "text", title: "*密碼", width: 80,validTip: "[必填欄位]需要輸入伺服器密碼，不可輸入中文字。",
                     validate: [
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
                             validator: function (value, item) {
-                                return /^[^\s]*$/g.test(value);
+                                return /^[u4E00-u9FA5]+[^\s]$/g.test(value);
                             },
                             message: "[密碼]欄位：不含空白字元"
                         }
@@ -145,7 +148,7 @@
                     },
                 },
                 {
-                    name: "os", type: "text", title: "*系統", width: 150,
+                    name: "os", type: "text", title: "*系統", width: 150,validTip: "[必填欄位]需要輸入伺服器系統版本。eg.127.0.0.1",
                     validate: [
                         { validator: "required", message: "[系統]欄位為必填" }
                     ],
@@ -154,7 +157,8 @@
                     },
                 },
                 {
-                    name: "hostIP", type: "text", title: "*本機IP", width: 100, validate: [
+                    name: "hostIP", type: "text", title: "*本機IP", width: 100, validTip: "[必填欄位]需要輸入伺服器的本機IP。",
+                    validate: [
                     { validator: "required", message: "[本機IP]欄位為必填" },
                     {
                         validator: function (value, item) {
@@ -178,8 +182,6 @@
             },
 
             editTemplate: function (userValue, machineItem) {
-                oldUserValue = userValue;
-                oldMachineItem = machineItem;
                 return btnEditPermission(userValue, machineItem);
             },
             insertTemplate: function (userValue,machineItem) {
@@ -194,13 +196,13 @@
                 });
                 return insertAssignUserKeys;
             }
-         },
+        },
          {
              name: "control" ,type: "control" , visible:isAdmin,
              _createCancelEditButton: function() {
                  var $result = jsGrid.fields.control.prototype._createCancelEditButton.apply(this, arguments);
-                 $result.on("click", function() { 
-                     $("#pmjsGrid").jsGrid("loadData", oldEditUserList);
+                 $result.on("click", function() {
+                     origin = true;
                  });
                  return $result;
              }
@@ -208,7 +210,7 @@
             ]
         });
     });
-    
+
     function initGrid() {
         var d = $.Deferred();
         $.ajax({
@@ -251,12 +253,14 @@
             getMachineUser(userValue,machineItem);
             setMachinePermission(action, userValue, machineItem);
             checkOrRemoveCheckAll();
+
         })
         return $btnPermissionSetting;
     };
 
     var getMachineUser = function(userValue,machineItem){
         var assignUserKeys = machineItem.assignUserKeys;
+
         $.each(editUserList,function(index, user){
             if(assignUserKeys.indexOf(user.userID)>-1){
                 user.isApply=true;
@@ -264,16 +268,69 @@
                 user.isApply=false;
             }
         });
+        if(origin == false){
+            originallyEditUserList = $.extend(true, [], editUserList);
+        }
+        
+
     }
 
+    //function initDetailGrid() {
+    //    $("#pmjsGrid").jsGrid({
+    //        width: "100%",
+    //        height: "100%",
+    //        filtering: false,
+    //        editing: false,
+    //        selecting: true,
+    //        inserting: false,
+    //        sorting: false,
+    //        paging: false,
+    //        autoload: false,            
+    //        invalidMessage: "勾選有誤：",
+    //        controller: {
+    //            loadData: function (filter) {
+    //                return filter;
+    //            },
+    //        },
+    //        fields: [
+    //            {
+    //                headerTemplate: function() {
+    //                    return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll").attr("name","inpCheckAll")
+    //                            .on("click", function () {
+    //                                checkedAllItem(action ,currentMachineItem, userList);
+    //                            });
+    //                },
+    //                itemTemplate: function(userValue, userItem) {
+    //                    return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
+    //                            .prop("checked", userItem.isApply)
+    //                            .on("change", function () {
+    //                                $(this).is(":checked") ? checkedSingleItem(action, currentMachineItem, userItem, userList):uncheckedSingleItem(action, machineItem, userItem, userList);
+    //                                checkOrRemoveCheckAll();
+    //                            });
+    //                },
+    //                align: "center",
+    //                width: 20
+    //            },
+    //            {
+    //                name: "userID", type: "text", title: "", width: 80,
+    //            },
+    //        ]
+    //    })
+    //}
+
     var setMachinePermission = function(action,userValue,machineItem){
-        var userList;
+        var userList ;
+        if(origin == true){
+            editUserList = originallyEditUserList;           
+        }
         if(action == "insertAction"){
             userList = insertUserList;
         }else if(action =="editAction"){
-            oldEditUserList = editUserList;
-            userList = editUserList;
+            userList = editUserList;        
         }
+        //currentMachineItem = machineItem;
+        //$("#pmjsGrid").jsGrid("loadData",userList);
+
         $("#pmjsGrid").jsGrid({
             width: "100%",
             height: "100%",
