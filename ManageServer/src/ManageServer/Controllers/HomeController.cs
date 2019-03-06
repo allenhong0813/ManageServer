@@ -36,7 +36,7 @@ namespace ManageServer.Controllers
         {
             try
             {
-                ViewData["UserList"] = _context.Users.Where(u=>u.IsAdmin != true).ToList();
+                ViewData["UserList"] = _context.Users.Where(u => u.IsAdmin != true).ToList();
             }
             catch (Exception ex)
             {
@@ -46,48 +46,45 @@ namespace ManageServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult InsertMachineData(MachineUserViewModel machineUser)
+        public IActionResult InsertMachineData(MachineUserViewModel machineUserViewModel)
         {
             try
             {
-                //insert machine table
-                Machine machine = new Machine();
-                machine.Key = machineUser.MachineKey;
-                machine.IP = machineUser.IP;
-                machine.Name = machineUser.Name;
-                machine.LoginID = machineUser.LoginID;
-                machine.Password = machineUser.Password;
-                machine.OS = machineUser.OS;
-                machine.HostIP = machineUser.HostIP;
-                machine.Description = machineUser.Description;
-
-                if (machine.Password == null)
+                if (machineUserViewModel.Password == null)
                 {
                     return StatusCode(400, "PasswordIsNull");
                 }
                 else
                 {
-                    byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machine.Password);
-                    machine.Password = Convert.ToBase64String(encodedBytes);
+                    byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machineUserViewModel.Password);
+                    machineUserViewModel.Password = Convert.ToBase64String(encodedBytes);
                 }
+
+                Machine machine = new Machine();
+                machine.Key = machineUserViewModel.MachineKey;
+                machine.IP = machineUserViewModel.IP;
+                machine.Name = machineUserViewModel.Name;
+                machine.LoginID = machineUserViewModel.LoginID;
+                machine.Password = machineUserViewModel.Password;
+                machine.OS = machineUserViewModel.OS;
+                machine.HostIP = machineUserViewModel.HostIP;
+                machine.Description = machineUserViewModel.Description;
+
                 _context.Add(machine);
                 _context.SaveChanges();
 
-                //Insert userMachine table
-                var insertMachineKey = _context.Machines.Where(um => um.IP.Contains(machineUser.IP) && um.Name.Contains(machineUser.Name)).SingleOrDefault();
-             
-                if (machineUser.AssignUserKeys != null)
+                //Insert userMachine table 
+                if (machineUserViewModel.AssignUserKeys != null)
                 {
-                    foreach (var machineUserID in machineUser.AssignUserKeys)
+                    foreach (var machineUserID in machineUserViewModel.AssignUserKeys)
                     {
                         UserMachine userMachine = new UserMachine();
-                        userMachine.MachineKey = insertMachineKey.Key;
+                        userMachine.MachineKey = machineUserViewModel.MachineKey;
                         userMachine.UserID = machineUserID;
-                        _context.UserMachines.Add(userMachine);                   
+                        _context.UserMachines.Add(userMachine);
                     }
                     _context.SaveChanges();
                 }
-
                 return Ok();
             }
             catch (Exception ex)
@@ -97,44 +94,36 @@ namespace ManageServer.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateMachineData(MachineUserViewModel machineUser)
+        public IActionResult UpdateMachineData(MachineUserViewModel machineUserViewModel)
         {
             try
             {
-                //insert machine table
-                Machine machine = new Machine();
-
-                if (machineUser.MachineKey == null)
-                {
-                    machine = _context.Machines.SingleOrDefault(m => m.IP == machineUser.IP && m.Name == machineUser.Name);
-                }
-                else
-                {
-                    machine.Key = machineUser.MachineKey;
-                }
-                machine.IP = machineUser.IP;
-                machine.Name = machineUser.Name;
-                machine.LoginID = machineUser.LoginID;
-                machine.Password = machineUser.Password;
-                machine.OS = machineUser.OS;
-                machine.HostIP = machineUser.HostIP;
-                machine.Description = machineUser.Description;
-
-                if (machine.Password == null)
+                if (machineUserViewModel.Password == null)
                 {
                     return StatusCode(400, "PasswordIsNull");
                 }
                 else
                 {
-                    byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machine.Password);
-                    machine.Password = Convert.ToBase64String(encodedBytes);
+                    byte[] encodedBytes = System.Text.Encoding.UTF8.GetBytes(machineUserViewModel.Password);
+                    machineUserViewModel.Password = Convert.ToBase64String(encodedBytes);
                 }
+                //insert machine table
+                Machine machine = new Machine();
+                machine.Key = machineUserViewModel.MachineKey;
+                machine.IP = machineUserViewModel.IP;
+                machine.Name = machineUserViewModel.Name;
+                machine.LoginID = machineUserViewModel.LoginID;
+                machine.Password = machineUserViewModel.Password;
+                machine.OS = machineUserViewModel.OS;
+                machine.HostIP = machineUserViewModel.HostIP;
+                machine.Description = machineUserViewModel.Description;
+
                 _context.Update(machine);
                 _context.SaveChanges();
 
                 /**Delete MachineKey in intermediary table, Then, Insert new MachineKey and User in intermediary talbe**/
                 //Delete
-                var _machineUser = _context.UserMachines.Where(um => um.MachineKey.Contains(machine.Key)).ToList();
+                var _machineUser = _context.UserMachines.Where(um => um.MachineKey == machineUserViewModel.MachineKey).ToList();
 
                 if (_machineUser.Count != 0)
                 {
@@ -143,16 +132,17 @@ namespace ManageServer.Controllers
                 }
 
                 //Insert
-                UserMachine userMachine = new UserMachine();
-                if (machineUser.AssignUserKeys != null)
+                if (machineUserViewModel.AssignUserKeys != null)
                 {
-                    foreach (var machineUserID in machineUser.AssignUserKeys)
+                    foreach (var machineUserID in machineUserViewModel.AssignUserKeys)
                     {
-                        userMachine.MachineKey = machine.Key;
+                        UserMachine userMachine = new UserMachine();
+                        userMachine.MachineKey = machineUserViewModel.MachineKey;
                         userMachine.UserID = machineUserID;
                         _context.UserMachines.Add(userMachine);
-                        _context.SaveChanges();
+
                     }
+                    _context.SaveChanges();
                 }
                 return Ok();
             }
@@ -163,19 +153,11 @@ namespace ManageServer.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteMachineData(MachineUserViewModel machineUser)
-        {
-            Machine _machine;
+        public IActionResult DeleteMachineData(MachineUserViewModel machineUserViewModel)
+        {  
             try
             {
-                if (machineUser.MachineKey == null)
-                {
-                     _machine = _context.Machines.SingleOrDefault(m => m.IP == machineUser.IP && m.Name == machineUser.Name);
-                }
-                else
-                {
-                    _machine = _context.Machines.SingleOrDefault(m => m.Key == machineUser.MachineKey);
-                }
+                Machine _machine = _context.Machines.SingleOrDefault(m => m.Key == machineUserViewModel.MachineKey);
                 _context.Remove(_machine);
                 _context.SaveChanges();
                 return Ok();
@@ -187,7 +169,7 @@ namespace ManageServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetServerInfo(string ipName, string serverName)
+        public IActionResult GetGridData(string ipName, string serverName)
         {
 
             ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity; ;

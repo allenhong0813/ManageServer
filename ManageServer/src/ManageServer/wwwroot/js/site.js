@@ -1,4 +1,14 @@
 ﻿// Write your Javascript code.
+function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+}
+
 function dialogForm(action, value, item, confirmFunction) {
     dialog = $("#dialog-form").dialog({
         autoOpen: true,
@@ -27,7 +37,7 @@ function checkOrRemoveCheckAll() {
 }
 
 //ErrorMessage
-function ErrorMessage(jqXHR) {
+function errorMessage(jqXHR) {
     if (jqXHR.responseText == "IPIsNull") {
         alert("Update Error:[IP]不能為空。");
     }

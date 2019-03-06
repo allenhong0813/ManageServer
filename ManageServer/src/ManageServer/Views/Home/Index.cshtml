@@ -37,18 +37,21 @@
     var machineUserData = null;
     var isAdmin= @isAdmin.ToLower();
     var origin = false;
-    var originallyEditUserList; 
-
+    var originallyEditUserList;
+    var $btnPermissionSetting;
+    var action="";
     //var currentMachineItem = null;
 
     $(document).ready(function () {
         initGrid();
+        getGridData();
         //initDetailGrid();
-        $("#jsGrid").jsGrid({
+    });
 
+    function initGrid(){
+        $("#jsGrid").jsGrid({
             width: "100%",
             height: "400px",
-
             editing: isAdmin,
             selecting: true,
             inserting: isAdmin,
@@ -61,45 +64,58 @@
                 loadData: function (filter) {
                     return filter;
                 },
-
-                insertItem: function (item) {
-                    
-                    return $.ajax({
+                insertItem: function (insertingItem) {
+                    var d = $.Deferred();
+                    insertingItem.machineKey = generateUUID();
+                    $.ajax({
                         type: "POST",
                         url: "/Home/InsertMachineData",
-                        data: item,
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        ErrorMessage(jqXHR);
+                        data: { machineUserViewModel: insertingItem }
+                    }).done(function (result) {
+                        if (result == "success")
+                            d.resolve();
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        errorMessage(jqXHR);
+                        d.resolve();
                     });
+                    return d.promise();
                 },
-
-                updateItem: function (item) {
-                    return $.ajax({
+                updateItem: function (updatingItem) {
+                    var d = $.Deferred();
+                    $.ajax({
                         type: "PUT",
                         url: "/Home/UpdateMachineData",
-                        data: item
-
+                        data: { machineUserViewModel: updatingItem }
+                    }).done(function (result) {
+                        if (result == "success")
+                            d.resolve(updatingItem);
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        ErrorMessage(jqXHR);
+                        errorMessage(jqXHR);
+                        d.resolve();
                     });
+                    return d.promise();
                 },
-
-                deleteItem: function (item) {
-                    return $.ajax({
+                deleteItem: function (deletingItem) {
+                    var d = $.Deferred();
+                    $.ajax({
                         type: "DELETE",
                         url: "/Home/DeleteMachineData",
-                        data: item
+                        data: { machineUserViewModel: deletingItem }
+                    }).done(function (result) {
+                        if (result == "success")
+                            d.resolve();
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        ErrorMessage(jqXHR);
+                        errorMessage(jqXHR);
+                        d.resolve();
                     });
+                    return d.promise();
                 },
             },
-
             fields: [
                 {
                     name: "ip", type: "text", title: "*IP", width: 100,validTip: "[必填欄位]需要輸入IP位置。eg.127.0.0.1",
                     validate: [
-                    { validator: "required", message: "[IP]欄位為必填" }, 
+                    { validator: "required", message: "[IP]欄位為必填" },
                     {
                         validator: function (value, item) {
                             return /^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*$/.test(value);
@@ -209,25 +225,23 @@
          }
             ]
         });
-    });
+    }
 
-    function initGrid() {
+    function getGridData() {
         var d = $.Deferred();
         $.ajax({
             type: "GET",
-            url: '/Home/GetServerInfo'
+            url: '/Home/GetGridData'
         }).done(function (data) {
-            d.resolve(data);
             machineUserData = data;
             $("#jsGrid").jsGrid("loadData", machineUserData);
+            d.resolve(data);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             ErrorMessage(jqXHR);
+            d.resolve(data);
         });
         return d.promise();
     }
-
-    var $btnPermissionSetting;
-    var action="";
 
     var btnDisabledPermission = function (userValue, machineItem) {
         $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
@@ -271,7 +285,7 @@
         if(origin == false){
             originallyEditUserList = $.extend(true, [], editUserList);
         }
-        
+
 
     }
 
@@ -285,7 +299,7 @@
     //        inserting: false,
     //        sorting: false,
     //        paging: false,
-    //        autoload: false,            
+    //        autoload: false,
     //        invalidMessage: "勾選有誤：",
     //        controller: {
     //            loadData: function (filter) {
@@ -321,12 +335,12 @@
     var setMachinePermission = function(action,userValue,machineItem){
         var userList ;
         if(origin == true){
-            editUserList = originallyEditUserList;           
+            editUserList = originallyEditUserList;
         }
         if(action == "insertAction"){
             userList = insertUserList;
         }else if(action =="editAction"){
-            userList = editUserList;        
+            userList = editUserList;
         }
         //currentMachineItem = machineItem;
         //$("#pmjsGrid").jsGrid("loadData",userList);
