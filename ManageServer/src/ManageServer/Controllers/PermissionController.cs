@@ -35,7 +35,7 @@ namespace ManageServer.Controllers
             {
                 return ExceptionHandler(ex, "Constructor Error.");
             }
-            
+
             return View();
         }
 
@@ -79,50 +79,26 @@ namespace ManageServer.Controllers
         {
             try
             {
-                UserMachine userMachine = new UserMachine();
-                User users = new Models.User();
-
-                if (isAdmin == true)
+                var _user = _context.Users.SingleOrDefault(m => m.UserID == userID);
+                if (_user != null)//update
                 {
-                    var _user = _context.Users.SingleOrDefault(m => m.UserID == userID);
-                    if (_user != null)//update
-                    {
-                        _user.IsAdmin = true;
-                        var _userMachine = _context.UserMachines.Where(m => m.UserID.Contains(userID)).ToList();
-                        if (_userMachine != null)
-                        {
-                            _context.UserMachines.RemoveRange(_userMachine);
-
-                        }
-                    }
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    var _user = _context.Users.SingleOrDefault(m => m.UserID == userID);
-                    if (_user != null)//update
-                    {
-                        _user.IsAdmin = false;
-                        _context.SaveChanges();
-                    }
-
+                    _user.IsAdmin = isAdmin;
                     var _userMachine = _context.UserMachines.Where(m => m.UserID.Contains(userID)).ToList();
                     if (_userMachine != null)
                     {
                         _context.UserMachines.RemoveRange(_userMachine);
-                        _context.SaveChanges();
-
                     }
-
-                    foreach (string machineKey in machineKeys)
-                    {
-                        userMachine.UserID = userID;
-                        userMachine.MachineKey = machineKey;
-                        _context.UserMachines.Add(userMachine);
-                        _context.SaveChanges();
-                    }
-
                 }
+                _context.SaveChanges();
+                foreach (string machineKey in machineKeys)
+                {
+                    UserMachine userMachine = new UserMachine();
+                    userMachine.UserID = userID;
+                    userMachine.MachineKey = machineKey;
+                    _context.UserMachines.Add(userMachine);
+                    
+                }
+                _context.SaveChanges();
                 return Ok();
             }
             catch (Exception ex)

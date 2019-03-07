@@ -85,7 +85,7 @@ namespace ManageServer.Controllers
                     }
                     _context.SaveChanges();
                 }
-                return Ok();
+                return Ok("success");
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace ManageServer.Controllers
                     }
                     _context.SaveChanges();
                 }
-                return Ok();
+                return Ok("success");
             }
             catch (Exception ex)
             {
@@ -160,7 +160,7 @@ namespace ManageServer.Controllers
                 Machine _machine = _context.Machines.SingleOrDefault(m => m.Key == machineUserViewModel.MachineKey);
                 _context.Remove(_machine);
                 _context.SaveChanges();
-                return Ok();
+                return Ok("success");
             }
             catch (Exception ex)
             {
