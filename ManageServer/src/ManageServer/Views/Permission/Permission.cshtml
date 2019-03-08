@@ -8,25 +8,25 @@
 
 <h2><b>權限管理</b></h2>
 
-    <!-- Content here -->
-    
-        <form class="form-inline">
-            <div class="form-group form-pairs">
-                <label class="text-right">使用者ID</label>
-                <input id="inpUserID" type="text" class="form-control" placeholder="UserID" style="margin-bottom: 5px;">
-            </div>
-            <div class="form-group  form-pairs" style="padding-bottom:5px">
-                <label class="text-right">是否是管理者</label>
-                <select id="selIsAdmin" class="form-control">
-                    <option value="">全選</option>
-                    <option value="true">是</option>
-                    <option value="false">否</option>
-                </select>
-            </div>
-            <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+<!-- Content here -->
 
-        </form>
-    
+<form class="form-inline">
+    <div class="form-group form-pairs">
+        <label class="text-right">使用者ID</label>
+        <input id="inpUserID" type="text" class="form-control" placeholder="UserID" style="margin-bottom: 5px;">
+    </div>
+    <div class="form-group  form-pairs" style="padding-bottom:5px">
+        <label class="text-right">是否是管理者</label>
+        <select id="selIsAdmin" class="form-control">
+            <option value="">全選</option>
+            <option value="true">是</option>
+            <option value="false">否</option>
+        </select>
+    </div>
+    <button type="button" class="btn btn-sm btn-primary" style="margin-bottom: 5px;" onclick="query()">查詢</button>
+
+</form>
+
 
 <div id="jsGrid"></div>
 
@@ -41,15 +41,19 @@
     var form;
     var machineList = @Json.Serialize(ViewData["MachineList"]);
     var userMachineData = null;
+    var active;
+    var onRowUserID;
 
     $(document).ready(function () {
-
         initGrid();
+        getGridData();
+        initDetailGrid();
+    });
 
+    function initGrid(){
         $("#jsGrid").jsGrid({
             width: "100%",
             height: "400px",
-
             filtering: false,
             editing: true,
             selecting: true,
@@ -64,8 +68,9 @@
                 loadData: function (filter) {
                     return filter;
                 },
-                updateItem: function (item) {
-                    return $.ajax({
+                updateItem: function (updatingItem) {
+                    var d = $.Deferred();
+                    $.ajax({
                         type: "PUT",
                         url: "/Permission/UpdateUserMachineData",
                         data: {
@@ -73,6 +78,9 @@
                             userID:item.userID,
                             machineKeys:item.assignMachineKeys
                         }
+                    }).done(function (result) {
+                        if (result == "success")
+                            d.resolve(updatingItem);
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.responseText == "Update Error.") {
                             alert("Update error：取得資料發生錯誤。");
@@ -81,6 +89,7 @@
                             console.error(jqXHR.responseText);
                         }
                     });
+                    return d.promise();
                 },
             },
 
@@ -103,108 +112,45 @@
                 },
                 {
                     name: "assignMachineKeys", type: "", title: "授權機台", width: 100,
-                    itemTemplate: function (value, item) {
-                        return btnDisabledPermission(value, item);
+                    itemTemplate: function (machineValue, userItem) {
+                        return btnPermission('item',machineValue, userItem);
                     },
-                    editTemplate: function (value, item) {
-                        return btnPermission(value, item);
+                    editTemplate: function (machineValue, userItem) {
+                        return btnPermission('edit',machineValue, userItem);
                     },
                 },
                 {
                     type: "control", deleteButton: false
-
                 }
             ]
         });
-
-        function initGrid() {
-            var d = $.Deferred();
-            $.ajax({
-                type: "GET",
-                url: '/Permission/GetAdminInfo'
-            }).done(function (data) {
-                d.resolve(data);
-                userMachineData = data;
-                $("#jsGrid").jsGrid("loadData", userMachineData);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.responseText == "GetAdminInfo Error.") {
-                    alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
-                }
-                else if (jqXHR.responseText == "DBNoConnect") {
-                    alert("Inital error：未連接上資料庫。")
-                }
-                else {
-                    alert("發生錯誤。");
-                    console.error(jqXHR.responseText);
-                }
-            });
-            return d.promise();
-        }
-    });
-
-    function btnDisabledPermission(value, item) {
-        var $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
-        return $btnPermission.text("授權設定");
-    }
-    var active
-    function btnPermission(value, item) {
-        var $btnPermission;
-        if (item.isAdmin == true) {
-            $btnPermission = $("<button class='btn btn-default btnPermission'>").prop('disabled', true);
-        } else {
-            $btnPermission = $("<button class='btn btn-default btnPermission'>");
-        }
-
-        return $btnPermission.text("授權設定")
-                            .on("click", function () {                                
-                                dialogForm(active, value, item, confirmFunction);
-                                getUserID(value, item);
-                                setUserPermission(value, item);
-                                checkOrRemoveCheckAll();
-                            });
     }
 
-    
-
-    //checkbox function
-    function chkDisableAdmin(isAdminValue, isAdminItem) {
-        var $chkIsAdmin = $("<input disabled>").attr("type", "checkbox");
-        return $chkIsAdmin.prop("checked", isAdminValue);
-    }
-
-    function chkIsAdmin(isAdminValue, isAdminItem) {
-        var $chkIsAdmin = $("<input >").attr("type", "checkbox");
-        return $chkIsAdmin.prop("checked", isAdminValue)
-                            .on("change", function (event) {
-                                var isChecked = $(this).is(":checked");
-                                chkAdminItem(isChecked,isAdminValue,isAdminItem);
-                            });
-    }
-
-    function chkAdminItem(isChecked,isAdminValue,isAdminItem ){
-        if(isChecked==true){
-            isAdminItem.isAdmin=true;
-            $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', true);
-        }else {
-            isAdminItem.isAdmin=false;
-            $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', false);
-
-        }
-    }
-
-    function getUserID(value,item){
-        var assignMachineKeys = item.assignMachineKeys;
-        $.each(machineList, function (index, machine) {
-            if(assignMachineKeys.indexOf(machine.key) > -1){
-                machine.isApply = true;
-            }else{
-                machine.isApply = false;
+    function getGridData() {
+        var d = $.Deferred();
+        $.ajax({
+            type: "GET",
+            url: '/Permission/GetGridData'
+        }).done(function (data) {
+            userMachineData = data;
+            $("#jsGrid").jsGrid("loadData", userMachineData);
+            d.resolve(data);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText == "GetAdminInfo Error.") {
+                alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
+            }
+            else if (jqXHR.responseText == "DBNoConnect") {
+                alert("Inital error：未連接上資料庫。")
+            }
+            else {
+                alert("發生錯誤。");
+                console.error(jqXHR.responseText);
             }
         });
+        return d.promise();
     }
 
-    //set front-end and process permissible of buotton
-    function setUserPermission(userValue,userItem) {
+    function initDetailGrid(){
         $("#pmjsGrid").jsGrid({
             width: "100%",
             height: "100%",
@@ -217,13 +163,11 @@
             autoload: false,
             data: machineList,
             invalidMessage: "勾選有誤：",
-
             controller: {
                 loadData: function (filter) {
                     return filter;
                 },
             },
-
             fields: [
                 {
                     headerTemplate: function() {
@@ -259,6 +203,54 @@
         })
     }
 
+    function btnPermission(action,machineValue, UserItem) {
+        var $btnPermissionSetting;
+        if(action=="item"){
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
+        }else if (action == "edit"){
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', UserItem.isAdmin).text("授權設定");
+        }
+        $btnPermissionSetting.on("click", function () {
+            dialogForm(active, machineValue, UserItem, confirmFunction);
+            getUserMachine(machineValue, UserItem);
+            setUserPermission(machineValue, UserItem);
+           // $("#pmjsGrid").jsGrid("loadData", machineList);
+            checkOrRemoveCheckAll();
+        });
+        return $btnPermissionSetting;
+    }
+
+    //checkbox function
+    function chkDisableAdmin(isAdminValue, isAdminItem) {
+        var $chkIsAdmin = $("<input disabled>").attr("type", "checkbox");
+        return $chkIsAdmin.prop("checked", isAdminValue);
+    }
+
+    function chkIsAdmin(isAdminValue, isAdminItem) {
+        var $chkIsAdmin = $("<input >").attr("type", "checkbox");
+        return $chkIsAdmin.prop("checked", isAdminValue)
+                            .on("change", function (event) {
+                                var isChecked = $(this).is(":checked");
+                                chkAdminItem(isChecked,isAdminItem);
+                            });
+    }
+
+    function chkAdminItem(isChecked,isAdminItem){
+        isAdminItem.isAdmin=isChecked;
+        $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', isChecked);
+    }
+
+    function getUserMachine(machineValue,userItem){
+        var assignMachineKeys = item.assignMachineKeys;
+        $.each(machineList, function (index, machine) {
+            if(assignMachineKeys.indexOf(machine.key) > -1){
+                machine.isApply = true;
+            }else{
+                machine.isApply = false;
+            }
+        });
+    }
+
     //dialog confirm button
     var confirmFunction = function(action) {
         var currentUserMachine = $.grep(userMachineData, function (element, index) {
@@ -279,10 +271,7 @@
         });
 
         dialog.dialog("close");
-        $("#pmjsGrid").jsGrid("loadData", machineList);
     }
- 
-    var onRowUserID;
 
     var checkedSingleItem = function(userItem,machineItem,machineList) {
         machineItem.isApply = true;
@@ -306,11 +295,7 @@
                 machine.isApply = false;
             });
         }
-        onRowUserID = userItem.userID;
-
     };
-
-
 
     //button query function
     function query() {

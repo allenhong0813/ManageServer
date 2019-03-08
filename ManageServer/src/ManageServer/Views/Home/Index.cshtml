@@ -32,22 +32,17 @@
     <div id="pmjsGrid"></div>
 </div>
 <script>
-    //var editUserList = @Json.Serialize(ViewData["UserList"]);
-    //var insertUserList = @Json.Serialize(ViewData["UserList"]);
     var userList =[];
     userList["insert"]= @Json.Serialize(ViewData["UserList"]);
     userList["edit"]= @Json.Serialize(ViewData["UserList"]);
 
     var machineUserData = null;
     var isAdmin= @isAdmin.ToLower();
+    
     var origin = false;
     var originallyEditUserList;
     var onRowMachineKey;
     //var currentMachineItem = null;
-
-
-    //var $btnPermissionSetting;
-    //var action="";
 
     $(document).ready(function () {
         initGrid();
@@ -73,7 +68,6 @@
                 },
                 insertItem: function (insertingItem) {
                     var d = $.Deferred();
-                    //onRowMachineKey =
                     insertingItem.machineKey = generateUUID();;
                     $.ajax({
                         type: "POST",
@@ -212,9 +206,9 @@
             },
             insertValue :function(){
                 var insertAssignUserKeys=[];
-                $.each(insertUserList,function(index,userKey){
-                    if(userKey.isApply == true){
-                        insertAssignUserKeys.push(userKey.userID);
+                $.each(userList["insert"],function(index,user){
+                    if(user.isApply == true){
+                        insertAssignUserKeys.push(user.userID);
                     }
                 });
                 return insertAssignUserKeys;
@@ -307,6 +301,9 @@
         }
 
         $btnPermissionSetting.on("click", function () {
+            if(action=="edit"){
+                onRowMachineKey = machineItem.machineKey;
+            }
             dialogForm(action,userValue, machineItem, confirmFunction);
             getMachineUser(action,userValue,machineItem);
             $("#pmjsGrid").jsGrid("loadData",userList[action]);
@@ -318,13 +315,7 @@
     }
 
     var getMachineUser = function(action,userValue,machineItem){
-
-
-        if(action=="insert"){
-            $.each(userList[action],function(index, user){
-                user.isApply=false;
-            });
-        }else if(action=="edit"){
+        if(action=="edit"){
             var assignUserKeys = machineItem.assignUserKeys;
             $.each(userList[action],function(index, user){
                 if(assignUserKeys.indexOf(user.userID)>-1){
@@ -340,68 +331,25 @@
         //}
     }
 
-    var setMachinePermission = function(action,userValue,machineItem){
-        //var userList ;
-        //if(origin == true){
-        //    editUserList = originallyEditUserList;
-        //}
-        //if(action == "insertAction"){
-        //    userList = insertUserList;
-        //}else if(action =="editAction"){
-        //    userList = editUserList;
-        //}
-
-        //userList = editUserList;
-        $("#pmjsGrid").jsGrid("loadData",userList[action]);
-    }
-
     //dialog confirm button
     var confirmFunction = function (action) {
         var assignUsers = [];
-        //if(action == "insertAction"){
-        //    $.each(insertUserList, function (indexInArray, user) {
-        //        currentMachineUser[0].assignUserKeys.push(user.userID);
-        //    });
-        //}else if(action == "editAction"){
-        //    $.each(editUserList, function (indexInArray, user) {
-        //        if (user.isApply == true)
-        //            currentMachineUser[0].assignUserKeys.push(user.userID);
-        //    });
-
-        //    $.each(machineUserData, function (indexInArray, machineUser) {
-        //        if (machineUser.machineKey == onRowMachineKey) {
-        //            machineUser.assignUserKeys = currentMachineUser[0].assignUserKeys;
-        //        }
-        //    });
-        //}
-
-
         $.each(userList[action], function (indexInArray, user) {
             if (user.isApply == true)
                 assignUsers.push(user.userID);
         });
-
-
-
-        //insert or 更新在 放入即可
-
-        //$.each(machineUserData, function (indexInArray, machineUser) {
-        //    if (machineUser.machineKey == onRowMachineKey) {
-        //        machineUser.assignUserKeys = assignUsers;
-        //    }
-        //});
-
+        //edit的Detail狀態記錄
+        if(action=="edit"){
+            $.each(machineUserData, function (indexInArray, machineUser) {
+                if (machineUser.machineKey == onRowMachineKey) {
+                    machineUser.assignUserKeys = assignUsers;
+                }
+            });
+        }
         dialog.dialog("close");
-
     }
 
     var checkedAllItem = function() {
-        //if(action =="insertAction"){
-        //    setAllUserItem(insertUserList);
-        //}else  if(action =="editAction"){
-        //    setAllUserItem(editUserList);
-        //}
-
         if($("#inpCheckAll").prop("checked")) {
             $("input[name='inpCheckItem']").prop("checked", true);
             $.each(userList, function (index, user) {
@@ -416,39 +364,9 @@
 
     };
 
-    //var setAllUserItem = function(userList){
-    //if($("#inpCheckAll").prop("checked")) {
-    //    $("input[name='inpCheckItem']").prop("checked", true);
-    //    $.each(userList, function (index, user) {
-    //        user.isApply = true;
-    //    });
-    //}else{
-    //    $("input[name='inpCheckItem']").prop("checked", false);
-    //    $.each(userList, function (index, user) {
-    //        user.isApply = false;
-    //    });
-    //}
-    //}
-
     var checkedItem = function(isChecked,userItem){
         userItem.isApply = isChecked;
-        console.log(isChecked);
     }
-
-
-    //var checkedSingleItem = function(action,machineItem,userItem,userList) {
-    //    userItem.isApply = true;
-    //    if(action == "editAction"){
-    //        onRowMachineKey = machineItem.machineKey;
-    //    }
-    //};
-
-    //var uncheckedSingleItem = function(action,machineItem,userItem,userList) {
-    //    userItem.isApply = false;
-    //    if(action == "editAction"){
-    //        onRowMachineKey = machineItem.machineKey;
-    //    }
-    //};
 
     //btn_query
     function query() {

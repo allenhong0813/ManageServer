@@ -24,6 +24,7 @@ namespace ManageServer.Controllers
             _context = context;
             _logger = logger;
         }
+
         // GET: /<controller>/
         public IActionResult Permission()
         {
@@ -40,7 +41,7 @@ namespace ManageServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAdminInfo(string userID, string isAdmin)
+        public IActionResult GetGridData(string userID, string isAdmin)
         {
             var predicate = PredicateBuilder.New<User>(true);
             try
@@ -70,7 +71,7 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                return ExceptionHandler(ex, "GetServerInfo Error.");
+                return ExceptionHandler(ex, "GetGridData Error.");
             }
         }
 

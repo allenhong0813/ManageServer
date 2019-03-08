@@ -241,7 +241,7 @@ namespace ManageServer.Controllers
             }
             catch (Exception ex)
             {
-                return ExceptionHandler(ex, "GetServerInf Error.");
+                return ExceptionHandler(ex, "GetGridData Error.");
             }
         }
     }
