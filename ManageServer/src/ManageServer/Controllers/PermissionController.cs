@@ -84,23 +84,27 @@ namespace ManageServer.Controllers
                 if (_user != null)//update
                 {
                     _user.IsAdmin = isAdmin;
-                    var _userMachine = _context.UserMachines.Where(m => m.UserID.Contains(userID)).ToList();
+                    var _userMachine = _context.UserMachines.Where(m => m.UserID == userID).ToList();
                     if (_userMachine != null)
                     {
                         _context.UserMachines.RemoveRange(_userMachine);
                     }
                 }
                 _context.SaveChanges();
-                foreach (string machineKey in machineKeys)
+
+                if (!isAdmin)
                 {
-                    UserMachine userMachine = new UserMachine();
-                    userMachine.UserID = userID;
-                    userMachine.MachineKey = machineKey;
-                    _context.UserMachines.Add(userMachine);
-                    
+                    foreach (string machineKey in machineKeys)
+                    {
+                        UserMachine userMachine = new UserMachine();
+                        userMachine.UserID = userID;
+                        userMachine.MachineKey = machineKey;
+                        _context.UserMachines.Add(userMachine);
+
+                    }
                 }
                 _context.SaveChanges();
-                return Ok();
+                return Ok("success");
             }
             catch (Exception ex)
             {

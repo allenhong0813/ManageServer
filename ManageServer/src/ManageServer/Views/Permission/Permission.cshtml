@@ -74,9 +74,9 @@
                         type: "PUT",
                         url: "/Permission/UpdateUserMachineData",
                         data: {
-                            isAdmin:item.isAdmin,
-                            userID:item.userID,
-                            machineKeys:item.assignMachineKeys
+                            isAdmin:updatingItem.isAdmin,
+                            userID:updatingItem.userID,
+                            machineKeys:updatingItem.assignMachineKeys
                         }
                     }).done(function (result) {
                         if (result == "success")
@@ -88,6 +88,7 @@
                             alert("發生錯誤。");
                             console.error(jqXHR.responseText);
                         }
+                        d.resolve();
                     });
                     return d.promise();
                 },
@@ -95,14 +96,14 @@
 
             fields: [
                 {
-                    name: "userID", type: "text", title: "*使用者ID", width: 100,
+                    name: "userID", type: "text", title: "*使用者ID", width: 60,
                     editTemplate: function(value) {
                         var $editControl = jsGrid.fields.text.prototype.editTemplate.call(this, value);
                         return $("<div>").attr("title", (value === undefined || value === null) ? "" : value).text((value === undefined || value === null) ? "" : value);
                     }
                 },
                 {
-                    name: "isAdmin", type: "", title: "*是否是管理者", width: 50,
+                    name: "isAdmin", type: "", title: "*是否是管理者", width: 60,
                     itemTemplate: function (value, item) {
                         return chkDisableAdmin(value, item);
                     },
@@ -120,7 +121,7 @@
                     },
                 },
                 {
-                    type: "control", deleteButton: false
+                    type: "control", deleteButton: false ,width: 60,
                 }
             ]
         });
@@ -173,54 +174,55 @@
                     headerTemplate: function() {
                         return $("<input>全選</input>").attr("type", "checkbox").attr("id","inpCheckAll").attr("name","inpCheckAll")
                                 .on("click", function () {
-                                    checkedAllItem(userItem, machineList);
+                                    checkedAllItem();
                                 });
                     },
                     itemTemplate: function(machineValue, machineItem) {
                         return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
                                 .prop("checked", machineItem.isApply)
                                 .on("change", function () {
-                                    $(this).is(":checked") ? checkedSingleItem(userItem, machineItem, machineList):uncheckedSingleItem(userItem, machineItem, machineList);
+                                    var isChecked = $(this).is(":checked");
+                                    checkedItem(isChecked,machineItem)
                                     checkOrRemoveCheckAll();
                                 });
                     },
                     align: "center",
-                    width: 50
+                    width: 40
                 },
                 {
                     name: "ip", type: "text", title: "IP", width: 80,
                 },
                 {
-                    name: "name", type: "text", title: "伺服器名稱", width: 80,
+                    name: "name", type: "text", title: "伺服器名稱", width: 100,
                 },
                 {
-                    name: "os", type: "text", title: "作業系統", width: 80,
+                    name: "os", type: "text", title: "作業系統", width: 100,
                 },
                 {
-                    name: "description", type: "text", title: "描述", width: 80,
+                    name: "description", type: "text", title: "描述", width: 100,
                 }
             ]
         })
     }
 
-    function btnPermission(action,machineValue, UserItem) {
+    function btnPermission(action,machineValue, userItem) {
         var $btnPermissionSetting;
         if(action=="item"){
             $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', true).text("授權設定");
         }else if (action == "edit"){
-            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', UserItem.isAdmin).text("授權設定");
+            $btnPermissionSetting = $("<button class='btn btn-default btnPermission'>").prop('disabled', userItem.isAdmin).text("授權設定");
         }
         $btnPermissionSetting.on("click", function () {
-            dialogForm(active, machineValue, UserItem, confirmFunction);
-            getUserMachine(machineValue, UserItem);
-            setUserPermission(machineValue, UserItem);
-           // $("#pmjsGrid").jsGrid("loadData", machineList);
+            onRowUserID = userItem.userID;
+            dialogForm(action, machineValue, userItem, confirmFunction);
+            getUserMachine(userItem);
+            $("#pmjsGrid").jsGrid("loadData", machineList);
             checkOrRemoveCheckAll();
         });
         return $btnPermissionSetting;
     }
 
-    //checkbox function
+    //IsAdmin function for checkbox
     function chkDisableAdmin(isAdminValue, isAdminItem) {
         var $chkIsAdmin = $("<input disabled>").attr("type", "checkbox");
         return $chkIsAdmin.prop("checked", isAdminValue);
@@ -232,6 +234,7 @@
                             .on("change", function (event) {
                                 var isChecked = $(this).is(":checked");
                                 chkAdminItem(isChecked,isAdminItem);
+
                             });
     }
 
@@ -240,8 +243,8 @@
         $(".jsgrid-edit-row > .jsgrid-cell >.btnPermission").prop('disabled', isChecked);
     }
 
-    function getUserMachine(machineValue,userItem){
-        var assignMachineKeys = item.assignMachineKeys;
+    function getUserMachine(userItem){
+        var assignMachineKeys = userItem.assignMachineKeys;
         $.each(machineList, function (index, machine) {
             if(assignMachineKeys.indexOf(machine.key) > -1){
                 machine.isApply = true;
@@ -253,48 +256,31 @@
 
     //dialog confirm button
     var confirmFunction = function(action) {
-        var currentUserMachine = $.grep(userMachineData, function (element, index) {
-            return element.userID == onRowUserID;
-        });
-
-        currentUserMachine[0].assignMachineKeys = [];
-
+        var assignMachines = [];
         $.each(machineList, function (indexInArray, machine) {
             if(machine.isApply == true)
-                currentUserMachine[0].assignMachineKeys.push(machine.key);
+                assignMachines.push(machine.key);
         });
 
         $.each(userMachineData, function (indexInArray, userMachine) {
-            if(userMachine.userID == currentUserMachine[0].userID){
-                userMachine.assignMachineKeys = currentUserMachine[0].assignMachineKeys;
+            if(userMachine.userID == onRowUserID){
+                userMachine.assignMachineKeys = assignMachines;
             }
         });
 
         dialog.dialog("close");
     }
 
-    var checkedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = true;
-        onRowUserID = userItem.userID;
-    };
+    var checkedItem = function(isChecked,machineItem){
+        machineItem.isApply = isChecked;
+    }
 
-    var uncheckedSingleItem = function(userItem,machineItem,machineList) {
-        machineItem.isApply = false;
-        onRowUserID = userItem.userID;
-    };
-
-    var checkedAllItem = function(userItem,machineList) {
-        if($("#inpCheckAll").prop("checked")) {
-            $("input[name='inpCheckItem']").prop("checked", true);
-            $.each(machineList, function (index, machine) {
-                machine.isApply = true;
-            });
-        }else{
-            $("input[name='inpCheckItem']").prop("checked", false);
-            $.each(machineList, function (index, machine) {
-                machine.isApply = false;
-            });
-        }
+    var checkedAllItem = function() {
+        var inpIsCheckAll = $("#inpCheckAll").prop("checked");
+        $("input[name='inpCheckItem']").prop("checked", inpIsCheckAll);
+        $.each(machineList, function (index, machine) {
+            machine.isApply = inpIsCheckAll;
+        });
     };
 
     //button query function

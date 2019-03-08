@@ -35,13 +35,15 @@
     var userList =[];
     userList["insert"]= @Json.Serialize(ViewData["UserList"]);
     userList["edit"]= @Json.Serialize(ViewData["UserList"]);
+    userList["temp"]= @Json.Serialize(ViewData["UserList"]);
 
     var machineUserData = null;
     var isAdmin= @isAdmin.ToLower();
-    
+
     var origin = false;
     var originallyEditUserList;
     var onRowMachineKey;
+    var onAction;
     //var currentMachineItem = null;
 
     $(document).ready(function () {
@@ -205,14 +207,26 @@
                 return btnPermission('edit',userValue, machineItem);
             },
             insertValue :function(){
-                var insertAssignUserKeys=[];
+                var AssignUserKeys=[];
+                
                 $.each(userList["insert"],function(index,user){
                     if(user.isApply == true){
-                        insertAssignUserKeys.push(user.userID);
+                        AssignUserKeys.push(user.userID);
                     }
                 });
-                return insertAssignUserKeys;
-            }
+                return AssignUserKeys;
+            },
+            //editValue :function(){
+            //    var AssignUserKeys=[];
+            //    userList["edit"] = userList["temp"];
+            //    $.each(userList["edit"],function(index,user){
+            //        if(user.isApply == true){
+            //            AssignUserKeys.push(user.userID);
+            //        }
+            //    });
+            //    return AssignUserKeys;
+            //}
+            
         },
          {
              name: "control" ,type: "control" , visible:isAdmin,
@@ -274,7 +288,6 @@
                         return $("<input>").attr("type", "checkbox").attr("name","inpCheckItem")
                                 .prop("checked", userItem.isApply)
                                 .on("change", function () {
-                                    //$(this).is(":checked") ? checkedSingleItem(action, machineItem, userItem, userList):uncheckedSingleItem(action, machineItem, userItem, userList);
                                     var isChecked = $(this).is(":checked");
                                     checkedItem(isChecked,userItem);
                                     checkOrRemoveCheckAll();
@@ -301,13 +314,13 @@
         }
 
         $btnPermissionSetting.on("click", function () {
-            if(action=="edit"){
+            onAction = action;
+            if(onAction=="edit"){
                 onRowMachineKey = machineItem.machineKey;
             }
             dialogForm(action,userValue, machineItem, confirmFunction);
             getMachineUser(action,userValue,machineItem);
             $("#pmjsGrid").jsGrid("loadData",userList[action]);
-            //setMachinePermission(action, userValue, machineItem);
             checkOrRemoveCheckAll();
         })
 
@@ -352,12 +365,12 @@
     var checkedAllItem = function() {
         if($("#inpCheckAll").prop("checked")) {
             $("input[name='inpCheckItem']").prop("checked", true);
-            $.each(userList, function (index, user) {
+            $.each(userList[onAction], function (index, user) {
                 user.isApply = true;
             });
         }else{
             $("input[name='inpCheckItem']").prop("checked", false);
-            $.each(userList, function (index, user) {
+            $.each(userList[onAction], function (index, user) {
                 user.isApply = false;
             });
         }

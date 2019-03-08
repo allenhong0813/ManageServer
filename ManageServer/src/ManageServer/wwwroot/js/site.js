@@ -14,7 +14,7 @@ function dialogForm(action, value, item, confirmFunction) {
         autoOpen: true,
         dialogClass: "dlg-no-close",
         height: 400,
-        width: 600,
+        width: 800,
         modal: true,
         buttons: {
             "確定": function () {
