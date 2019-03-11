@@ -64,7 +64,6 @@ namespace ManageServer.Controllers
                         UserID = u.UserID,
                         IsAdmin = u.IsAdmin,
                         AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
-
                     }).OrderBy(u => u.UserID);
 
                 return Ok(_user.ToList());

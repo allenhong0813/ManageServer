@@ -36,7 +36,7 @@ namespace ManageServer.Controllers
         {
             try
             {
-                ViewData["UserList"] = _context.Users.Where(u => u.IsAdmin != true).ToList();
+                //ViewData["UserList"] = _context.Users.Where(u => u.IsAdmin != true).ToList();
             }
             catch (Exception ex)
             {
@@ -180,6 +180,8 @@ namespace ManageServer.Controllers
             var predicate = PredicateBuilder.New<Machine>(true);
             try
             {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+
                 // 如果有輸入IP名稱作為搜尋條件時
                 if (!string.IsNullOrWhiteSpace(ipName))
                 {
@@ -191,23 +193,23 @@ namespace ManageServer.Controllers
                 {
                     predicate = predicate.And(m => m.Name.Contains(serverName));
                 }
-
-                var _machine = _context.Machines.AsExpandable().Where(predicate).Select(
-                u => new MachineUserViewModel
+                var notAdminUserList = _context.Users.Where(u => u.IsAdmin != true).ToList();
+                var machineList = _context.Machines.AsExpandable().Where(predicate).Select(
+                m => new MachineUserViewModel
                 {
-                    MachineKey = u.Key,
-                    IP = u.IP,
-                    Name = u.Name,
-                    LoginID = u.LoginID,
-                    Password = u.Password,
-                    OS = u.OS,
-                    HostIP = u.HostIP,
-                    Description = u.Description,
-                    AssignUserKeys = u.UserMachines.Select(t => t.User.UserID).ToList()
+                    MachineKey = m.Key,
+                    IP = m.IP,
+                    Name = m.Name,
+                    LoginID = m.LoginID,
+                    Password = m.Password,
+                    OS = m.OS,
+                    HostIP = m.HostIP,
+                    Description = m.Description,
+                    AssignUserKeys = m.UserMachines.Select(t => t.User.UserID).ToList()                 
                 }).OrderBy(m => m.IP).ThenBy(m => m.Name).ToList();
 
                 //Decode                
-                foreach (var item in _machine)
+                foreach (var item in machineList)
                 {
                     byte[] decodedBytes = Convert.FromBase64String(item.Password);
                     if (Convert.ToBoolean(isAdmin))
@@ -237,7 +239,11 @@ namespace ManageServer.Controllers
                         }
                     }
                 }
-                return Ok(_machine.ToList());
+                              
+                result.Add("machineList", machineList);
+                result.Add("notAdminUserList", notAdminUserList);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

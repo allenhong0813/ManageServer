@@ -16,7 +16,9 @@ namespace ManageServer.Models
         public string OS { get; set; }
         public string HostIP { get; set; }
         public string Description { get; set; }
+        public List<User> UserList { get; set; }
         public List<string> AssignUserKeys { get; set; }
+        //public List<UserDetailGridViewModel> UserDetail { get; set; }
 
     }
 }
