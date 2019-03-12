@@ -128,9 +128,6 @@
                     validate: [
                         { validator: "required", message: "[伺服器名稱]欄位為必填" }
                     ],
-                    //itemTemplate: function (value, item) {
-                    //    return value.replace(/</g, "&lt;");
-                    //},
                 },
                 {
                     name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,validTip: "[必填欄位]需要輸入伺服器登入ID。",
@@ -143,9 +140,6 @@
                             message: "[登入者帳號]欄位：不含空白字元與中文字"
                         }
                     ],
-                    //itemTemplate: function (value, item) {
-                    //    return value.replace(/</g, "&lt;");
-                    //},
                 },
                 {
                     name: "password", type: "text", title: "*密碼", width: 80,validTip: "[必填欄位]需要輸入伺服器密碼，不可輸入中文字。",
@@ -153,23 +147,17 @@
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
                             validator: function (value, item) {
-                                return /^[A-Za-z0-9_]+$/g.test(value);
+                                return /^[^\u4e00-\u9fa5\s]+$/g.test(value);
                             },
                             message: "[密碼]欄位：不含空白字元，不可輸入中文字"
                         }
                     ],
-                    //itemTemplate: function (value, item) {
-                    //    return value.replace(/</g, "&lt;");
-                    //},
                 },
                 {
                     name: "os", type: "text", title: "*系統", width: 150,validTip: "[必填欄位]需要輸入伺服器系統版本。eg.127.0.0.1",
                     validate: [
                         { validator: "required", message: "[系統]欄位為必填" }
                     ],
-                    //itemTemplate: function (value, item) {
-                    //    return value.replace(/</g, "&lt;");
-                    //},
                 },
                 {
                     name: "hostIP", type: "text", title: "*本機IP", width: 100, validTip: "[必填欄位]需要輸入伺服器的本機IP。",
@@ -185,9 +173,6 @@
                 },
         {
             name: "description", type: "text", title: "描述", width: 150,
-            //itemTemplate: function (value, item) {
-            //    return (value == null) ? value : value.replace(/</g, "&lt;");
-            //},
 
         },
         {
@@ -235,7 +220,6 @@
          }
             ]
         });
-
     }
 
     function initDetailGrid() {
