@@ -51,8 +51,7 @@ namespace ManageServer.Controllers
                 if (ModelState.IsValid)
                 {
                     var user = _authService.LdapValid(username,password);
-                    //if (user.IsSuccess)
-                    if (true)
+                    if (user.IsSuccess)
                     {
                         DBHasUser(username);
                         SetClaim(username, password);

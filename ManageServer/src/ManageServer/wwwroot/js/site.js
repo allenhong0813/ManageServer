@@ -1,4 +1,21 @@
 ﻿// Write your Javascript code.
+jsGrid.setDefaults({
+    noDataContent: "",
+    onInit: function (args) {
+        var totalWidth = 0;
+        $.each(args.grid.fields, function (index, object) {
+            totalWidth += object.visible == true ? object.width : 0;
+        });
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = '#' + args.grid._container.attr("id") + ' .jsgrid-nodata-row > .jsgrid-cell{ width: ' + totalWidth + 'px; }';
+        document.getElementsByTagName('head')[0].appendChild(style);
+        args.grid.noDataContent = "";
+    }
+});
+
+
+
 function generateUUID() {
     var d = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

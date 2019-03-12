@@ -3,6 +3,10 @@
     height: 100%;
 }
 
+.jsgrid-cell {
+    overflow: hidden;
+}
+
 .dlg-no-close .ui-dialog-titlebar-close {
     display: none;
 }

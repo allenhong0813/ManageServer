@@ -39,14 +39,14 @@
 <script>
     var dialog;
     var form;
-    var machineList = @Json.Serialize(ViewData["MachineList"]);
+    var machineList;
     var userMachineData = null;
-    var active;
     var onRowUserID;
+    var originData = null;
 
     $(document).ready(function () {
         initGrid();
-        getGridData();
+        query();
         initDetailGrid();
     });
 
@@ -119,36 +119,22 @@
                     editTemplate: function (machineValue, userItem) {
                         return btnPermission('edit',machineValue, userItem);
                     },
+                    
                 },
                 {
-                    type: "control", deleteButton: false ,width: 60,
+                    type: "control", deleteButton: false, width: 60,
+                    _createCancelEditButton: function () {
+                        var $result = jsGrid.fields.control.prototype._createCancelEditButton.apply(this, arguments);
+                        $result.on("click", function () {
+
+                            userMachineData = $.extend(true, [], originData);
+                            $("#jsGrid").jsGrid("loadData", userMachineData);
+                        });
+                        return $result;
+                    },
                 }
             ]
         });
-    }
-
-    function getGridData() {
-        var d = $.Deferred();
-        $.ajax({
-            type: "GET",
-            url: '/Permission/GetGridData'
-        }).done(function (data) {
-            userMachineData = data;
-            $("#jsGrid").jsGrid("loadData", userMachineData);
-            d.resolve(data);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetAdminInfo Error.") {
-                alert(alert("Inital error：資料庫伺服器發生錯誤，無法取得資料。"));
-            }
-            else if (jqXHR.responseText == "DBNoConnect") {
-                alert("Inital error：未連接上資料庫。")
-            }
-            else {
-                alert("發生錯誤。");
-                console.error(jqXHR.responseText);
-            }
-        });
-        return d.promise();
     }
 
     function initDetailGrid(){
@@ -162,7 +148,7 @@
             sorting: false,
             paging: false,
             autoload: false,
-            data: machineList,
+           
             invalidMessage: "勾選有誤：",
             controller: {
                 loadData: function (filter) {
@@ -297,17 +283,19 @@
 
         $.ajax({
             type: "GET",
-            url: "/Permission/GetAdminInfo",
+            url: "/Permission/GetGridData",
             data: {
                 userID: inpUserID,
                 isAdmin: selIsAdmin
             }
         }).done(function (data) {
-            userMachineData = data;
+            machineList = data.notAdminMachineList;
+            userMachineData = data.userList;
+            originData = $.extend(true, [],  data.userList);
             $("#jsGrid").jsGrid("loadData", userMachineData);
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            if (jqXHR.responseText == "GetServerInfo Error.") {
+            if (jqXHR.responseText == "GetGridData Error.") {
                 alert("Query error：取得資料發生錯誤。");
             }else {
                 alert("發生錯誤。");

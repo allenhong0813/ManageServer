@@ -9,6 +9,7 @@
         name: "",
         title: null,
         css: "",
+        validTip: "",
         align: "",
         width: 100,
 

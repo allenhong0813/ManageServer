@@ -30,7 +30,7 @@ namespace ManageServer.Controllers
         {
             try
             {
-                ViewData["MachineList"] = _context.Machines.ToList();
+                //ViewData["MachineList"] = _context.Machines.ToList();
             }
             catch (Exception ex)
             {
@@ -38,40 +38,6 @@ namespace ManageServer.Controllers
             }
 
             return View();
-        }
-
-        [HttpGet]
-        public IActionResult GetGridData(string userID, string isAdmin)
-        {
-            var predicate = PredicateBuilder.New<User>(true);
-            try
-            {
-                // 如果有輸入使用者ID作為搜尋條件時
-                if (!string.IsNullOrWhiteSpace(userID))
-                {
-                    predicate = predicate.And(u => u.UserID.Contains(userID));
-                }
-
-                // 如果有輸入是否是管理者作為搜尋條件時
-                if (!string.IsNullOrWhiteSpace(isAdmin))
-                {
-                    predicate = predicate.And(u => u.IsAdmin.Equals(Convert.ToBoolean(isAdmin)));
-                }
-
-                var _user = _context.Users.AsExpandable().Where(predicate).Select(
-                    u => new UserMachineViewModel
-                    {
-                        UserID = u.UserID,
-                        IsAdmin = u.IsAdmin,
-                        AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
-                    }).OrderBy(u => u.UserID);
-
-                return Ok(_user.ToList());
-            }
-            catch (Exception ex)
-            {
-                return ExceptionHandler(ex, "GetGridData Error.");
-            }
         }
 
         [HttpPut]
@@ -99,7 +65,6 @@ namespace ManageServer.Controllers
                         userMachine.UserID = userID;
                         userMachine.MachineKey = machineKey;
                         _context.UserMachines.Add(userMachine);
-
                     }
                 }
                 _context.SaveChanges();
@@ -108,6 +73,46 @@ namespace ManageServer.Controllers
             catch (Exception ex)
             {
                 return ExceptionHandler(ex, "Update Error.");
+            }
+        }
+        [HttpGet]
+        public IActionResult GetGridData(string userID, string isAdmin)
+        {
+            var predicate = PredicateBuilder.New<User>(true);
+            try
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+
+                // 如果有輸入使用者ID作為搜尋條件時
+                if (!string.IsNullOrWhiteSpace(userID))
+                {
+                    predicate = predicate.And(u => u.UserID.Contains(userID));
+                }
+
+                // 如果有輸入是否是管理者作為搜尋條件時
+                if (!string.IsNullOrWhiteSpace(isAdmin))
+                {
+                    predicate = predicate.And(u => u.IsAdmin.Equals(Convert.ToBoolean(isAdmin)));
+                }
+
+                var notAdminMachineList = _context.Machines.Select(m=>m).ToList();
+
+                var userList = _context.Users.AsExpandable().Where(predicate).Select(
+                    u => new UserMachineViewModel
+                    {
+                        UserID = u.UserID,
+                        IsAdmin = u.IsAdmin,
+                        AssignMachineKeys = u.UserMachines.Select(t => t.Machine.Key).ToList()
+                    }).OrderBy(u => u.UserID);
+
+                result.Add("userList", userList);
+                result.Add("notAdminMachineList", notAdminMachineList);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return ExceptionHandler(ex, "GetGridData Error.");
             }
         }
     }

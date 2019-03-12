@@ -29,7 +29,9 @@
 
             return $result;
         },
-
+        itemTemplate: function (value) {
+            return $("<div>").attr("title", value).text(value);
+        },
         insertTemplate: function() {
             if(!this.inserting)
                 return "";
