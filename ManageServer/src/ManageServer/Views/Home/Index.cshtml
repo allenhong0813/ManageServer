@@ -112,7 +112,7 @@
             },
             fields: [
                 {
-                    name: "ip", type: "text", title: "*IP", width: 100,validTip: "[必填欄位]需要輸入IP位置。eg.127.0.0.1",
+                    name: "ip", type: "text", title: "*IP", width: 100,validTip: "[必填欄位]填寫IP格式。eg.127.0.0.1",
                     validate: [
                     { validator: "required", message: "[IP]欄位為必填" },
                     {
@@ -124,13 +124,13 @@
                     ]
                 },
                 {
-                    name: "name", type: "text", title: "*伺服器名稱", width: 80,validTip: "[必填欄位]需要輸入伺服器名稱。",
+                    name: "name", type: "text", title: "*伺服器名稱", width: 80,validTip: "[必填欄位]",
                     validate: [
                         { validator: "required", message: "[伺服器名稱]欄位為必填" }
                     ],
                 },
                 {
-                    name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,validTip: "[必填欄位]需要輸入伺服器登入ID。",
+                    name: "loginID", type: "text", title: "*登入者帳號", width: 80 ,validTip: "[必填欄位]",
                     validate: [
                         { validator: "required", message: "[登入者帳號]欄位為必填" },
                         {
@@ -142,7 +142,7 @@
                     ],
                 },
                 {
-                    name: "password", type: "text", title: "*密碼", width: 80,validTip: "[必填欄位]需要輸入伺服器密碼，不可輸入中文字。",
+                    name: "password", type: "text", title: "*密碼", width: 80,validTip: "[必填欄位]不可填寫中文字與空白。",
                     validate: [
                         { validator: "required", message: "[密碼]欄位為必填" },
                         {
@@ -154,13 +154,13 @@
                     ],
                 },
                 {
-                    name: "os", type: "text", title: "*系統", width: 150,validTip: "[必填欄位]需要輸入伺服器系統版本。eg.127.0.0.1",
+                    name: "os", type: "text", title: "*系統", width: 150,validTip: "[必填欄位]",
                     validate: [
                         { validator: "required", message: "[系統]欄位為必填" }
                     ],
                 },
                 {
-                    name: "hostIP", type: "text", title: "*本機IP", width: 100, validTip: "[必填欄位]需要輸入伺服器的本機IP。",
+                    name: "hostIP", type: "text", title: "*本機IP", width: 100, validTip: "[必填欄位]請填寫IP格式。eg.127.0.0.1",
                     validate: [
                     { validator: "required", message: "[本機IP]欄位為必填" },
                     {
